@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AdCast</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{
+  --blue:#2355E0;--blue-dk:#1a42b8;--blue-lt:#EEF3FF;
+  --green:#16A34A;--green-lt:#F0FDF4;
+  --red:#DC2626;--red-lt:#FEF2F2;
+  --orange:#EA580C;--orange-lt:#FFF7ED;
+  --ink:#111827;--ink2:#374151;--muted:#9CA3AF;
+  --border:#E5E7EB;--bg:#F3F4F6;--white:#fff;
+  --sh:0 1px 4px rgba(0,0,0,.10);
+  --sh2:0 8px 32px rgba(0,0,0,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Inter',sans-serif;background:#1a1f2e;min-height:100vh;display:flex;align-items:center;justify-content:center}
+
+/* ── PHONE ── */
+.phone{width:390px;height:844px;background:var(--bg);border-radius:48px;border:10px solid #0f1117;box-shadow:0 40px 100px rgba(0,0,0,.6);display:flex;flex-direction:column;overflow:hidden;position:relative}
+
+/* ── STATUS ── */
+.sb{background:var(--white);padding:12px 24px 6px;display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600;color:var(--ink);flex-shrink:0}
+.sb-r{display:flex;gap:5px;font-size:11px}
+
+/* ── HEADER ── */
+.hd{background:var(--white);border-bottom:1px solid var(--border);padding:8px 16px 12px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.hd-back{width:34px;height:34px;border-radius:9px;border:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink2);font-size:12px;flex-shrink:0}
+.hd-title{flex:1;text-align:center;font-size:15px;font-weight:700;color:var(--ink)}
+
+/* ── PROGRESS ── */
+.prog{background:var(--white);padding:8px 16px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
+.prog-track{height:3px;background:var(--border);border-radius:3px}
+.prog-fill{height:100%;background:var(--blue);border-radius:3px;transition:width .35s ease}
+.prog-lbls{display:flex;justify-content:space-between;margin-top:6px}
+.pl{font-size:10px;font-weight:500;color:var(--muted);transition:color .2s}
+.pl.act{color:var(--blue);font-weight:600}
+.pl.done{color:var(--green);font-weight:600}
+
+/* ── SCROLL BODY ──
+   KEY FIX: overflow-y on .body, all overlays are position:fixed
+   within .phone via a wrapper trick — we use position:absolute
+   but on a dedicated overlay-root that sits on top and is NOT
+   inside .body, so scrolling .body never causes the modal to scroll */
+.body{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
+.body::-webkit-scrollbar{display:none}
+
+/* ── SCREENS ── */
+.scr{display:none;padding:16px 16px 110px}
+.scr.on{display:block;animation:su .22s ease}
+@keyframes su{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.lbl{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+
+/* ── S1 MEDIA ── */
+.media-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mc{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:18px 10px 14px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;position:relative}
+.mc:active{transform:scale(.97)}
+.mc.on{border-color:var(--blue);background:var(--blue-lt)}
+.mc-icon{width:42px;height:42px;border-radius:11px;margin:0 auto 9px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--blue);transition:background .15s,color .15s}
+.mc.on .mc-icon{background:var(--blue);color:#fff}
+.mc h4{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.mc p{font-size:11px;color:var(--muted)}
+.mc-chk{position:absolute;top:8px;right:8px;width:17px;height:17px;border-radius:5px;background:var(--blue);color:#fff;font-size:8px;display:none;align-items:center;justify-content:center}
+.mc.on .mc-chk{display:flex}
+
+/* VIDEO OPTS */
+.video-opts{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-top:14px;display:none}
+.video-opts.show{display:block}
+.opt-row{display:flex;align-items:center;gap:10px;padding:10px 0}
+.opt-row+.opt-row{border-top:1px solid var(--border)}
+.opt-icon{width:32px;height:32px;border-radius:9px;background:var(--blue-lt);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.opt-body{flex:1;min-width:0}
+.opt-label{font-size:13px;font-weight:600;color:var(--ink)}
+.opt-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.opt-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+
+/* Duration display (read-only badge) */
+.dur-badge{background:var(--blue-lt);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:13px;font-weight:700}
+
+/* TOGGLE */
+.toggle{width:42px;height:24px;border-radius:12px;background:var(--border);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.toggle.on{background:var(--blue)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .2s}
+.toggle.on::after{left:21px}
+
+/* VIDEO UPLOAD ZONE */
+.vid-upload-zone{border:2px dashed #BFDBFE;border-radius:14px;padding:24px 16px;text-align:center;cursor:pointer;background:var(--blue-lt);transition:all .15s;margin-bottom:4px}
+.vid-upload-zone:active{background:#DBEAFE}
+.vid-upload-icon{font-size:28px;color:var(--blue);margin-bottom:8px}
+.vid-upload-title{font-size:14px;font-weight:700;color:var(--blue);margin-bottom:4px}
+.vid-upload-sub{font-size:11px;color:#6B96F0;margin-bottom:12px}
+.vid-upload-btn{display:inline-block;background:var(--blue);color:#fff;font-size:12px;font-weight:600;padding:7px 18px;border-radius:8px}
+.vid-preview{display:flex;align-items:center;gap:10px;background:var(--green-lt);border:1.5px solid #86EFAC;border-radius:12px;padding:11px 13px;margin-bottom:4px}
+.vid-preview-icon{width:36px;height:36px;border-radius:9px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.vid-preview-info{flex:1;min-width:0}
+.vid-preview-name{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vid-preview-size{font-size:11px;color:var(--muted);margin-top:2px}
+.vid-preview-remove{width:26px;height:26px;border-radius:50%;background:var(--red-lt);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;flex-shrink:0}
+
+/* PLAIN INFO ICON — no tooltip, just decorative */
+.info-icon{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:10px;flex-shrink:0;cursor:default}
+
+/* DP INFO CAPSULE — colored pill on right side of card */
+.dp-info-capsule{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#EEF3FF;border:1.5px solid #C7D7FF;flex-shrink:0;cursor:default}
+.dp-info-capsule i{font-size:13px;color:var(--blue)}
+
+/* Loop info btn with tooltip (only on S1) */
+.tip-wrap{position:relative;display:inline-flex}
+.tip-wrap .tip{
+  position:absolute;bottom:calc(100% + 8px);right:0;width:220px;
+  background:var(--ink);color:#fff;font-size:11px;line-height:1.5;
+  padding:10px 12px;border-radius:10px;z-index:500;box-shadow:var(--sh2);
+  display:none;font-weight:400;text-align:left;pointer-events:none
+}
+.tip-wrap .tip::after{content:'';position:absolute;bottom:-5px;right:8px;width:10px;height:10px;background:var(--ink);clip-path:polygon(0 0,100% 0,50% 100%)}
+.tip-wrap:hover .tip{display:block}
+
+/* ── S2 LOCATIONS ── */
+.loc-header-row{display:flex;align-items:center;gap:6px;margin-bottom:12px}
+.loc-tabs-scroll{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1;padding-bottom:1px}
+.loc-tabs-scroll::-webkit-scrollbar{display:none}
+.loc-tab{flex-shrink:0;padding:6px 6px 6px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:var(--white);border:1.5px solid var(--border);color:var(--ink2);transition:all .15s;display:flex;align-items:center;gap:5px}
+.loc-tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.loc-tab .bcnt{background:var(--blue);color:#fff;border-radius:4px;font-size:9px;padding:1px 5px}
+.loc-tab.on .bcnt{background:#fff;color:var(--ink)}
+/* Info capsule inside city tab — right side, contrasting orange */
+.loc-tab-info{width:22px;height:22px;border-radius:50%;background:#FFF3E6;border:1.5px solid #FBD0A0;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.loc-tab-info i{font-size:12px;color:#D97706}
+.loc-tab.on .loc-tab-info{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.35)}
+.loc-tab.on .loc-tab-info i{color:#fff}
+.sel-tab{background:var(--blue-lt)!important;border-color:var(--blue)!important;color:var(--blue)!important}
+.sel-tab.on{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important}
+.loc-add-btn{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;border:none;box-shadow:0 2px 8px rgba(35,85,224,.35)}
+
+/* DP CHECKBOX */
+.dp-checkbox{width:20px;height:20px;border-radius:6px;border:2px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s}
+.dp-checkbox.on{background:var(--blue);border-color:var(--blue)}
+.dp-checkbox.on::after{content:'\f00c';font-family:'Font Awesome 6 Free';font-weight:900;color:#fff;font-size:10px}
+.dp-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:13px;margin-bottom:10px;position:relative;transition:border-color .15s}
+.dp-card.booked{border-color:var(--blue)}
+.dp-card::before{content:'';position:absolute;left:0;top:12px;bottom:12px;width:4px;border-radius:0 4px 4px 0;background:var(--border);transition:background .2s}
+.dp-card.booked::before{background:var(--blue)}
+.dp-top{display:flex;align-items:flex-start;gap:9px;padding-left:10px}
+.dp-icon{width:34px;height:34px;border-radius:9px;background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;flex-shrink:0}
+.dp-card.booked .dp-icon{background:var(--blue-lt);color:var(--blue)}
+.dp-info{flex:1;min-width:0}
+.dp-name-row{display:flex;align-items:center;gap:5px}
+.dp-name{font-size:13px;font-weight:600;color:var(--ink)}
+.dp-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.dp-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.dp-add-btn{width:28px;height:28px;border-radius:8px;background:var(--blue);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px}
+.dp-clear-btn{width:28px;height:28px;border-radius:8px;background:var(--red-lt);color:var(--red);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;display:none}
+.dp-card.booked .dp-clear-btn{display:flex}
+.dp-chips{display:flex;gap:6px;margin-top:9px;padding-left:10px;overflow-x:auto;scrollbar-width:none}
+.dp-chips::-webkit-scrollbar{display:none}
+.s-chip{flex-shrink:0;display:flex;align-items:center;gap:5px;background:var(--blue);color:#fff;border-radius:8px;padding:5px 8px;font-size:10.5px;font-weight:500}
+.s-chip .del{width:13px;height:13px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:7px;cursor:pointer}
+.dp-add-inline{display:flex;align-items:center;gap:5px;background:var(--blue-lt);color:var(--blue);border:1.5px dashed #BFDBFE;border-radius:8px;padding:5px 11px;font-size:11px;font-weight:600;cursor:pointer;flex-shrink:0}
+.dp-empty{font-size:11px;color:var(--muted);padding-left:10px;margin-top:7px;display:flex;align-items:center;gap:4px}
+
+/* SKELETON */
+.skel{background:linear-gradient(90deg,var(--border) 25%,#F3F4F6 50%,var(--border) 75%);background-size:200% 100%;animation:sk 1.2s ease infinite;border-radius:14px}
+@keyframes sk{from{background-position:200% 0}to{background-position:-200% 0}}
+.skel-card{height:76px;margin-bottom:10px}
+
+/* ── OVERLAY ROOT ──
+   Sits OUTSIDE .body — directly in .phone — so it never
+   participates in body's scroll. z-index stacks on top. */
+.overlay-root{position:absolute;inset:0;pointer-events:none;z-index:100}
+.overlay-root > *{pointer-events:auto}
+
+/* ── SLOT MODAL ── */
+.slot-modal{
+  position:absolute;inset:0;background:var(--white);
+  display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);
+  will-change:transform;
+}
+.slot-modal.open{transform:translateX(0)}
+.sm-hd{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--white)}
+.sm-title{flex:1;text-align:center;font-size:15px;font-weight:700;color:var(--ink)}
+.sm-body{flex:1;overflow-y:auto;padding:16px;scrollbar-width:none}
+.sm-body::-webkit-scrollbar{display:none}
+.sm-foot{padding:12px 16px 20px;border-top:1px solid var(--border);flex-shrink:0;background:var(--white)}
+
+/* CALENDAR */
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-nav-btn{width:30px;height:30px;border-radius:50%;border:none;background:var(--bg);cursor:pointer;color:var(--ink2);font-size:13px;display:flex;align-items:center;justify-content:center}
+.cal-month{font-size:15px;font-weight:600;color:var(--ink)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:14px}
+.cal-dn{text-align:center;font-size:11px;color:var(--muted);font-weight:500;padding:5px 0}
+.cal-d{text-align:center;font-size:13px;color:var(--ink);padding:9px 0;border-radius:50%;cursor:pointer;transition:all .12s}
+.cal-d.other{color:var(--muted)}
+.cal-d.past{color:#D1D5DB;cursor:default;pointer-events:none}
+.cal-d.today{color:var(--blue);font-weight:700}
+.cal-d.sel{background:var(--blue);color:#fff;font-weight:700}
+.cal-d:not(.past):not(.sel):hover{background:var(--blue-lt);color:var(--blue)}
+
+/* HOUR SELECTOR */
+.hour-drop{border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;background:var(--white);cursor:pointer;margin-bottom:14px;font-size:14px;font-weight:500;color:var(--ink)}
+.hour-drop i{color:var(--muted);font-size:12px}
+
+/* SLOT MODE — only Multi + Range */
+.slot-mode-tabs{display:flex;background:var(--bg);border-radius:10px;padding:3px;margin-bottom:12px;gap:2px}
+.smt{flex:1;text-align:center;padding:8px 0;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:var(--muted);transition:all .15s}
+.smt.on{background:var(--white);color:var(--blue);box-shadow:var(--sh)}
+
+/* RANGE HINT */
+.range-hint{display:flex;align-items:center;gap:7px;margin-bottom:11px;padding:9px 12px;background:var(--orange-lt);border-radius:10px;border:1px solid #FED7AA;font-size:11px;color:var(--orange);font-weight:500}
+
+/* SLOTS */
+.slots-hdr{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
+.slots-hdr-title{font-size:15px;font-weight:700;color:var(--ink)}
+.slots-hdr-sub{font-size:11px;color:var(--muted)}
+.slots-divider{height:1px;background:var(--border);margin-bottom:10px}
+.legend{display:flex;gap:12px;margin-bottom:10px}
+.leg{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+.leg-dot{width:8px;height:8px;border-radius:3px}
+.sg-wrap{background:var(--white);border-radius:14px;border:1px solid var(--border);padding:10px;box-shadow:var(--sh)}
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.si{border:1px solid var(--border);border-radius:9px;padding:10px 4px;text-align:center;font-size:10.5px;font-weight:500;color:var(--ink);cursor:pointer;line-height:1.35;transition:all .12s;background:var(--white);user-select:none}
+.si:active:not(.busy){transform:scale(.95)}
+.si.busy{background:var(--red-lt);border-color:#FECACA;color:var(--red);pointer-events:none}
+.si.sel{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+.si.range-mid{background:var(--blue-lt);border-color:#93C5FD;color:var(--blue);font-weight:600}
+.si.range-end{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
+.si.range-start-only{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700;opacity:.75}
+
+.btn-save{width:100%;padding:15px;background:var(--blue);color:#fff;border:none;border-radius:13px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:background .15s}
+.btn-save:disabled{background:var(--border);color:var(--muted);cursor:not-allowed}
+.btn-save:not(:disabled):active{background:var(--blue-dk)}
+
+/* ── LOC POPUP ── */
+.loc-popup{
+  position:absolute;inset:0;background:var(--white);
+  display:flex;flex-direction:column;
+  transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);
+  will-change:transform;
+}
+.loc-popup.open{transform:translateY(0)}
+.lp-hd{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.lp-title{flex:1;text-align:center;font-size:15px;font-weight:700;color:var(--ink)}
+.lp-search{margin:12px 16px 0;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:9px;flex-shrink:0}
+.lp-search input{border:none;outline:none;background:transparent;font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);flex:1}
+.lp-search input::placeholder{color:var(--muted)}
+.lp-list{flex:1;overflow-y:auto;padding:8px 16px 16px;scrollbar-width:none}
+.lp-list::-webkit-scrollbar{display:none}
+.lp-item{display:flex;align-items:center;gap:10px;padding:13px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.lp-item:last-child{border-bottom:none}
+.lp-item:active{opacity:.7}
+.lp-item-check{width:22px;height:22px;border-radius:6px;background:var(--green-lt);border:1.5px solid #86EFAC;color:var(--green);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+.lp-item-check.empty{background:var(--bg);border-color:var(--border);color:transparent}
+.lp-item-icon{width:36px;height:36px;border-radius:10px;background:var(--blue-lt);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.lp-item-name{font-size:14px;font-weight:600;color:var(--ink)}
+.lp-item-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.lp-item-info{width:28px;height:28px;border-radius:50%;background:#FFF3E6;border:1.5px solid #FBD0A0;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto}
+.lp-item-info i{font-size:14px;color:#D97706}
+/* remove old lp-item-added — replaced by lp-item-check */
+.lp-item-added{display:none}
+
+/* ── S3 REVIEW ── */
+.review-media{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:13px;display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.rv-icon{width:38px;height:38px;border-radius:10px;background:var(--blue);color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center}
+.rv-lbl{font-size:10px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.rv-val{font-size:14px;font-weight:700;color:var(--ink);margin-top:2px}
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat-card{background:var(--ink);color:#fff;border-radius:14px;padding:13px 14px}
+.stat-lbl{font-size:10px;opacity:.6;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.stat-val{font-size:22px;font-weight:700;margin-top:3px}
+.rv-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px}
+.rv-row{padding:12px 13px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:9px}
+.rv-row:last-child{border-bottom:none}
+.rv-dp-icon{width:28px;height:28px;border-radius:7px;background:var(--blue-lt);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:1px}
+.rv-dp-name{font-size:13px;font-weight:600;color:var(--ink)}
+.rv-dp-sub{font-size:10px;color:var(--muted);margin-top:1px;margin-bottom:5px}
+.rv-chips{display:flex;flex-wrap:wrap;gap:5px}
+.rv-chip{background:var(--blue-lt);color:var(--blue);border-radius:6px;padding:3px 8px;font-size:10.5px;font-weight:500}
+
+/* ── S4 PAYMENT ── */
+.pay-pkg-card{background:var(--bg);border-radius:16px;padding:18px;margin-bottom:14px;border:1px solid var(--border)}
+.pay-pkg-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.pay-pkg-icon{font-size:24px;color:var(--blue)}
+.pay-pkg-name{font-size:18px;font-weight:800;color:var(--ink)}
+.pay-pkg-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0}
+.pay-pkg-row-lbl{font-size:14px;color:var(--muted)}
+.pay-pkg-row-val{font-size:14px;font-weight:700;color:var(--ink)}
+.pay-info{display:flex;align-items:flex-start;gap:9px;background:var(--bg);border-radius:12px;padding:12px;margin-bottom:14px;border:1px solid var(--border)}
+.pay-info i{color:var(--muted);margin-top:1px;font-size:13px;flex-shrink:0}
+.pay-info p{font-size:12px;color:var(--muted);line-height:1.5}
+.pay-status{background:var(--bg);border-radius:16px;padding:22px;margin-bottom:14px;display:flex;flex-direction:column;align-items:center;gap:10px;border:1px solid var(--border)}
+.pay-status-icon{width:48px;height:48px;border-radius:50%;background:var(--green);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center}
+.pay-status-lbl{font-size:15px;font-weight:600;color:var(--ink)}
+.pay-summary{background:var(--bg);border-radius:16px;padding:18px;margin-bottom:14px;border:1px solid var(--border)}
+.pay-summary h3{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:14px}
+.pay-s-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0}
+.pay-s-lbl{font-size:14px;color:var(--muted)}
+.pay-s-val{font-size:14px;color:var(--ink);font-weight:500}
+.pay-divider{height:1px;background:var(--border);margin:10px 0}
+.pay-total-row{display:flex;align-items:center;justify-content:space-between}
+.pay-total-lbl{font-size:15px;font-weight:700;color:var(--ink)}
+.pay-total-val{font-size:18px;font-weight:800;color:var(--ink)}
+.pay-secure{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);margin-top:10px;justify-content:center}
+.btn-pay{width:100%;padding:17px;background:var(--blue);color:#fff;border:none;border-radius:14px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:background .15s;margin-bottom:10px}
+.btn-pay:active{background:var(--blue-dk)}
+
+/* ── S5 SUCCESS ── */
+.success-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:500px;text-align:center;padding:30px}
+.success-icon{width:72px;height:72px;border-radius:20px;background:var(--green);color:#fff;font-size:32px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;animation:pop .4s cubic-bezier(.3,1.5,.5,1)}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.success-title{font-size:22px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.success-sub{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* BOTTOM NAV */
+.foot{position:absolute;bottom:0;left:0;right:0;padding:12px 16px 22px;background:linear-gradient(transparent,var(--bg) 28%);z-index:10}
+.btn-main{width:100%;padding:16px;background:var(--blue);color:#fff;border:none;border-radius:14px;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background .15s}
+.btn-main:active{background:var(--blue-dk)}
+.btn-main:disabled{background:var(--border);color:var(--muted);cursor:not-allowed}
+
+/* TOAST */
+.toast{position:absolute;bottom:96px;left:14px;right:14px;background:var(--ink);color:#fff;padding:12px 15px;border-radius:12px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px;transform:translateY(16px);opacity:0;transition:all .28s;pointer-events:none;z-index:400}
+.toast.show{transform:translateY(0);opacity:1}
+.toast i{color:var(--green);font-size:14px}
+
+/* ── USER TYPE TOGGLE ── */
+.user-type-wrap{background:var(--white);border-radius:16px;border:1.5px solid var(--border);padding:4px;display:flex;gap:3px;margin-bottom:16px}
+.ut-btn{flex:1;padding:10px 6px;border-radius:12px;text-align:center;cursor:pointer;transition:all .2s;font-size:13px;font-weight:600;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:4px}
+.ut-btn.on.individual{background:var(--blue);color:#fff}
+.ut-btn.on.business{background:var(--ink);color:#fff}
+.ut-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;background:var(--bg);color:var(--muted);transition:all .2s}
+.ut-btn.on .ut-icon{background:rgba(255,255,255,.2);color:#fff}
+.ut-badge{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-top:1px}
+
+/* ── BUSINESS SLOT MODAL ── */
+.biz-slot-modal{
+  position:absolute;inset:0;background:var(--white);
+  display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);
+  will-change:transform;z-index:200;
+}
+.biz-slot-modal.open{transform:translateX(0)}
+
+/* Recurrence tabs */
+.recur-tabs{display:flex;background:var(--bg);border-radius:10px;padding:3px;gap:2px;margin-bottom:14px}
+.rt{flex:1;text-align:center;padding:7px 2px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;color:var(--muted);transition:all .15s;white-space:nowrap}
+.rt.on{background:var(--ink);color:#fff;box-shadow:var(--sh)}
+
+/* Multi-date grid */
+.md-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:14px}
+.md-d{text-align:center;font-size:12px;color:var(--ink);padding:8px 2px;border-radius:8px;cursor:pointer;transition:all .12s;border:1px solid transparent}
+.md-d.other{color:var(--muted)}
+.md-d.past{color:#D1D5DB;cursor:default;pointer-events:none}
+.md-d.today-biz{color:var(--blue);font-weight:700}
+.md-d.sel-biz{background:var(--ink);color:#fff;font-weight:700;border-color:var(--ink)}
+.md-d:not(.past):not(.sel-biz):hover{background:var(--blue-lt);color:var(--blue)}
+.md-d.has-conflict{position:relative}
+.md-d.has-conflict::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--orange)}
+
+/* Conflict preview card */
+.conflict-preview{background:var(--orange-lt);border:1.5px solid #FED7AA;border-radius:13px;padding:12px 13px;margin-bottom:14px}
+.cp-title{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--orange);margin-bottom:8px}
+.cp-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid #FED7AA;font-size:12px}
+.cp-row:last-child{border-bottom:none}
+.cp-date{color:var(--ink2);font-weight:500}
+.cp-stat{font-size:11px;font-weight:600}
+.cp-stat.ok{color:var(--green)}
+.cp-stat.partial{color:var(--orange)}
+.cp-stat.conflict{color:var(--red)}
+.cp-resolve{display:flex;gap:6px;margin-top:10px}
+.cp-res-btn{flex:1;padding:8px 6px;border-radius:9px;font-size:11px;font-weight:600;cursor:pointer;text-align:center;border:1.5px solid}
+.cp-res-btn.skip{background:var(--white);border-color:var(--border);color:var(--ink2)}
+.cp-res-btn.partial-ok{background:var(--orange-lt);border-color:var(--orange);color:var(--orange)}
+
+/* Summary strip */
+.biz-summary{background:var(--bg);border-radius:12px;padding:12px 13px;margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.bs-cell{text-align:center}
+.bs-val{font-size:17px;font-weight:800;color:var(--ink)}
+.bs-lbl{font-size:10px;color:var(--muted);margin-top:2px}
+.bs-cell.conflict .bs-val{color:var(--orange)}
+
+/* ── START DATE PICKER ── */
+.start-date-field{display:flex;align-items:center;gap:10px;background:var(--white);border:1.5px solid var(--border);border-radius:13px;padding:11px 14px;cursor:pointer;margin-bottom:6px;transition:border-color .15s}
+.start-date-field.set{border-color:var(--blue);background:var(--blue-lt)}
+.start-date-field.set .sdf-icon{background:var(--blue);color:#fff}
+.sdf-icon{width:32px;height:32px;border-radius:9px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--muted);flex-shrink:0;transition:all .15s}
+.sdf-body{flex:1;min-width:0}
+.sdf-lbl{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.sdf-val{font-size:14px;font-weight:700;color:var(--ink);margin-top:2px}
+.sdf-val.placeholder{color:var(--muted);font-weight:400;font-size:13px}
+.start-cal-wrap{background:var(--white);border:1.5px solid var(--blue);border-radius:14px;padding:12px 12px 8px;margin-bottom:14px}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- STATUS -->
+  <div class="sb">
+    <span style="font-size:13px;font-weight:700">9:41</span>
+    <div class="sb-r"><i class="fas fa-signal"></i><i class="fas fa-wifi"></i><i class="fas fa-battery-three-quarters"></i></div>
+  </div>
+
+  <!-- HEADER -->
+  <div class="hd">
+    <div class="hd-back" id="backBtn"><i class="fas fa-arrow-left"></i></div>
+    <div class="hd-title" id="hdTitle">New Campaign</div>
+    <div style="width:34px"></div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="prog">
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:20%"></div></div>
+    <div class="prog-lbls">
+      <span class="pl act" id="pl1">Format</span>
+      <span class="pl" id="pl2">Locations</span>
+      <span class="pl" id="pl3">Review</span>
+      <span class="pl" id="pl4">Payment</span>
+      <span class="pl" id="pl5">Done</span>
+    </div>
+  </div>
+
+  <!-- SCROLLABLE BODY -->
+  <div class="body">
+
+    <!-- S1: FORMAT -->
+    <div class="scr on" id="s1">
+      <div class="lbl">Account Type</div>
+      <div class="user-type-wrap">
+        <div class="ut-btn individual on" id="utIndividual" onclick="setUserType('individual')">
+          <div class="ut-icon"><i class="fas fa-user"></i></div>
+          <span>Individual</span>
+          <span class="ut-badge">Personal</span>
+        </div>
+        <div class="ut-btn business" id="utBusiness" onclick="setUserType('business')">
+          <div class="ut-icon"><i class="fas fa-building"></i></div>
+          <span>Business</span>
+          <span class="ut-badge">Recurring</span>
+        </div>
+      </div>
+      <div class="lbl">Choose Ad Format</div>
+      <div class="media-grid">
+        <div class="mc" onclick="pickMedia(this,'Text AD','fa-align-left')">
+          <div class="mc-icon"><i class="fas fa-align-left"></i></div>
+          <h4>Text</h4><p>Simple message</p>
+          <div class="mc-chk"><i class="fas fa-check"></i></div>
+        </div>
+        <div class="mc on" onclick="pickMedia(this,'Image AD','fa-image')">
+          <div class="mc-icon"><i class="fas fa-image"></i></div>
+          <h4>Image</h4><p>Visual impact</p>
+          <div class="mc-chk"><i class="fas fa-check"></i></div>
+        </div>
+        <div class="mc" onclick="pickMedia(this,'Video AD','fa-video')">
+          <div class="mc-icon"><i class="fas fa-video"></i></div>
+          <h4>Video</h4><p>Full motion</p>
+          <div class="mc-chk"><i class="fas fa-check"></i></div>
+        </div>
+        <div class="mc" onclick="pickMedia(this,'Template','fa-th-large')">
+          <div class="mc-icon"><i class="fas fa-th-large"></i></div>
+          <h4>Template</h4><p>Ready-made</p>
+          <div class="mc-chk"><i class="fas fa-check"></i></div>
+        </div>
+      </div>
+
+      <!-- VIDEO OPTIONS — only when Video selected -->
+      <div class="video-opts" id="videoOpts">
+
+        <!-- Video upload zone -->
+        <div class="vid-upload-zone" id="vidUploadZone" onclick="handleVideoUpload()">
+          <div class="vid-upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+          <div class="vid-upload-title">Upload Your Video</div>
+          <div class="vid-upload-sub">MP4, MOV, AVI · Max 500MB</div>
+          <div class="vid-upload-btn">Choose File</div>
+        </div>
+        <!-- After upload (hidden by default) -->
+        <div class="vid-preview" id="vidPreview" style="display:none">
+          <div class="vid-preview-icon"><i class="fas fa-film"></i></div>
+          <div class="vid-preview-info">
+            <div class="vid-preview-name" id="vidFileName">campaign_video.mp4</div>
+            <div class="vid-preview-size">24.6 MB · 30s</div>
+          </div>
+          <div class="vid-preview-remove" onclick="removeVideo()"><i class="fas fa-times"></i></div>
+        </div>
+
+        <div class="lbl" style="margin-bottom:6px;margin-top:14px">Video Settings</div>
+
+        <!-- Duration (read-only) -->
+        <div class="opt-row">
+          <div class="opt-icon"><i class="fas fa-clock"></i></div>
+          <div class="opt-body">
+            <div class="opt-label">Video Duration</div>
+            <div class="opt-sub">From your uploaded file</div>
+          </div>
+          <div class="opt-right">
+            <div class="dur-badge" id="durBadge">—</div>
+          </div>
+        </div>
+
+        <!-- Continue Loop -->
+        <div class="opt-row">
+          <div class="opt-icon"><i class="fas fa-sync-alt"></i></div>
+          <div class="opt-body">
+            <div class="opt-label">Continue Loop</div>
+            <div class="opt-sub" id="loopSub">Video restarts at each slot independently</div>
+          </div>
+          <div class="opt-right">
+            <div class="tip-wrap">
+              <div class="info-icon"><i class="fas fa-info-circle" style="color:var(--muted);font-size:14px"></i></div>
+              <div class="tip">
+                <strong>ON:</strong> 30s video, 20s slot → slot 1 plays 0–20s, slot 2 plays 21–30s then restarts.<br><br>
+                <strong>OFF:</strong> Each slot plays your video from 0s, up to slot duration.
+              </div>
+            </div>
+            <div class="toggle" id="loopToggle" onclick="toggleLoop()"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S2: LOCATIONS -->
+    <div class="scr" id="s2">
+      <!-- Fixed header row: scrollable city tabs + fixed + button -->
+      <div class="loc-header-row">
+        <div class="loc-tabs-scroll" id="locTabsScroll"></div>
+        <button class="loc-add-btn" onclick="openLocPopup()" title="Add location">
+          <i class="fas fa-plus"></i>
+        </button>
+      </div>
+      <div id="dpList"></div>
+    </div>
+
+    <!-- S3: REVIEW -->
+    <div class="scr" id="s3">
+      <div class="lbl">Campaign Summary</div>
+      <div class="review-media">
+        <div class="rv-icon" id="rvIcon"><i class="fas fa-image"></i></div>
+        <div>
+          <div class="rv-lbl">Ad Format</div>
+          <div class="rv-val" id="rvName">Image AD</div>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-lbl">Display Points</div><div class="stat-val" id="rvDPs">0</div></div>
+        <div class="stat-card"><div class="stat-lbl">Total Slots</div><div class="stat-val" id="rvSlots">0</div></div>
+      </div>
+      <div class="lbl">Booked Locations</div>
+      <div class="rv-card" id="rvRows"></div>
+    </div>
+
+    <!-- S4: PAYMENT -->
+    <div class="scr" id="s4">
+      <div class="lbl">Payment</div>
+      <div class="pay-pkg-card">
+        <div class="pay-pkg-head">
+          <i class="fas fa-tv pay-pkg-icon"></i>
+          <span class="pay-pkg-name">Slot Booking</span>
+        </div>
+        <div class="pay-pkg-row"><span class="pay-pkg-row-lbl">Display Points:</span><span class="pay-pkg-row-val" id="payDPs">0</span></div>
+        <div class="pay-pkg-row"><span class="pay-pkg-row-lbl">Total Slots:</span><span class="pay-pkg-row-val" id="paySlots">0</span></div>
+        <div class="pay-pkg-row"><span class="pay-pkg-row-lbl">Rate per Slot:</span><span class="pay-pkg-row-val">€2.50</span></div>
+      </div>
+      <div class="pay-info">
+        <i class="fas fa-info-circle"></i>
+        <p>Tap "Proceed to Payment" to open the secure payment form.<br>Test Card: 4242 4242 4242 4242</p>
+      </div>
+      <div class="pay-status">
+        <div class="pay-status-icon"><i class="fas fa-check"></i></div>
+        <div class="pay-status-lbl">Ready to pay</div>
+      </div>
+      <div class="pay-summary">
+        <h3>Payment Summary</h3>
+        <div class="pay-s-row"><span class="pay-s-lbl">Display Points</span><span class="pay-s-val" id="paySumDPs">0</span></div>
+        <div class="pay-s-row"><span class="pay-s-lbl">Slots booked</span><span class="pay-s-val" id="paySumSlots">0</span></div>
+        <div class="pay-s-row"><span class="pay-s-lbl">Rate</span><span class="pay-s-val">€2.50 / slot</span></div>
+        <div class="pay-divider"></div>
+        <div class="pay-total-row">
+          <span class="pay-total-lbl">Total</span>
+          <span class="pay-total-val" id="payTotal">€0.00</span>
+        </div>
+      </div>
+      <button class="btn-pay" onclick="goStep(5)">
+        <i class="fas fa-credit-card"></i>
+        Proceed to Payment — <span id="payBtnAmt">€0.00</span>
+      </button>
+      <div class="pay-secure"><i class="fas fa-shield-alt"></i> Secured by Stripe. Your payment information is encrypted.</div>
+    </div>
+
+    <!-- S5: SUCCESS -->
+    <div class="scr" id="s5">
+      <div class="success-wrap">
+        <div class="success-icon"><i class="fas fa-check"></i></div>
+        <div class="success-title">Campaign Live!</div>
+        <div class="success-sub">Your ad is queued across all selected display points and will go live at the booked slots.</div>
+      </div>
+    </div>
+
+  </div><!-- end .body -->
+
+  <!-- ══ OVERLAY ROOT — outside .body, inside .phone ══ -->
+  <!-- Modals here NEVER scroll with body content -->
+  <div class="overlay-root">
+
+    <!-- SLOT MODAL -->
+    <div class="slot-modal" id="slotModal">
+      <div class="sm-hd">
+        <div class="hd-back" onclick="closeSlotModal()"><i class="fas fa-arrow-left"></i></div>
+        <div class="sm-title" id="smTitle">Select Slot</div>
+        <div style="width:34px"></div>
+      </div>
+      <div class="sm-body">
+        <!-- Calendar -->
+        <div class="cal-nav">
+          <div class="cal-nav-btn" onclick="chMonth(-1)"><i class="fas fa-chevron-left"></i></div>
+          <div class="cal-month" id="calMonth"></div>
+          <div class="cal-nav-btn" onclick="chMonth(1)"><i class="fas fa-chevron-right"></i></div>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+
+        <!-- Hour -->
+        <div class="hour-drop" onclick="cycleHour()">
+          <span id="hourLabel">11 hrs</span>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+
+        <!-- Slot mode: Multiple | Range only -->
+        <div class="slot-mode-tabs">
+          <div class="smt on" data-mode="multi" onclick="setSlotMode('multi')">Multiple</div>
+          <div class="smt" data-mode="range" onclick="setSlotMode('range')" id="rangeTab" style="display:none">Range</div>
+        </div>
+
+        <!-- Range hint -->
+        <div class="range-hint" id="rangeHint" style="display:none">
+          <i class="fas fa-film"></i>
+          Tap first slot → tap last slot — all in between auto-select
+        </div>
+
+        <!-- Slots -->
+        <div class="slots-hdr">
+          <div class="slots-hdr-title">Slots</div>
+          <div class="slots-hdr-sub" id="slotsHdrSub">Tap to select multiple</div>
+        </div>
+        <div class="slots-divider"></div>
+        <div class="legend">
+          <div class="leg"><div class="leg-dot" style="background:var(--blue)"></div>Available</div>
+          <div class="leg"><div class="leg-dot" style="background:var(--red-lt);border:1px solid #FECACA"></div>Busy</div>
+        </div>
+        <div class="sg-wrap"><div class="sg" id="slotsGrid"></div></div>
+      </div>
+      <div class="sm-foot">
+        <button class="btn-save" id="saveSlotBtn" disabled onclick="saveSlot()">Select slots first</button>
+      </div>
+    </div>
+
+    <!-- BUSINESS SLOT MODAL -->
+    <div class="biz-slot-modal" id="bizSlotModal">
+      <div class="sm-hd">
+        <div class="hd-back" onclick="closeBizSlotModal()"><i class="fas fa-arrow-left"></i></div>
+        <div class="sm-title" id="bizSmTitle">Schedule Slots</div>
+        <div style="width:34px"></div>
+      </div>
+      <div class="sm-body" id="bizSmBody">
+
+        <div class="lbl" style="margin-bottom:8px">Start Date</div>
+        <div class="start-date-field" id="bizStartField" onclick="toggleBizStartCal()">
+          <div class="sdf-icon"><i class="fas fa-calendar-day"></i></div>
+          <div class="sdf-body">
+            <div class="sdf-lbl">Campaign starts</div>
+            <div class="sdf-val placeholder" id="bizStartVal">Tap to choose date</div>
+          </div>
+          <i class="fas fa-chevron-down" id="bizStartChevron" style="color:var(--muted);font-size:11px;transition:transform .2s"></i>
+        </div>
+        <div id="bizStartCalWrap" style="display:none"></div>
+
+        <div class="lbl" style="margin-bottom:8px">Recurrence</div>
+        <div class="recur-tabs">
+          <div class="rt on" data-recur="daily"   onclick="setRecur('daily')">Daily</div>
+          <div class="rt"    data-recur="weekly"  onclick="setRecur('weekly')">Weekly</div>
+          <div class="rt"    data-recur="monthly" onclick="setRecur('monthly')">Monthly</div>
+          <div class="rt"    data-recur="3months" onclick="setRecur('3months')">3 Mo</div>
+          <div class="rt"    data-recur="custom"  onclick="setRecur('custom')">Custom</div>
+        </div>
+
+        <div class="hour-drop" onclick="bizCycleHour()">
+          <span id="bizHourLabel">11 hrs</span>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+
+        <div class="lbl" style="margin-bottom:8px">Pick Slots <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">— tap to select multiple</span></div>
+        <div class="sg-wrap" style="margin-bottom:14px"><div class="sg" id="bizSlotsGrid"></div></div>
+
+        <div id="bizDateArea"></div>
+        <div id="bizConflictWrap" style="display:none"></div>
+
+        <div class="biz-summary" id="bizSummaryStrip" style="display:none">
+          <div class="bs-cell"><div class="bs-val" id="bsSumDates">0</div><div class="bs-lbl">Dates</div></div>
+          <div class="bs-cell"><div class="bs-val" id="bsSumSlots">0</div><div class="bs-lbl">Slots/Day</div></div>
+          <div class="bs-cell conflict"><div class="bs-val" id="bsSumConflicts">0</div><div class="bs-lbl">Conflicts</div></div>
+        </div>
+
+      </div>
+      <div class="sm-foot">
+        <button class="btn-save" id="bizSaveBtn" disabled onclick="saveBizSlot()">Select slots &amp; dates first</button>
+      </div>
+    </div>
+
+    <!-- LOCATION POPUP -->
+    <div class="loc-popup" id="locPopup">
+      <div class="lp-hd">
+        <div class="hd-back" onclick="closeLocPopup()"><i class="fas fa-times"></i></div>
+        <div class="lp-title">Add Location</div>
+        <div style="width:34px"></div>
+      </div>
+      <div class="lp-search">
+        <i class="fas fa-search" style="color:var(--muted);font-size:12px"></i>
+        <input type="text" placeholder="Search city…" id="locSearchInput" oninput="filterLocPopup()">
+      </div>
+      <div class="lp-list" id="locPopupList"></div>
+    </div>
+
+  </div><!-- end .overlay-root -->
+
+  <!-- FOOTER -->
+  <div class="foot">
+    <button class="btn-main" id="mainBtn">Continue</button>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastTxt"></span></div>
+
+</div><!-- end .phone -->
+
+<script>
+/* ═══════════════ MOCK DATA ═══════════════ */
+const ALL_CITIES=[
+  {id:'lhr',name:'Lahore',    region:'Punjab, PK'},
+  {id:'skt',name:'Sialkot',  region:'Punjab, PK'},
+  {id:'isl',name:'Islamabad',region:'Capital, PK'},
+  {id:'khi',name:'Karachi',  region:'Sindh, PK'},
+  {id:'psh',name:'Peshawar', region:'KPK, PK'},
+  {id:'mlt',name:'Multan',   region:'Punjab, PK'},
+];
+const ALL_DPS=[
+  {id:'lhr-mm',city:'lhr',cityName:'Lahore',   name:'Main Mall Display', type:'Mall Screen',    screens:2},
+  {id:'lhr-gb',city:'lhr',cityName:'Lahore',   name:'Gulberg Digital',   type:'Outdoor LED',    screens:1},
+  {id:'lhr-lb',city:'lhr',cityName:'Lahore',   name:'Liberty Chowk',     type:'Junction Board', screens:3},
+  {id:'skt-ch',city:'skt',cityName:'Sialkot',  name:'Chamber Digital',   type:'Indoor Screen',  screens:1},
+  {id:'skt-ar',city:'skt',cityName:'Sialkot',  name:'Airport Road LED',  type:'Highway LED',    screens:2},
+  {id:'isl-bl',city:'isl',cityName:'Islamabad',name:'Blue Area Screen',  type:'Commercial',     screens:4},
+  {id:'isl-f7',city:'isl',cityName:'Islamabad',name:'F-7 Markaz',        type:'Outdoor LED',    screens:2},
+  {id:'khi-cl',city:'khi',cityName:'Karachi',  name:'Clifton Sea View',  type:'Outdoor LED',    screens:3},
+  {id:'khi-sa',city:'khi',cityName:'Karachi',  name:'Saddar Junction',   type:'Junction Board', screens:2},
+  {id:'khi-dk',city:'khi',cityName:'Karachi',  name:'DHA Phase 6 LED',   type:'Outdoor LED',    screens:2},
+  {id:'psh-qb',city:'psh',cityName:'Peshawar', name:'Qissa Khwani Bazar',type:'Junction Board', screens:2},
+  {id:'psh-hp',city:'psh',cityName:'Peshawar', name:'Hayatabad Plaza',   type:'Mall Screen',    screens:1},
+  {id:'psh-ur',city:'psh',cityName:'Peshawar', name:'University Road LED',type:'Highway LED',   screens:3},
+  {id:'mlt-ch',city:'mlt',cityName:'Multan',   name:'Chungi No.9 Screen',type:'Outdoor LED',    screens:2},
+  {id:'mlt-hb',city:'mlt',cityName:'Multan',   name:'Hussain Agahi LED', type:'Junction Board', screens:1},
+  {id:'mlt-bz',city:'mlt',cityName:'Multan',   name:'Bahawalpur Road',   type:'Highway LED',    screens:2},
+];
+const BUSY_SLOTS={
+  '2026-03-18':['11:43:00-11:43:20','11:44:20-11:44:40','11:45:40-11:46:00'],
+  '2026-03-19':['11:42:40-11:43:00','11:43:40-11:44:00'],
+  '2026-03-21':['11:44:00-11:44:20','11:45:00-11:45:20'],
+  '2026-03-22':['11:43:20-11:43:40'],
+};
+const SLOT_LIST=[
+  '11:42:40-11:43:00','11:43:00-11:43:20','11:43:20-11:43:40',
+  '11:43:40-11:44:00','11:44:00-11:44:20','11:44:20-11:44:40',
+  '11:44:40-11:45:00','11:45:00-11:45:20','11:45:20-11:45:40',
+  '11:45:40-11:46:00','11:46:00-11:46:20','11:46:20-11:46:40',
+  '11:46:40-11:47:00','11:47:00-11:47:20','11:47:20-11:47:40',
+];
+const RATE=2.50;
+
+/* ═══════════════ STATE ═══════════════ */
+const S={
+  step:1,
+  userType:'individual',   // 'individual' | 'business'
+  media:{label:'Image AD',icon:'fa-image'},
+  isVideo:false, loopOn:false, vidDur:30,
+  activeCities:['lhr','skt','isl'],
+  cityFilter:'selected',
+  slots:{},         // dpId -> [{time,date}]
+  checked:new Set(), // dpIds selected for campaign
+  sheetDP:null,
+  sheetDate:'2026-03-18',
+  sheetHour:11,
+  slotMode:'multi',
+  selSlots:[],      // indices for multi
+  rangeA:null,      // first tap index for range
+  rangeB:null,      // second tap index for range
+  calMonth:new Date(2026,2,1),
+  // business booking state
+  bizDP:null,
+  bizHour:11,
+  bizRecur:'daily',
+  bizStartDate:null,          // user-chosen start date (YYYY-MM-DD)
+  bizStartCalMonth:new Date(2026,2,1),
+  bizStartPickerOpen:false,
+  bizSelSlots:[],        // slot indices selected
+  bizSelDates:[],        // custom picked dates (YYYY-MM-DD)
+  bizCalMonth:new Date(2026,2,1),
+};
+
+/* ═══════════════ BOOT ═══════════════ */
+function boot(){
+  // Pre-populate every DP with first available slot for default date
+  const defaultDate='2026-03-18';
+  const busy=BUSY_SLOTS[defaultDate]||[];
+  const firstFree=SLOT_LIST.find(s=>!busy.includes(s));
+  if(firstFree){
+    ALL_DPS.forEach(dp=>{
+      S.slots[dp.id]=[{time:firstFree,date:defaultDate}];
+    });
+  }
+  renderLocTabs();
+  renderDPList();
+}
+
+/* ═══════════════ STEPS ═══════════════ */
+const STEP_CFG={
+  1:{title:'New Campaign',     prog:'20%',btn:'Continue',        pls:[1,0,0,0,0]},
+  2:{title:'Select Locations', prog:'40%',btn:'Review Campaign', pls:[2,1,0,0,0]},
+  3:{title:'Review Campaign',  prog:'60%',btn:'Go to Payment',   pls:[2,2,1,0,0]},
+  4:{title:'Payment',          prog:'80%',btn:'',                pls:[2,2,2,1,0]},
+  5:{title:'Done!',            prog:'100%',btn:'New Campaign',   pls:[2,2,2,2,1]},
+};
+function goStep(n){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.getElementById('s'+n).classList.add('on');
+  S.step=n;
+  const c=STEP_CFG[n];
+  document.getElementById('hdTitle').textContent=c.title;
+  document.getElementById('mainBtn').textContent=c.btn;
+  document.getElementById('progFill').style.width=c.prog;
+  document.getElementById('mainBtn').style.display=(n===4)?'none':'block';
+  for(let i=1;i<=5;i++){
+    const el=document.getElementById('pl'+i);
+    const v=c.pls[i-1];
+    el.className='pl'+(v===1?' act':v===2?' done':'');
+  }
+  if(n===3) buildReview();
+  if(n===4) buildPayment();
+}
+
+document.getElementById('mainBtn').onclick=()=>{
+  if(S.step===1){ goStep(2); renderDPListSkel(); setTimeout(()=>renderDPList(),600); }
+  else if(S.step===2){
+    const valid=[...S.checked].filter(id=>(S.slots[id]||[]).length>0);
+    if(!S.checked.size){toast('Check at least one display point');return;}
+    if(!valid.length){toast('Add at least one slot to a selected display point');return;}
+    goStep(3);
+  }
+  else if(S.step===3){ goStep(4); }
+  else if(S.step===5){ resetAll(); goStep(1); }
+};
+document.getElementById('backBtn').onclick=()=>{
+  if(S.step===2) goStep(1);
+  else if(S.step===3) goStep(2);
+  else if(S.step===4) goStep(3);
+};
+
+/* ═══════════════ S1: MEDIA ═══════════════ */
+function handleVideoUpload(){
+  const zone=document.getElementById('vidUploadZone');
+  const preview=document.getElementById('vidPreview');
+  zone.style.display='none';
+  preview.style.display='flex';
+  document.getElementById('durBadge').textContent='30s';
+  S.vidDur=30;
+}
+function removeVideo(){
+  document.getElementById('vidUploadZone').style.display='block';
+  document.getElementById('vidPreview').style.display='none';
+  document.getElementById('durBadge').textContent='—';
+  S.vidDur=0;
+}
+function pickMedia(el,label,icon){
+  document.querySelectorAll('.mc').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  S.media={label,icon};
+  S.isVideo=(label==='Video AD');
+  document.getElementById('videoOpts').classList.toggle('show',S.isVideo);
+  // Show range tab only if video+loop
+  updateRangeTabVis();
+}
+function toggleLoop(){
+  S.loopOn=!S.loopOn;
+  document.getElementById('loopToggle').classList.toggle('on',S.loopOn);
+  document.getElementById('loopSub').textContent=S.loopOn
+    ?'Video continues across slots seamlessly'
+    :'Video restarts at each slot independently';
+  updateRangeTabVis();
+}
+function updateRangeTabVis(){
+  const show=S.isVideo&&S.loopOn;
+  document.getElementById('rangeTab').style.display=show?'':'none';
+  // Hide the whole mode tab bar when there's only one option (no range)
+  document.querySelector('.slot-mode-tabs').style.display=show?'flex':'none';
+  if(!show && S.slotMode==='range') setSlotMode('multi');
+}
+
+/* ═══════════════ USER TYPE ═══════════════ */
+function setUserType(type){
+  S.userType=type;
+  document.getElementById('utIndividual').classList.toggle('on',type==='individual');
+  document.getElementById('utBusiness').classList.toggle('on',type==='business');
+}
+
+/* ═══════════════ S2: LOCATION TABS ═══════════════ */
+function renderLocTabs(){
+  const scroll=document.getElementById('locTabsScroll');
+  scroll.innerHTML='';
+
+  // "Selected" fixed first tab
+  const bookedCnt=S.checked.size;
+  const st=document.createElement('div');
+  st.className='loc-tab sel-tab'+(S.cityFilter==='selected'?' on':'');
+  st.innerHTML='Selected'+(bookedCnt>0?` <span class="bcnt">${bookedCnt}</span>`:'');
+  st.onclick=()=>{S.cityFilter='selected';renderLocTabs();renderDPList();};
+  scroll.appendChild(st);
+
+  // City tabs
+  S.activeCities.forEach(cid=>{
+    const city=ALL_CITIES.find(c=>c.id===cid);
+    if(!city) return;
+    const cnt=ALL_DPS.filter(d=>d.city===cid&&S.checked.has(d.id)).length;
+    const t=document.createElement('div');
+    t.className='loc-tab'+(S.cityFilter===cid?' on':'');
+    t.dataset.city=cid;
+    t.innerHTML=city.name
+      +(cnt>0?` <span class="bcnt">${cnt}</span>`:'')
+      +` <div class="loc-tab-info"><i class="fas fa-info-circle"></i></div>`;
+    t.onclick=()=>{S.cityFilter=cid;renderLocTabs();renderDPList();};
+    scroll.appendChild(t);
+  });
+
+  // Scroll active tab into view — only scroll the tab strip, never the page
+  requestAnimationFrame(()=>{
+    const activeTab = S.cityFilter==='selected'
+      ? scroll.querySelector('.sel-tab')
+      : scroll.querySelector(`[data-city="${S.cityFilter}"]`);
+    if(activeTab){
+      const tabLeft   = activeTab.offsetLeft;
+      const tabWidth  = activeTab.offsetWidth;
+      const stripW    = scroll.offsetWidth;
+      const target    = tabLeft - (stripW/2) + (tabWidth/2);
+      scroll.scrollTo({left: Math.max(0, target), behavior:'smooth'});
+    }
+  });
+}
+
+function renderDPListSkel(){
+  document.getElementById('dpList').innerHTML=[1,2,3].map(()=>`<div class="skel skel-card"></div>`).join('');
+}
+
+function renderDPList(){
+  const list=document.getElementById('dpList');
+  let dps;
+  if(S.cityFilter==='selected'){
+    dps=ALL_DPS.filter(d=>S.checked.has(d.id));
+    if(!dps.length){
+      list.innerHTML=`<div style="text-align:center;padding:36px 20px;color:var(--muted);font-size:13px">
+        <i class="fas fa-map-marker-alt" style="display:block;font-size:28px;margin-bottom:10px;opacity:.25"></i>
+        No display points selected yet.<br>Tick a checkbox to include in campaign.
+      </div>`;
+      return;
+    }
+  } else {
+    dps=ALL_DPS.filter(d=>d.city===S.cityFilter);
+  }
+
+  list.innerHTML=dps.map(dp=>{
+    const chips=S.slots[dp.id]||[];
+    const booked=chips.length>0;
+    const isChecked=S.checked.has(dp.id);
+    return `
+    <div class="dp-card ${isChecked?'booked':''}" id="dpcard-${dp.id}">
+      <div class="dp-top">
+        <div class="dp-checkbox ${isChecked?'on':''}" onclick="toggleCheck('${dp.id}',event)"></div>
+        <div class="dp-icon"><i class="fas fa-tv"></i></div>
+        <div class="dp-info">
+          <div class="dp-name">${dp.name}</div>
+          <div class="dp-meta">${dp.type} · ${dp.cityName}</div>
+        </div>
+        <div class="dp-actions">
+          <button class="dp-clear-btn" ${isChecked?'':'style="display:none"'} onclick="clearDP('${dp.id}',event)"><i class="fas fa-trash-alt"></i></button>
+          <div class="dp-info-capsule"><i class="fas fa-info-circle"></i></div>
+        </div>
+      </div>
+      ${booked?`
+        <div class="dp-chips">
+          ${chips.map((ch,i)=>`
+            <div class="s-chip">
+              <span>${ch.time}</span>
+              <div class="del" onclick="removeChip('${dp.id}',${i},event)"><i class="fas fa-times"></i></div>
+            </div>`).join('')}
+          <div class="dp-add-inline" onclick="openSlotModal('${dp.id}')">
+            <i class="fas fa-plus" style="font-size:10px"></i> Add
+          </div>
+        </div>
+      `:`
+        <div class="dp-empty">
+          <i class="fas fa-clock" style="font-size:10px"></i>
+          No slots —
+          <span style="color:var(--blue);cursor:pointer;font-weight:600;margin-left:3px" onclick="openSlotModal('${dp.id}')">tap to book</span>
+        </div>`}
+    </div>`;
+  }).join('');
+}
+
+function toggleCheck(dpId,e){
+  e.stopPropagation();
+  if(S.checked.has(dpId)) S.checked.delete(dpId);
+  else S.checked.add(dpId);
+  renderLocTabs();renderDPList();
+}
+
+function clearDP(dpId,e){
+  e.stopPropagation();
+  delete S.slots[dpId];
+  S.checked.delete(dpId);
+  renderLocTabs();renderDPList();
+  toast('Display point cleared');
+}
+function removeChip(dpId,idx,e){
+  e.stopPropagation();
+  S.slots[dpId].splice(idx,1);
+  if(!S.slots[dpId].length) delete S.slots[dpId];
+  renderLocTabs();renderDPList();
+}
+
+/* ═══════════════ LOCATION POPUP ═══════════════ */
+function openLocPopup(){
+  document.getElementById('locSearchInput').value='';
+  filterLocPopup();
+  document.getElementById('locPopup').classList.add('open');
+}
+function closeLocPopup(){document.getElementById('locPopup').classList.remove('open');}
+function filterLocPopup(){
+  const q=document.getElementById('locSearchInput').value.toLowerCase();
+  const filtered=ALL_CITIES.filter(c=>c.name.toLowerCase().includes(q)||c.region.toLowerCase().includes(q));
+  document.getElementById('locPopupList').innerHTML=filtered.slice(0,6).map(c=>{
+    const added=S.activeCities.includes(c.id);
+    return `<div class="lp-item" onclick="addCity('${c.id}')">
+      <div class="lp-item-check ${added?'':'empty'}">${added?'<i class="fas fa-check"></i>':''}</div>
+      <div class="lp-item-icon"><i class="fas fa-city"></i></div>
+      <div style="flex:1;min-width:0">
+        <div class="lp-item-name">${c.name}</div>
+        <div class="lp-item-sub">${c.region}</div>
+      </div>
+      <div class="lp-item-info" onclick="event.stopPropagation()"><i class="fas fa-info-circle"></i></div>
+    </div>`;
+  }).join('');
+}
+function addCity(cid){
+  if(!S.activeCities.includes(cid)){
+    S.activeCities.push(cid);
+  }
+  S.cityFilter=cid;
+  closeLocPopup();
+  renderLocTabs();renderDPList();
+  toast(ALL_CITIES.find(c=>c.id===cid).name+' added');
+}
+
+/* ═══════════════ SLOT MODAL ═══════════════ */
+function openSlotModal(dpId){
+  if(S.userType==='business'){ openBizSlotModal(dpId); return; }
+  const dp=ALL_DPS.find(d=>d.id===dpId);
+  S.sheetDP=dp;
+  S.selSlots=[];S.rangeA=null;S.rangeB=null;
+  document.getElementById('smTitle').textContent=dp.name;
+  // Show range tab only if video+loop
+  document.getElementById('rangeTab').style.display=(S.isVideo&&S.loopOn)?'':'none';
+  document.querySelector('.slot-mode-tabs').style.display=(S.isVideo&&S.loopOn)?'flex':'none';
+  setSlotMode('multi');
+  renderCal();
+  renderSlots();
+  document.getElementById('slotModal').classList.add('open');
+}
+function closeSlotModal(){
+  document.getElementById('slotModal').classList.remove('open');
+}
+
+/* CALENDAR */
+function renderCal(){
+  const m=S.calMonth;
+  const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('calMonth').textContent=`${MONTHS[m.getMonth()]} ${m.getFullYear()}`;
+  const grid=document.getElementById('calGrid');
+  const DNS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  grid.innerHTML=DNS.map(d=>`<div class="cal-dn">${d}</div>`).join('');
+  const first=new Date(m.getFullYear(),m.getMonth(),1).getDay();
+  const total=new Date(m.getFullYear(),m.getMonth()+1,0).getDate();
+  const prevTotal=new Date(m.getFullYear(),m.getMonth(),0).getDate();
+  for(let i=first-1;i>=0;i--) grid.innerHTML+=`<div class="cal-d other">${prevTotal-i}</div>`;
+  const today=new Date();today.setHours(0,0,0,0);
+  for(let d=1;d<=total;d++){
+    const dt=new Date(m.getFullYear(),m.getMonth(),d);
+    const ds=fmtDate(dt);
+    const isPast=dt<today;
+    const isSel=S.sheetDate===ds;
+    const isToday=dt.getTime()===today.getTime();
+    let cls='cal-d';
+    if(isPast) cls+=' past';
+    else if(isSel) cls+=' sel';
+    else if(isToday) cls+=' today';
+    grid.innerHTML+=`<div class="${cls}" onclick="${isPast?'':'selDate(\''+ds+'\')'}">${d}</div>`;
+  }
+  const used=first+total;
+  const rem=used%7===0?0:7-(used%7);
+  for(let i=1;i<=rem;i++) grid.innerHTML+=`<div class="cal-d other">${i}</div>`;
+  document.getElementById('hourLabel').textContent=`${S.sheetHour} hrs`;
+}
+function chMonth(dir){
+  S.calMonth=new Date(S.calMonth.getFullYear(),S.calMonth.getMonth()+dir,1);
+  renderCal();
+}
+function selDate(ds){
+  S.sheetDate=ds;S.selSlots=[];S.rangeA=null;S.rangeB=null;
+  renderCal();renderSlots();
+}
+function cycleHour(){
+  S.sheetHour=(S.sheetHour%23)+1;
+  document.getElementById('hourLabel').textContent=`${S.sheetHour} hrs`;
+  renderSlots();
+}
+function fmtDate(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+
+/* SLOT MODE */
+function setSlotMode(mode){
+  S.slotMode=mode;
+  S.selSlots=[];S.rangeA=null;S.rangeB=null;
+  document.querySelectorAll('.smt').forEach(t=>t.classList.toggle('on',t.dataset.mode===mode));
+  document.getElementById('rangeHint').style.display=mode==='range'?'flex':'none';
+  document.getElementById('slotsHdrSub').textContent=mode==='multi'
+    ?'Tap to select multiple'
+    :'Tap first slot, then last slot';
+  updateSaveBtn();
+  renderSlots();
+}
+
+/* RENDER SLOTS */
+function renderSlots(){
+  const grid=document.getElementById('slotsGrid');
+  const busy=BUSY_SLOTS[S.sheetDate]||[];
+  // Compute range fill indices
+  let rangeLo=-1,rangeHi=-1;
+  if(S.slotMode==='range'&&S.rangeA!==null&&S.rangeB!==null){
+    rangeLo=Math.min(S.rangeA,S.rangeB);
+    rangeHi=Math.max(S.rangeA,S.rangeB);
+  }
+  grid.innerHTML='';
+  SLOT_LIST.forEach((slot,idx)=>{
+    const isBusy=busy.includes(slot);
+    let cls='si';
+    if(isBusy) cls+=' busy';
+    else if(S.slotMode==='multi'&&S.selSlots.includes(idx)) cls+=' sel';
+    else if(S.slotMode==='range'){
+      if(S.rangeA!==null&&S.rangeB===null&&S.rangeA===idx) cls+=' range-start-only';
+      else if(rangeLo>=0){
+        if(idx===rangeLo||idx===rangeHi) cls+=' range-end';
+        else if(idx>rangeLo&&idx<rangeHi) cls+=' range-mid';
+      }
+    }
+    const div=document.createElement('div');
+    div.className=cls;
+    div.innerHTML=slot.replace('-','<br>');
+    if(!isBusy) div.onclick=()=>handleSlotClick(idx);
+    grid.appendChild(div);
+  });
+  updateSaveBtn();
+}
+
+function handleSlotClick(idx){
+  if(S.slotMode==='multi'){
+    const pos=S.selSlots.indexOf(idx);
+    if(pos>-1) S.selSlots.splice(pos,1);
+    else S.selSlots.push(idx);
+  } else if(S.slotMode==='range'){
+    if(S.rangeA===null){ S.rangeA=idx;S.rangeB=null; }
+    else if(S.rangeB===null){ S.rangeB=idx; }
+    else { S.rangeA=idx;S.rangeB=null; }
+  }
+  renderSlots();
+}
+
+function updateSaveBtn(){
+  const btn=document.getElementById('saveSlotBtn');
+  let count=0;
+  if(S.slotMode==='multi') count=S.selSlots.length;
+  else if(S.slotMode==='range'&&S.rangeA!==null&&S.rangeB!==null)
+    count=Math.abs(S.rangeB-S.rangeA)+1;
+  if(count>0){btn.disabled=false;btn.textContent=`Save ${count} Slot${count>1?'s':''}`;}
+  else{btn.disabled=true;btn.textContent=count===0&&S.slotMode==='range'&&S.rangeA!==null?'Now tap end slot':'Select slots first';}
+}
+
+function saveSlot(){
+  if(!S.sheetDP) return;
+  let indices=[];
+  if(S.slotMode==='multi') indices=[...S.selSlots];
+  else if(S.slotMode==='range'&&S.rangeA!==null&&S.rangeB!==null){
+    const lo=Math.min(S.rangeA,S.rangeB),hi=Math.max(S.rangeA,S.rangeB);
+    for(let i=lo;i<=hi;i++) indices.push(i);
+  }
+  if(!indices.length) return;
+  if(!S.slots[S.sheetDP.id]) S.slots[S.sheetDP.id]=[];
+  indices.forEach(i=>{
+    const slot=SLOT_LIST[i];
+    if(!S.slots[S.sheetDP.id].find(x=>x.time===slot&&x.date===S.sheetDate))
+      S.slots[S.sheetDP.id].push({time:slot,date:S.sheetDate});
+  });
+  closeSlotModal();
+  S.checked.add(S.sheetDP.id);   // auto-check on slot save
+  renderLocTabs();renderDPList();
+  toast(`${indices.length} slot${indices.length>1?'s':''} saved`);
+}
+
+/* ═══════════════ S3 REVIEW ═══════════════ */
+function buildReview(){
+  document.getElementById('rvName').textContent=S.media.label;
+  document.getElementById('rvIcon').innerHTML=`<i class="fas ${S.media.icon}"></i>`;
+  const booked=ALL_DPS.filter(d=>S.checked.has(d.id));
+  const totalSlots=booked.reduce((a,d)=>a+(S.slots[d.id]||[]).length,0);
+  document.getElementById('rvDPs').textContent=booked.length;
+  document.getElementById('rvSlots').textContent=totalSlots;
+  const rows=document.getElementById('rvRows');
+  if(!booked.length){rows.innerHTML=`<div style="padding:14px;font-size:13px;color:var(--muted)">No display points selected.</div>`;return;}
+  rows.innerHTML=booked.map(dp=>`
+    <div class="rv-row">
+      <div class="rv-dp-icon"><i class="fas fa-tv"></i></div>
+      <div style="flex:1;min-width:0">
+        <div class="rv-dp-name">${dp.name}</div>
+        <div class="rv-dp-sub">${dp.cityName}</div>
+        <div class="rv-chips">${(S.slots[dp.id]||[]).length
+          ? (S.slots[dp.id]||[]).map(s=>`<div class="rv-chip">${s.time}</div>`).join('')
+          : `<div style="font-size:11px;color:var(--muted);font-style:italic">No slots booked</div>`
+        }</div>
+      </div>
+    </div>`).join('');
+}
+
+/* ═══════════════ S4 PAYMENT ═══════════════ */
+function buildPayment(){
+  const booked=ALL_DPS.filter(d=>S.checked.has(d.id));
+  const totalSlots=booked.reduce((a,d)=>a+(S.slots[d.id]||[]).length,0);
+  const total=(totalSlots*RATE).toFixed(2);
+  document.getElementById('payDPs').textContent=booked.length;
+  document.getElementById('paySlots').textContent=totalSlots;
+  document.getElementById('paySumDPs').textContent=booked.length;
+  document.getElementById('paySumSlots').textContent=totalSlots;
+  document.getElementById('payTotal').textContent=`€${total}`;
+  document.getElementById('payBtnAmt').textContent=`€${total}`;
+}
+
+/* ═══════════════ TOAST ═══════════════ */
+function toast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toastTxt').textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+/* ═══════════════ RESET ═══════════════ */
+function resetAll(){
+  S.step=1;S.slots={};S.checked=new Set();S.selSlots=[];S.rangeA=null;S.rangeB=null;
+  S.cityFilter='selected';S.isVideo=false;S.loopOn=false;
+  S.userType='individual';
+  S.media={label:'Image AD',icon:'fa-image'};
+  document.querySelectorAll('.mc').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('.mc')[1].classList.add('on');
+  document.getElementById('videoOpts').classList.remove('show');
+  document.getElementById('loopToggle').classList.remove('on');
+  document.getElementById('utIndividual').classList.add('on');
+  document.getElementById('utBusiness').classList.remove('on');
+  boot();
+}
+
+/* ═══════════════ BUSINESS SLOT MODAL ═══════════════ */
+const RECUR_LABELS={daily:'Daily (every day)',weekly:'Every week, same day',monthly:'Every month, same date','3months':'Every day for 3 months',custom:'Pick specific dates'};
+
+function openBizSlotModal(dpId){
+  const dp=ALL_DPS.find(d=>d.id===dpId);
+  S.bizDP=dp;
+  S.bizSelSlots=[];
+  S.bizSelDates=[];
+  S.bizRecur='daily';
+  S.bizHour=11;
+  S.bizConflictMode='partial';
+  S.bizStartDate=null;
+  S.bizStartPickerOpen=false;
+  S.bizStartCalMonth=new Date(2026,2,1);
+  document.getElementById('bizSmTitle').textContent=dp.name;
+  document.querySelectorAll('.rt').forEach(t=>t.classList.toggle('on',t.dataset.recur==='daily'));
+  document.getElementById('bizHourLabel').textContent=`${S.bizHour} hrs`;
+  document.getElementById('bizStartField').classList.remove('set');
+  document.getElementById('bizStartVal').textContent='Tap to choose date';
+  document.getElementById('bizStartVal').className='sdf-val placeholder';
+  document.getElementById('bizStartCalWrap').style.display='none';
+  document.getElementById('bizStartChevron').style.transform='';
+  renderBizSlots();
+  renderBizDateArea();
+  updateBizConflict();
+  document.getElementById('bizSlotModal').classList.add('open');
+}
+function closeBizSlotModal(){
+  document.getElementById('bizSlotModal').classList.remove('open');
+}
+function setRecur(r){
+  S.bizRecur=r;
+  S.bizSelDates=[];
+  document.querySelectorAll('.rt').forEach(t=>t.classList.toggle('on',t.dataset.recur===r));
+  renderBizDateArea();
+  updateBizConflict();
+}
+function bizCycleHour(){
+  S.bizHour=(S.bizHour%23)+1;
+  document.getElementById('bizHourLabel').textContent=`${S.bizHour} hrs`;
+  updateBizConflict();
+}
+function renderBizSlots(){
+  const grid=document.getElementById('bizSlotsGrid');
+  grid.innerHTML='';
+  SLOT_LIST.forEach((slot,idx)=>{
+    const isBusy=(BUSY_SLOTS['2026-03-19']||[]).includes(slot);
+    const isSel=S.bizSelSlots.includes(idx);
+    let cls='si';
+    if(isBusy) cls+=' busy';
+    else if(isSel) cls+=' sel';
+    const div=document.createElement('div');
+    div.className=cls;
+    div.innerHTML=slot.replace('-','<br>');
+    if(!isBusy) div.onclick=()=>{ toggleBizSlot(idx); };
+    grid.appendChild(div);
+  });
+  updateBizSave();
+}
+function toggleBizSlot(idx){
+  const pos=S.bizSelSlots.indexOf(idx);
+  if(pos>-1) S.bizSelSlots.splice(pos,1);
+  else S.bizSelSlots.push(idx);
+  renderBizSlots();
+  updateBizConflict();
+}
+function genRecurDates(type){
+  const base = S.bizStartDate ? new Date(S.bizStartDate+'T00:00:00') : new Date(2026,2,19);
+  const dates=[];
+  if(type==='daily'){
+    for(let i=0;i<30;i++){const d=new Date(base);d.setDate(base.getDate()+i);dates.push(fmtDate(d));}
+  } else if(type==='weekly'){
+    for(let i=0;i<12;i++){const d=new Date(base);d.setDate(base.getDate()+i*7);dates.push(fmtDate(d));}
+  } else if(type==='monthly'){
+    for(let i=0;i<12;i++){const d=new Date(base);d.setMonth(base.getMonth()+i);dates.push(fmtDate(d));}
+  } else if(type==='3months'){
+    for(let i=0;i<90;i++){const d=new Date(base);d.setDate(base.getDate()+i);dates.push(fmtDate(d));}
+  }
+  return dates;
+}
+
+/* START DATE PICKER */
+function toggleBizStartCal(){
+  S.bizStartPickerOpen=!S.bizStartPickerOpen;
+  const wrap=document.getElementById('bizStartCalWrap');
+  const chevron=document.getElementById('bizStartChevron');
+  if(S.bizStartPickerOpen){
+    wrap.style.display='block';
+    wrap.innerHTML=renderStartCalHTML();
+    chevron.style.transform='rotate(180deg)';
+  } else {
+    wrap.style.display='none';
+    chevron.style.transform='';
+  }
+}
+function renderStartCalHTML(){
+  const m=S.bizStartCalMonth;
+  const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const DNS=['Su','Mo','Tu','We','Th','Fr','Sa'];
+  const first=new Date(m.getFullYear(),m.getMonth(),1).getDay();
+  const total=new Date(m.getFullYear(),m.getMonth()+1,0).getDate();
+  const prevTotal=new Date(m.getFullYear(),m.getMonth(),0).getDate();
+  const today=new Date(2026,2,19);today.setHours(0,0,0,0);
+  let html=`<div class="start-cal-wrap">
+    <div class="cal-nav">
+      <div class="cal-nav-btn" onclick="startCalChMonth(-1)"><i class="fas fa-chevron-left"></i></div>
+      <div class="cal-month">${MONTHS[m.getMonth()]} ${m.getFullYear()}</div>
+      <div class="cal-nav-btn" onclick="startCalChMonth(1)"><i class="fas fa-chevron-right"></i></div>
+    </div>
+    <div class="cal-grid">${DNS.map(d=>`<div class="cal-dn">${d}</div>`).join('')}`;
+  for(let i=first-1;i>=0;i--) html+=`<div class="cal-d other">${prevTotal-i}</div>`;
+  for(let d=1;d<=total;d++){
+    const dt=new Date(m.getFullYear(),m.getMonth(),d);
+    const ds=fmtDate(dt);
+    const isPast=dt<today;
+    const isSel=S.bizStartDate===ds;
+    let cls='cal-d';
+    if(isPast) cls+=' past';
+    else if(isSel) cls+=' sel';
+    else if(dt.getTime()===today.getTime()) cls+=' today';
+    html+=`<div class="${cls}" onclick="${isPast?'':'pickBizStartDate(\''+ds+'\')'}">${d}</div>`;
+  }
+  const used=first+total;const rem=used%7===0?0:7-(used%7);
+  for(let i=1;i<=rem;i++) html+=`<div class="cal-d other">${i}</div>`;
+  html+=`</div></div>`;
+  return html;
+}
+function startCalChMonth(dir){
+  S.bizStartCalMonth=new Date(S.bizStartCalMonth.getFullYear(),S.bizStartCalMonth.getMonth()+dir,1);
+  document.getElementById('bizStartCalWrap').innerHTML=renderStartCalHTML();
+}
+function pickBizStartDate(ds){
+  S.bizStartDate=ds;
+  S.bizStartPickerOpen=false;
+  // Update field display
+  const field=document.getElementById('bizStartField');
+  const val=document.getElementById('bizStartVal');
+  const chevron=document.getElementById('bizStartChevron');
+  field.classList.add('set');
+  val.textContent=fmtDateNice(ds)+' '+new Date(ds+'T00:00:00').getFullYear();
+  val.className='sdf-val';
+  chevron.style.transform='';
+  document.getElementById('bizStartCalWrap').style.display='none';
+  // Refresh date area and conflicts with new start
+  S.bizSelDates=[];
+  renderBizDateArea();
+  updateBizConflict();
+}
+function renderBizDateArea(){
+  const area=document.getElementById('bizDateArea');
+  if(S.bizRecur==='custom'){
+    area.innerHTML=renderBizCalHTML();
+  } else if(!S.bizStartDate){
+    area.innerHTML=`<div style="background:var(--bg);border-radius:12px;padding:12px 13px;margin-bottom:14px;border:1px dashed var(--border);display:flex;align-items:center;gap:9px">
+      <i class="fas fa-calendar-alt" style="color:var(--muted);font-size:14px"></i>
+      <span style="font-size:13px;color:var(--muted)">Choose a start date above to preview your schedule</span>
+    </div>`;
+  } else {
+    const dates=genRecurDates(S.bizRecur);
+    const label=RECUR_LABELS[S.bizRecur];
+    area.innerHTML=`
+      <div style="background:var(--bg);border-radius:12px;padding:12px 13px;margin-bottom:14px;border:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <i class="fas fa-calendar-alt" style="color:var(--blue);font-size:13px"></i>
+          <span style="font-size:13px;font-weight:600;color:var(--ink)">${label}</span>
+        </div>
+        <div style="font-size:12px;color:var(--muted)">${dates.length} date${dates.length>1?'s':''} · ${fmtDateNice(dates[0])} → ${fmtDateNice(dates[dates.length-1])}</div>
+      </div>`;
+  }
+}
+function fmtDateNice(ds){
+  const d=new Date(ds+'T00:00:00');
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+function renderBizCalHTML(){
+  const m=S.bizCalMonth;
+  const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const DNS=['Su','Mo','Tu','We','Th','Fr','Sa'];
+  const first=new Date(m.getFullYear(),m.getMonth(),1).getDay();
+  const total=new Date(m.getFullYear(),m.getMonth()+1,0).getDate();
+  const prevTotal=new Date(m.getFullYear(),m.getMonth(),0).getDate();
+  const today=new Date(2026,2,19);today.setHours(0,0,0,0);
+  let html=`<div style="margin-bottom:14px">
+    <div class="cal-nav">
+      <div class="cal-nav-btn" onclick="bizChMonth(-1)"><i class="fas fa-chevron-left"></i></div>
+      <div class="cal-month">${MONTHS[m.getMonth()]} ${m.getFullYear()}</div>
+      <div class="cal-nav-btn" onclick="bizChMonth(1)"><i class="fas fa-chevron-right"></i></div>
+    </div>
+    <div class="md-grid">${DNS.map(d=>`<div class="cal-dn">${d}</div>`).join('')}`;
+  for(let i=first-1;i>=0;i--) html+=`<div class="md-d other">${prevTotal-i}</div>`;
+  for(let d=1;d<=total;d++){
+    const dt=new Date(m.getFullYear(),m.getMonth(),d);
+    const ds=fmtDate(dt);
+    const isPast=dt<today;
+    const isSel=S.bizSelDates.includes(ds);
+    const hasConflict=checkDateConflict(ds);
+    let cls='md-d';
+    if(isPast) cls+=' past';
+    else if(isSel) cls+=' sel-biz';
+    else if(dt.getTime()===today.getTime()) cls+=' today-biz';
+    if(hasConflict&&!isPast) cls+=' has-conflict';
+    html+=`<div class="${cls}" onclick="${isPast?'':'bizSelDate(\''+ds+'\')'}">${d}</div>`;
+  }
+  const used=first+total;const rem=used%7===0?0:7-(used%7);
+  for(let i=1;i<=rem;i++) html+=`<div class="md-d other">${i}</div>`;
+  const selCount=S.bizSelDates.length;
+  html+=`</div><div style="font-size:12px;color:var(--muted);margin-top:6px">${selCount>0?`${selCount} date${selCount>1?'s':''} selected`:'Tap dates to select — multiple allowed'}</div></div>`;
+  return html;
+}
+function bizChMonth(dir){
+  S.bizCalMonth=new Date(S.bizCalMonth.getFullYear(),S.bizCalMonth.getMonth()+dir,1);
+  renderBizDateArea();
+}
+function bizSelDate(ds){
+  const pos=S.bizSelDates.indexOf(ds);
+  if(pos>-1) S.bizSelDates.splice(pos,1);
+  else S.bizSelDates.push(ds);
+  renderBizDateArea();
+  updateBizConflict();
+}
+function checkDateConflict(ds){
+  if(!S.bizSelSlots.length) return false;
+  const busy=BUSY_SLOTS[ds]||[];
+  if(!busy.length) return false;
+  return S.bizSelSlots.some(idx=>busy.includes(SLOT_LIST[idx]));
+}
+function getActiveDates(){
+  if(S.bizRecur==='custom') return S.bizSelDates;
+  return genRecurDates(S.bizRecur);
+}
+function updateBizSave(){
+  const saveBtn=document.getElementById('bizSaveBtn');
+  const dates=getActiveDates();
+  const slotCount=S.bizSelSlots.length;
+  if(!slotCount){saveBtn.disabled=true;saveBtn.textContent='Select slots first';return;}
+  if(S.bizRecur!=='custom'&&!S.bizStartDate){saveBtn.disabled=true;saveBtn.textContent='Choose a start date first';return;}
+  if(!dates.length&&S.bizRecur==='custom'){saveBtn.disabled=true;saveBtn.textContent='Pick at least one date';return;}
+  saveBtn.disabled=false;
+}
+function updateBizConflict(){
+  const wrap=document.getElementById('bizConflictWrap');
+  const strip=document.getElementById('bizSummaryStrip');
+  const saveBtn=document.getElementById('bizSaveBtn');
+  const dates=getActiveDates();
+  const slotCount=S.bizSelSlots.length;
+  if(!slotCount||(S.bizRecur!=='custom'&&!S.bizStartDate)||!dates.length){
+    wrap.style.display='none';strip.style.display='none';
+    saveBtn.disabled=true;
+    if(!slotCount) saveBtn.textContent='Select slots first';
+    else if(S.bizRecur!=='custom'&&!S.bizStartDate) saveBtn.textContent='Choose a start date first';
+    else saveBtn.textContent='Pick at least one date';
+    return;
+  }
+  let okDates=0,partialDates=0,fullConflicts=0;
+  const conflictRows=[];
+  dates.forEach(ds=>{
+    const busy=BUSY_SLOTS[ds]||[];
+    if(!busy.length){okDates++;return;}
+    const conflicting=S.bizSelSlots.filter(idx=>busy.includes(SLOT_LIST[idx]));
+    if(!conflicting.length){okDates++;return;}
+    if(conflicting.length===slotCount){fullConflicts++;conflictRows.push({ds,available:0,total:slotCount});}
+    else{partialDates++;conflictRows.push({ds,available:slotCount-conflicting.length,total:slotCount});}
+  });
+  document.getElementById('bsSumDates').textContent=dates.length;
+  document.getElementById('bsSumSlots').textContent=slotCount;
+  document.getElementById('bsSumConflicts').textContent=partialDates+fullConflicts;
+  strip.style.display='grid';
+  if(!conflictRows.length){
+    wrap.style.display='none';
+    saveBtn.disabled=false;
+    saveBtn.textContent=`Book ${slotCount} slot${slotCount>1?'s':''} × ${dates.length} date${dates.length>1?'s':''}`;
+    return;
+  }
+  const shown=conflictRows.slice(0,4);const more=conflictRows.length-4;
+  wrap.innerHTML=`
+    <div class="conflict-preview">
+      <div class="cp-title"><i class="fas fa-exclamation-triangle"></i> Slot Conflicts Found</div>
+      ${shown.map(r=>`
+        <div class="cp-row">
+          <span class="cp-date">${fmtDateNice(r.ds)}</span>
+          ${r.available===0?`<span class="cp-stat conflict">All slots taken</span>`:`<span class="cp-stat partial">${r.available}/${r.total} available</span>`}
+        </div>`).join('')}
+      ${more>0?`<div style="font-size:11px;color:var(--muted);margin-top:6px">+${more} more dates with conflicts</div>`:''}
+      <div style="font-size:12px;color:var(--ink2);margin-top:10px;margin-bottom:6px;font-weight:600">How to handle conflicts?</div>
+      <div class="cp-resolve">
+        <div class="cp-res-btn skip" onclick="setBizConflictMode('skip')" id="crmSkip">
+          <i class="fas fa-forward" style="display:block;margin-bottom:3px"></i>Skip conflict dates
+        </div>
+        <div class="cp-res-btn partial-ok on" onclick="setBizConflictMode('partial')" id="crmPartial">
+          <i class="fas fa-puzzle-piece" style="display:block;margin-bottom:3px"></i>Book available slots
+        </div>
+      </div>
+    </div>`;
+  wrap.style.display='block';
+  saveBtn.disabled=false;
+  saveBtn.textContent=`Confirm — pay for confirmed only`;
+}
+function setBizConflictMode(mode){
+  S.bizConflictMode=mode;
+  const skipBtn=document.getElementById('crmSkip');
+  const partBtn=document.getElementById('crmPartial');
+  if(skipBtn&&partBtn){
+    skipBtn.style.background=mode==='skip'?'var(--bg)':'var(--white)';
+    skipBtn.style.fontWeight=mode==='skip'?'700':'600';
+    partBtn.style.background=mode==='partial'?'#FFF7ED':'var(--white)';
+    partBtn.style.fontWeight=mode==='partial'?'700':'600';
+  }
+  toast(mode==='skip'?'Will skip conflict dates':'Will book available slots on conflict dates');
+}
+function saveBizSlot(){
+  if(!S.bizDP||!S.bizSelSlots.length) return;
+  const dates=getActiveDates();
+  if(!dates.length) return;
+  const mode=S.bizConflictMode||'partial';
+  let booked=0;
+  dates.forEach(ds=>{
+    const busy=BUSY_SLOTS[ds]||[];
+    const slots=S.bizSelSlots
+      .filter(idx=>!busy.includes(SLOT_LIST[idx]))
+      .map(idx=>({time:SLOT_LIST[idx],date:ds}));
+    if(mode==='skip'&&busy.length&&S.bizSelSlots.some(idx=>busy.includes(SLOT_LIST[idx]))) return;
+    if(slots.length){
+      if(!S.slots[S.bizDP.id]) S.slots[S.bizDP.id]=[];
+      slots.forEach(sl=>{
+        if(!S.slots[S.bizDP.id].find(x=>x.time===sl.time&&x.date===sl.date))
+          S.slots[S.bizDP.id].push(sl);
+      });
+      booked+=slots.length;
+    }
+  });
+  S.checked.add(S.bizDP.id);
+  closeBizSlotModal();
+  renderLocTabs();renderDPList();
+  toast(`${booked} slot${booked>1?'s':''} scheduled`);
+}
+
+boot();
+</script>
+</body>
+</html>
