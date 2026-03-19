@@ -391,6 +391,33 @@ body{font-family:'Inter',sans-serif;background:#1a1f2e;min-height:100vh;display:
 .sdf-val{font-size:14px;font-weight:700;color:var(--ink);margin-top:2px}
 .sdf-val.placeholder{color:var(--muted);font-weight:400;font-size:13px}
 .start-cal-wrap{background:var(--white);border:1.5px solid var(--blue);border-radius:14px;padding:12px 12px 8px;margin-bottom:14px}
+
+/* end date field — reuses start-date-field but with green accent */
+.end-date-field{display:flex;align-items:center;gap:10px;background:var(--white);border:1.5px solid var(--border);border-radius:13px;padding:11px 14px;cursor:pointer;margin-bottom:6px;transition:border-color .15s}
+.end-date-field.set{border-color:var(--green);background:var(--green-lt)}
+.end-date-field.set .edf-icon{background:var(--green);color:#fff}
+.edf-icon{width:32px;height:32px;border-radius:9px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--muted);flex-shrink:0;transition:all .15s}
+
+/* month picker */
+.month-picker-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:6px}
+.mp-cell{text-align:center;padding:9px 4px;border-radius:9px;font-size:12px;font-weight:500;color:var(--ink);cursor:pointer;border:1.5px solid var(--border);background:var(--white);transition:all .12s}
+.mp-cell.sel-start{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
+.mp-cell.sel-end{background:var(--green);border-color:var(--green);color:#fff;font-weight:700}
+.mp-cell.in-range{background:var(--blue-lt);border-color:#BFDBFE;color:var(--blue)}
+.mp-cell.past-month{color:#D1D5DB;pointer-events:none}
+.mp-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+
+/* weekday selector */
+.weekday-row{display:flex;gap:5px;margin-bottom:14px}
+.wd-btn{flex:1;text-align:center;padding:8px 0;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--muted);transition:all .12s}
+.wd-btn.on{background:var(--blue);border-color:var(--blue);color:#fff}
+
+/* conflict buttons — new style */
+.cp-res-btn{flex:1;padding:10px 8px;border-radius:11px;font-size:11px;font-weight:600;cursor:pointer;text-align:center;border:1.5px solid;transition:all .15s;line-height:1.4}
+.cp-res-btn.move{background:var(--white);border-color:var(--border);color:var(--ink2)}
+.cp-res-btn.move.on{background:var(--blue-lt);border-color:var(--blue);color:var(--blue)}
+.cp-res-btn.remove{background:var(--white);border-color:var(--border);color:var(--ink2)}
+.cp-res-btn.remove.on{background:var(--red-lt);border-color:var(--red);color:var(--red)}
 </style>
 </head>
 <body>
@@ -672,13 +699,15 @@ body{font-family:'Inter',sans-serif;background:#1a1f2e;min-height:100vh;display:
         </div>
         <div id="bizStartCalWrap" style="display:none"></div>
 
+        <!-- End date / extra range fields — rendered dynamically -->
+        <div id="bizRangeFields"></div>
+
         <div class="lbl" style="margin-bottom:8px">Recurrence</div>
         <div class="recur-tabs">
           <div class="rt on" data-recur="daily"   onclick="setRecur('daily')">Daily</div>
           <div class="rt"    data-recur="weekly"  onclick="setRecur('weekly')">Weekly</div>
           <div class="rt"    data-recur="monthly" onclick="setRecur('monthly')">Monthly</div>
           <div class="rt"    data-recur="3months" onclick="setRecur('3months')">3 Mo</div>
-          <div class="rt"    data-recur="custom"  onclick="setRecur('custom')">Custom</div>
         </div>
 
         <div class="hour-drop" onclick="bizCycleHour()">
@@ -1278,47 +1307,78 @@ function resetAll(){
 }
 
 /* ═══════════════ BUSINESS SLOT MODAL ═══════════════ */
-const RECUR_LABELS={daily:'Daily (every day)',weekly:'Every week, same day',monthly:'Every month, same date','3months':'Every day for 3 months',custom:'Pick specific dates'};
+const RECUR_LABELS={daily:'Daily',weekly:'Weekly',monthly:'Monthly','3months':'3 Months'};
+const MONTHS_SHORT=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTHS_FULL=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS_SHORT=['Su','Mo','Tu','We','Th','Fr','Sa'];
+const DAYS_FULL=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
 function openBizSlotModal(dpId){
   const dp=ALL_DPS.find(d=>d.id===dpId);
   S.bizDP=dp;
   S.bizSelSlots=[];
-  S.bizSelDates=[];
   S.bizRecur='daily';
   S.bizHour=11;
-  S.bizConflictMode='partial';
+  S.bizConflictMode='move';
   S.bizStartDate=null;
+  S.bizEndDate=null;
   S.bizStartPickerOpen=false;
+  S.bizEndPickerOpen=false;
   S.bizStartCalMonth=new Date(2026,2,1);
+  S.bizEndCalMonth=new Date(2026,2,1);
+  S.bizStartMonthYear=2026;
+  S.bizEndMonthYear=2026;
+  S.bizStartMonth=null; // 0-11
+  S.bizEndMonth=null;
+  S.bizWeekday=1; // Monday default
   document.getElementById('bizSmTitle').textContent=dp.name;
   document.querySelectorAll('.rt').forEach(t=>t.classList.toggle('on',t.dataset.recur==='daily'));
   document.getElementById('bizHourLabel').textContent=`${S.bizHour} hrs`;
-  document.getElementById('bizStartField').classList.remove('set');
-  document.getElementById('bizStartVal').textContent='Tap to choose date';
-  document.getElementById('bizStartVal').className='sdf-val placeholder';
+  resetBizStartField();
   document.getElementById('bizStartCalWrap').style.display='none';
-  document.getElementById('bizStartChevron').style.transform='';
+  document.getElementById('bizRangeFields').innerHTML='';
   renderBizSlots();
   renderBizDateArea();
   updateBizConflict();
   document.getElementById('bizSlotModal').classList.add('open');
 }
+
+function resetBizStartField(){
+  document.getElementById('bizStartField').classList.remove('set');
+  const v=document.getElementById('bizStartVal');
+  v.textContent='Tap to choose date';
+  v.className='sdf-val placeholder';
+  document.getElementById('bizStartChevron').style.transform='';
+  S.bizStartDate=null;
+  S.bizEndDate=null;
+  S.bizStartMonth=null;
+  S.bizEndMonth=null;
+}
+
 function closeBizSlotModal(){
   document.getElementById('bizSlotModal').classList.remove('open');
 }
+
 function setRecur(r){
   S.bizRecur=r;
-  S.bizSelDates=[];
   document.querySelectorAll('.rt').forEach(t=>t.classList.toggle('on',t.dataset.recur===r));
+  resetBizStartField();
+  document.getElementById('bizStartCalWrap').style.display='none';
+  document.getElementById('bizRangeFields').innerHTML='';
+  // Update start field label
+  const lbl = r==='monthly'?'Start month':r==='3months'?'Start date (fixed 90 days)':'Start date';
+  document.querySelector('#bizStartField .sdf-lbl').textContent = lbl.toUpperCase();
+  document.getElementById('bizStartVal').textContent = r==='monthly'?'Tap to choose month':'Tap to choose date';
   renderBizDateArea();
   updateBizConflict();
 }
+
 function bizCycleHour(){
   S.bizHour=(S.bizHour%23)+1;
   document.getElementById('bizHourLabel').textContent=`${S.bizHour} hrs`;
   updateBizConflict();
 }
+
 function renderBizSlots(){
   const grid=document.getElementById('bizSlotsGrid');
   grid.innerHTML='';
@@ -1334,48 +1394,90 @@ function renderBizSlots(){
     if(!isBusy) div.onclick=()=>{ toggleBizSlot(idx); };
     grid.appendChild(div);
   });
-  updateBizSave();
+  updateBizConflict();
 }
+
 function toggleBizSlot(idx){
   const pos=S.bizSelSlots.indexOf(idx);
   if(pos>-1) S.bizSelSlots.splice(pos,1);
   else S.bizSelSlots.push(idx);
   renderBizSlots();
-  updateBizConflict();
 }
+
+/* ── DATE GENERATION ── */
 function genRecurDates(type){
-  const base = S.bizStartDate ? new Date(S.bizStartDate+'T00:00:00') : new Date(2026,2,19);
   const dates=[];
   if(type==='daily'){
-    for(let i=0;i<30;i++){const d=new Date(base);d.setDate(base.getDate()+i);dates.push(fmtDate(d));}
+    if(!S.bizStartDate||!S.bizEndDate) return dates;
+    const start=new Date(S.bizStartDate+'T00:00:00');
+    const end=new Date(S.bizEndDate+'T00:00:00');
+    for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1)) dates.push(fmtDate(new Date(d)));
   } else if(type==='weekly'){
-    for(let i=0;i<12;i++){const d=new Date(base);d.setDate(base.getDate()+i*7);dates.push(fmtDate(d));}
+    if(!S.bizStartDate||!S.bizEndDate) return dates;
+    const start=new Date(S.bizStartDate+'T00:00:00');
+    const end=new Date(S.bizEndDate+'T00:00:00');
+    // find first occurrence of chosen weekday >= start
+    let cur=new Date(start);
+    while(cur.getDay()!==S.bizWeekday&&cur<=end) cur.setDate(cur.getDate()+1);
+    while(cur<=end){ dates.push(fmtDate(new Date(cur))); cur.setDate(cur.getDate()+7); }
   } else if(type==='monthly'){
-    for(let i=0;i<12;i++){const d=new Date(base);d.setMonth(base.getMonth()+i);dates.push(fmtDate(d));}
+    if(S.bizStartMonth===null||S.bizEndMonth===null) return dates;
+    // start month/year to end month/year, pick day=1 of each month
+    let y=S.bizStartMonthYear, m=S.bizStartMonth;
+    const ey=S.bizEndMonthYear, em=S.bizEndMonth;
+    while(y<ey||(y===ey&&m<=em)){
+      dates.push(`${y}-${String(m+1).padStart(2,'0')}-01`);
+      m++; if(m>11){m=0;y++;}
+    }
   } else if(type==='3months'){
+    if(!S.bizStartDate) return dates;
+    const base=new Date(S.bizStartDate+'T00:00:00');
     for(let i=0;i<90;i++){const d=new Date(base);d.setDate(base.getDate()+i);dates.push(fmtDate(d));}
   }
   return dates;
 }
 
-/* START DATE PICKER */
+function getActiveDates(){ return genRecurDates(S.bizRecur); }
+
+/* ── DATE AREA RENDER ── */
+function renderBizDateArea(){
+  const area=document.getElementById('bizDateArea');
+  area.innerHTML=''; // date area now just shows schedule preview after picks
+  const dates=getActiveDates();
+  if(!dates.length) return;
+  area.innerHTML=`
+    <div style="background:var(--bg);border-radius:12px;padding:12px 13px;margin-bottom:14px;border:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <i class="fas fa-calendar-check" style="color:var(--blue);font-size:13px"></i>
+        <span style="font-size:13px;font-weight:600;color:var(--ink)">${RECUR_LABELS[S.bizRecur]} · ${dates.length} date${dates.length!==1?'s':''}</span>
+      </div>
+      <div style="font-size:12px;color:var(--muted)">${fmtDateNice(dates[0])} → ${fmtDateNice(dates[dates.length-1])}</div>
+    </div>`;
+}
+
+function fmtDateNice(ds){
+  const d=new Date(ds+'T00:00:00');
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+
+/* ── START DATE PICKER ── */
 function toggleBizStartCal(){
   S.bizStartPickerOpen=!S.bizStartPickerOpen;
+  if(S.bizEndPickerOpen){ S.bizEndPickerOpen=false; renderEndField(); }
   const wrap=document.getElementById('bizStartCalWrap');
   const chevron=document.getElementById('bizStartChevron');
   if(S.bizStartPickerOpen){
     wrap.style.display='block';
-    wrap.innerHTML=renderStartCalHTML();
+    wrap.innerHTML = S.bizRecur==='monthly' ? renderMonthPickerHTML('start') : renderStartCalHTML();
     chevron.style.transform='rotate(180deg)';
   } else {
     wrap.style.display='none';
     chevron.style.transform='';
   }
 }
+
 function renderStartCalHTML(){
   const m=S.bizStartCalMonth;
-  const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const DNS=['Su','Mo','Tu','We','Th','Fr','Sa'];
   const first=new Date(m.getFullYear(),m.getMonth(),1).getDay();
   const total=new Date(m.getFullYear(),m.getMonth()+1,0).getDate();
   const prevTotal=new Date(m.getFullYear(),m.getMonth(),0).getDate();
@@ -1383,10 +1485,10 @@ function renderStartCalHTML(){
   let html=`<div class="start-cal-wrap">
     <div class="cal-nav">
       <div class="cal-nav-btn" onclick="startCalChMonth(-1)"><i class="fas fa-chevron-left"></i></div>
-      <div class="cal-month">${MONTHS[m.getMonth()]} ${m.getFullYear()}</div>
+      <div class="cal-month">${MONTHS_FULL[m.getMonth()]} ${m.getFullYear()}</div>
       <div class="cal-nav-btn" onclick="startCalChMonth(1)"><i class="fas fa-chevron-right"></i></div>
     </div>
-    <div class="cal-grid">${DNS.map(d=>`<div class="cal-dn">${d}</div>`).join('')}`;
+    <div class="cal-grid">${DAYS_SHORT.map(d=>`<div class="cal-dn">${d}</div>`).join('')}`;
   for(let i=first-1;i>=0;i--) html+=`<div class="cal-d other">${prevTotal-i}</div>`;
   for(let d=1;d<=total;d++){
     const dt=new Date(m.getFullYear(),m.getMonth(),d);
@@ -1399,218 +1501,412 @@ function renderStartCalHTML(){
     else if(dt.getTime()===today.getTime()) cls+=' today';
     html+=`<div class="${cls}" onclick="${isPast?'':'pickBizStartDate(\''+ds+'\')'}">${d}</div>`;
   }
+  const used=first+total; const rem=used%7===0?0:7-(used%7);
+  for(let i=1;i<=rem;i++) html+=`<div class="cal-d other">${i}</div>`;
+  html+=`</div></div>`;
+  return html;
+}
+
+function startCalChMonth(dir){
+  S.bizStartCalMonth=new Date(S.bizStartCalMonth.getFullYear(),S.bizStartCalMonth.getMonth()+dir,1);
+  document.getElementById('bizStartCalWrap').innerHTML=renderStartCalHTML();
+}
+
+function pickBizStartDate(ds){
+  S.bizStartDate=ds;
+  S.bizEndDate=null; // reset end when start changes
+  S.bizStartPickerOpen=false;
+  const field=document.getElementById('bizStartField');
+  const val=document.getElementById('bizStartVal');
+  field.classList.add('set');
+  val.textContent=fmtDateNice(ds);
+  val.className='sdf-val';
+  document.getElementById('bizStartChevron').style.transform='';
+  document.getElementById('bizStartCalWrap').style.display='none';
+  renderRangeFields();
+  renderBizDateArea();
+  updateBizConflict();
+}
+
+/* ── MONTH PICKER ── */
+function renderMonthPickerHTML(which){
+  const yr = which==='start' ? S.bizStartMonthYear : S.bizEndMonthYear;
+  const today=new Date(2026,2,1);
+  let html=`<div class="start-cal-wrap">
+    <div class="mp-nav">
+      <div class="cal-nav-btn" onclick="mpChYear('${which}',-1)"><i class="fas fa-chevron-left"></i></div>
+      <span style="font-size:14px;font-weight:600;color:var(--ink)">${yr}</span>
+      <div class="cal-nav-btn" onclick="mpChYear('${which}',1)"><i class="fas fa-chevron-right"></i></div>
+    </div>
+    <div class="month-picker-grid">`;
+  for(let mi=0;mi<12;mi++){
+    const isPast=yr<2026||(yr===2026&&mi<2);
+    const isSelStart=which==='start'?S.bizStartMonth===mi&&yr===S.bizStartMonthYear : false;
+    const isSelEnd=which==='end'?S.bizEndMonth===mi&&yr===S.bizEndMonthYear : false;
+    const inRange=(S.bizStartMonth!==null&&S.bizEndMonth!==null)&&(
+      (yr===S.bizStartMonthYear&&yr===S.bizEndMonthYear&&mi>S.bizStartMonth&&mi<S.bizEndMonth)||
+      (yr===S.bizStartMonthYear&&yr<S.bizEndMonthYear&&mi>S.bizStartMonth)||
+      (yr===S.bizEndMonthYear&&yr>S.bizStartMonthYear&&mi<S.bizEndMonth)||
+      (yr>S.bizStartMonthYear&&yr<S.bizEndMonthYear)
+    );
+    let cls='mp-cell';
+    if(isPast) cls+=' past-month';
+    else if(isSelStart) cls+=' sel-start';
+    else if(isSelEnd) cls+=' sel-end';
+    else if(inRange) cls+=' in-range';
+    html+=`<div class="${cls}" onclick="${isPast?'':'pickBizMonth(\''+which+'\','+mi+')'}">${MONTHS_SHORT[mi]}</div>`;
+  }
+  html+=`</div></div>`;
+  return html;
+}
+
+function mpChYear(which, dir){
+  if(which==='start') S.bizStartMonthYear+=dir;
+  else S.bizEndMonthYear+=dir;
+  document.getElementById(which==='start'?'bizStartCalWrap':'bizEndCalWrap').innerHTML=renderMonthPickerHTML(which);
+}
+
+function pickBizMonth(which, mi){
+  if(which==='start'){
+    S.bizStartMonth=mi;
+    S.bizEndMonth=null;
+    S.bizStartPickerOpen=false;
+    const val=document.getElementById('bizStartVal');
+    val.textContent=`${MONTHS_FULL[mi]} ${S.bizStartMonthYear}`;
+    val.className='sdf-val';
+    document.getElementById('bizStartField').classList.add('set');
+    document.getElementById('bizStartCalWrap').style.display='none';
+    document.getElementById('bizStartChevron').style.transform='';
+    renderRangeFields();
+  } else {
+    // validate end >= start
+    if(mi<S.bizStartMonth&&S.bizEndMonthYear===S.bizStartMonthYear){
+      toast('End month must be after start month'); return;
+    }
+    S.bizEndMonth=mi;
+    S.bizEndPickerOpen=false;
+    renderEndField();
+    document.getElementById('bizEndCalWrap').style.display='none';
+  }
+  renderBizDateArea();
+  updateBizConflict();
+}
+
+/* ── END DATE / RANGE FIELDS ── */
+function renderRangeFields(){
+  const wrap=document.getElementById('bizRangeFields');
+  if(S.bizRecur==='3months'){
+    wrap.innerHTML=''; // no end date needed for 3months
+    return;
+  }
+  if(S.bizRecur==='weekly'){
+    // show weekday selector then end date
+    const wdHTML=`
+      <div class="lbl" style="margin-bottom:8px">Day of Week</div>
+      <div class="weekday-row" id="wdRow">
+        ${DAYS_SHORT.map((d,i)=>`<div class="wd-btn${S.bizWeekday===i?' on':''}" onclick="pickWeekday(${i})">${d}</div>`).join('')}
+      </div>
+      ${endDateFieldHTML()}`;
+    wrap.innerHTML=wdHTML;
+  } else if(S.bizRecur==='monthly'){
+    wrap.innerHTML=endMonthFieldHTML();
+  } else {
+    wrap.innerHTML=endDateFieldHTML();
+  }
+}
+
+function endDateFieldHTML(){
+  const set=!!S.bizEndDate;
+  return `
+    <div class="lbl" style="margin-bottom:8px">End Date</div>
+    <div class="end-date-field${set?' set':''}" id="bizEndField" onclick="toggleBizEndCal()">
+      <div class="edf-icon"><i class="fas fa-calendar-check"></i></div>
+      <div class="sdf-body">
+        <div class="sdf-lbl">Campaign ends</div>
+        <div class="sdf-val${set?'':' placeholder'}" id="bizEndVal">${set?fmtDateNice(S.bizEndDate):'Tap to choose date'}</div>
+      </div>
+      <i class="fas fa-chevron-down" id="bizEndChevron" style="color:var(--muted);font-size:11px;transition:transform .2s"></i>
+    </div>
+    <div id="bizEndCalWrap" style="display:none"></div>`;
+}
+
+function endMonthFieldHTML(){
+  const set=S.bizEndMonth!==null;
+  return `
+    <div class="lbl" style="margin-bottom:8px">End Month</div>
+    <div class="end-date-field${set?' set':''}" id="bizEndField" onclick="toggleBizEndCal()">
+      <div class="edf-icon"><i class="fas fa-calendar-check"></i></div>
+      <div class="sdf-body">
+        <div class="sdf-lbl">Campaign ends</div>
+        <div class="sdf-val${set?'':' placeholder'}" id="bizEndVal">${set?`${MONTHS_FULL[S.bizEndMonth]} ${S.bizEndMonthYear}`:'Tap to choose month'}</div>
+      </div>
+      <i class="fas fa-chevron-down" id="bizEndChevron" style="color:var(--muted);font-size:11px;transition:transform .2s"></i>
+    </div>
+    <div id="bizEndCalWrap" style="display:none"></div>`;
+}
+
+function renderEndField(){
+  // re-render just the end field content without disturbing weekday row
+  const wrap=document.getElementById('bizRangeFields');
+  if(!wrap) return;
+  if(S.bizRecur==='monthly'){
+    // re-render whole thing
+    wrap.innerHTML=endMonthFieldHTML();
+  } else if(S.bizRecur==='weekly'){
+    // replace everything after weekday row
+    const wdRow=document.getElementById('wdRow');
+    if(wdRow){
+      // remove siblings after wdRow
+      let el=wdRow.nextSibling;
+      while(el){const n=el.nextSibling;el.parentNode.removeChild(el);el=n;}
+      // re-append end date
+      const tmp=document.createElement('div');
+      tmp.innerHTML=endDateFieldHTML();
+      while(tmp.firstChild) wrap.appendChild(tmp.firstChild);
+    }
+  } else {
+    wrap.innerHTML=endDateFieldHTML();
+  }
+}
+
+function toggleBizEndCal(){
+  S.bizEndPickerOpen=!S.bizEndPickerOpen;
+  if(S.bizStartPickerOpen){ S.bizStartPickerOpen=false; document.getElementById('bizStartCalWrap').style.display='none'; }
+  const wrap=document.getElementById('bizEndCalWrap');
+  const chevron=document.getElementById('bizEndChevron');
+  if(!wrap) return;
+  if(S.bizEndPickerOpen){
+    wrap.style.display='block';
+    wrap.innerHTML = S.bizRecur==='monthly' ? renderMonthPickerHTML('end') : renderEndCalHTML();
+    if(chevron) chevron.style.transform='rotate(180deg)';
+  } else {
+    wrap.style.display='none';
+    if(chevron) chevron.style.transform='';
+  }
+}
+
+function renderEndCalHTML(){
+  const startDt=S.bizStartDate?new Date(S.bizStartDate+'T00:00:00'):new Date(2026,2,19);
+  if(!S.bizEndCalMonth||S.bizEndCalMonth<startDt)
+    S.bizEndCalMonth=new Date(startDt.getFullYear(),startDt.getMonth(),1);
+  const m=S.bizEndCalMonth;
+  const first=new Date(m.getFullYear(),m.getMonth(),1).getDay();
+  const total=new Date(m.getFullYear(),m.getMonth()+1,0).getDate();
+  const prevTotal=new Date(m.getFullYear(),m.getMonth(),0).getDate();
+  let html=`<div class="start-cal-wrap" style="border-color:var(--green)">
+    <div class="cal-nav">
+      <div class="cal-nav-btn" onclick="endCalChMonth(-1)"><i class="fas fa-chevron-left"></i></div>
+      <div class="cal-month">${MONTHS_FULL[m.getMonth()]} ${m.getFullYear()}</div>
+      <div class="cal-nav-btn" onclick="endCalChMonth(1)"><i class="fas fa-chevron-right"></i></div>
+    </div>
+    <div class="cal-grid">${DAYS_SHORT.map(d=>`<div class="cal-dn">${d}</div>`).join('')}`;
+  for(let i=first-1;i>=0;i--) html+=`<div class="cal-d other">${prevTotal-i}</div>`;
+  for(let d=1;d<=total;d++){
+    const dt=new Date(m.getFullYear(),m.getMonth(),d);
+    const ds=fmtDate(dt);
+    const tooEarly=dt<=startDt;
+    const isSel=S.bizEndDate===ds;
+    let cls='cal-d';
+    if(tooEarly) cls+=' past';
+    else if(isSel) cls+=' sel';
+    html+=`<div class="${cls}" onclick="${tooEarly?'':'pickBizEndDate(\''+ds+'\')'}">${d}</div>`;
+  }
   const used=first+total;const rem=used%7===0?0:7-(used%7);
   for(let i=1;i<=rem;i++) html+=`<div class="cal-d other">${i}</div>`;
   html+=`</div></div>`;
   return html;
 }
-function startCalChMonth(dir){
-  S.bizStartCalMonth=new Date(S.bizStartCalMonth.getFullYear(),S.bizStartCalMonth.getMonth()+dir,1);
-  document.getElementById('bizStartCalWrap').innerHTML=renderStartCalHTML();
+
+function endCalChMonth(dir){
+  S.bizEndCalMonth=new Date(S.bizEndCalMonth.getFullYear(),S.bizEndCalMonth.getMonth()+dir,1);
+  document.getElementById('bizEndCalWrap').innerHTML=renderEndCalHTML();
 }
-function pickBizStartDate(ds){
-  S.bizStartDate=ds;
-  S.bizStartPickerOpen=false;
-  // Update field display
-  const field=document.getElementById('bizStartField');
-  const val=document.getElementById('bizStartVal');
-  const chevron=document.getElementById('bizStartChevron');
-  field.classList.add('set');
-  val.textContent=fmtDateNice(ds)+' '+new Date(ds+'T00:00:00').getFullYear();
-  val.className='sdf-val';
-  chevron.style.transform='';
-  document.getElementById('bizStartCalWrap').style.display='none';
-  // Refresh date area and conflicts with new start
-  S.bizSelDates=[];
+
+function pickBizEndDate(ds){
+  if(S.bizStartDate&&ds<=S.bizStartDate){toast('End date must be after start date');return;}
+  S.bizEndDate=ds;
+  S.bizEndPickerOpen=false;
+  const val=document.getElementById('bizEndVal');
+  if(val){val.textContent=fmtDateNice(ds);val.className='sdf-val';}
+  const field=document.getElementById('bizEndField');
+  if(field) field.classList.add('set');
+  const chevron=document.getElementById('bizEndChevron');
+  if(chevron) chevron.style.transform='';
+  const wrap=document.getElementById('bizEndCalWrap');
+  if(wrap) wrap.style.display='none';
   renderBizDateArea();
   updateBizConflict();
 }
-function renderBizDateArea(){
-  const area=document.getElementById('bizDateArea');
-  if(S.bizRecur==='custom'){
-    area.innerHTML=renderBizCalHTML();
-  } else if(!S.bizStartDate){
-    area.innerHTML=`<div style="background:var(--bg);border-radius:12px;padding:12px 13px;margin-bottom:14px;border:1px dashed var(--border);display:flex;align-items:center;gap:9px">
-      <i class="fas fa-calendar-alt" style="color:var(--muted);font-size:14px"></i>
-      <span style="font-size:13px;color:var(--muted)">Choose a start date above to preview your schedule</span>
-    </div>`;
-  } else {
-    const dates=genRecurDates(S.bizRecur);
-    const label=RECUR_LABELS[S.bizRecur];
-    area.innerHTML=`
-      <div style="background:var(--bg);border-radius:12px;padding:12px 13px;margin-bottom:14px;border:1px solid var(--border)">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-          <i class="fas fa-calendar-alt" style="color:var(--blue);font-size:13px"></i>
-          <span style="font-size:13px;font-weight:600;color:var(--ink)">${label}</span>
-        </div>
-        <div style="font-size:12px;color:var(--muted)">${dates.length} date${dates.length>1?'s':''} · ${fmtDateNice(dates[0])} → ${fmtDateNice(dates[dates.length-1])}</div>
-      </div>`;
-  }
-}
-function fmtDateNice(ds){
-  const d=new Date(ds+'T00:00:00');
-  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-}
-function renderBizCalHTML(){
-  const m=S.bizCalMonth;
-  const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const DNS=['Su','Mo','Tu','We','Th','Fr','Sa'];
-  const first=new Date(m.getFullYear(),m.getMonth(),1).getDay();
-  const total=new Date(m.getFullYear(),m.getMonth()+1,0).getDate();
-  const prevTotal=new Date(m.getFullYear(),m.getMonth(),0).getDate();
-  const today=new Date(2026,2,19);today.setHours(0,0,0,0);
-  let html=`<div style="margin-bottom:14px">
-    <div class="cal-nav">
-      <div class="cal-nav-btn" onclick="bizChMonth(-1)"><i class="fas fa-chevron-left"></i></div>
-      <div class="cal-month">${MONTHS[m.getMonth()]} ${m.getFullYear()}</div>
-      <div class="cal-nav-btn" onclick="bizChMonth(1)"><i class="fas fa-chevron-right"></i></div>
-    </div>
-    <div class="md-grid">${DNS.map(d=>`<div class="cal-dn">${d}</div>`).join('')}`;
-  for(let i=first-1;i>=0;i--) html+=`<div class="md-d other">${prevTotal-i}</div>`;
-  for(let d=1;d<=total;d++){
-    const dt=new Date(m.getFullYear(),m.getMonth(),d);
-    const ds=fmtDate(dt);
-    const isPast=dt<today;
-    const isSel=S.bizSelDates.includes(ds);
-    const hasConflict=checkDateConflict(ds);
-    let cls='md-d';
-    if(isPast) cls+=' past';
-    else if(isSel) cls+=' sel-biz';
-    else if(dt.getTime()===today.getTime()) cls+=' today-biz';
-    if(hasConflict&&!isPast) cls+=' has-conflict';
-    html+=`<div class="${cls}" onclick="${isPast?'':'bizSelDate(\''+ds+'\')'}">${d}</div>`;
-  }
-  const used=first+total;const rem=used%7===0?0:7-(used%7);
-  for(let i=1;i<=rem;i++) html+=`<div class="md-d other">${i}</div>`;
-  const selCount=S.bizSelDates.length;
-  html+=`</div><div style="font-size:12px;color:var(--muted);margin-top:6px">${selCount>0?`${selCount} date${selCount>1?'s':''} selected`:'Tap dates to select — multiple allowed'}</div></div>`;
-  return html;
-}
-function bizChMonth(dir){
-  S.bizCalMonth=new Date(S.bizCalMonth.getFullYear(),S.bizCalMonth.getMonth()+dir,1);
-  renderBizDateArea();
-}
-function bizSelDate(ds){
-  const pos=S.bizSelDates.indexOf(ds);
-  if(pos>-1) S.bizSelDates.splice(pos,1);
-  else S.bizSelDates.push(ds);
+
+function pickWeekday(i){
+  S.bizWeekday=i;
+  document.querySelectorAll('.wd-btn').forEach((b,idx)=>b.classList.toggle('on',idx===i));
   renderBizDateArea();
   updateBizConflict();
 }
+
+/* ── CONFLICT ENGINE ── */
 function checkDateConflict(ds){
   if(!S.bizSelSlots.length) return false;
   const busy=BUSY_SLOTS[ds]||[];
-  if(!busy.length) return false;
   return S.bizSelSlots.some(idx=>busy.includes(SLOT_LIST[idx]));
 }
-function getActiveDates(){
-  if(S.bizRecur==='custom') return S.bizSelDates;
-  return genRecurDates(S.bizRecur);
+
+function isReady(){
+  if(!S.bizSelSlots.length) return false;
+  if(S.bizRecur==='daily'||S.bizRecur==='weekly') return !!S.bizStartDate&&!!S.bizEndDate;
+  if(S.bizRecur==='monthly') return S.bizStartMonth!==null&&S.bizEndMonth!==null;
+  if(S.bizRecur==='3months') return !!S.bizStartDate;
+  return false;
 }
-function updateBizSave(){
-  const saveBtn=document.getElementById('bizSaveBtn');
-  const dates=getActiveDates();
-  const slotCount=S.bizSelSlots.length;
-  if(!slotCount){saveBtn.disabled=true;saveBtn.textContent='Select slots first';return;}
-  if(S.bizRecur!=='custom'&&!S.bizStartDate){saveBtn.disabled=true;saveBtn.textContent='Choose a start date first';return;}
-  if(!dates.length&&S.bizRecur==='custom'){saveBtn.disabled=true;saveBtn.textContent='Pick at least one date';return;}
-  saveBtn.disabled=false;
-}
+
 function updateBizConflict(){
   const wrap=document.getElementById('bizConflictWrap');
   const strip=document.getElementById('bizSummaryStrip');
   const saveBtn=document.getElementById('bizSaveBtn');
-  const dates=getActiveDates();
   const slotCount=S.bizSelSlots.length;
-  if(!slotCount||(S.bizRecur!=='custom'&&!S.bizStartDate)||!dates.length){
-    wrap.style.display='none';strip.style.display='none';
+
+  if(!isReady()){
+    wrap.style.display='none'; strip.style.display='none';
     saveBtn.disabled=true;
     if(!slotCount) saveBtn.textContent='Select slots first';
-    else if(S.bizRecur!=='custom'&&!S.bizStartDate) saveBtn.textContent='Choose a start date first';
-    else saveBtn.textContent='Pick at least one date';
+    else saveBtn.textContent='Set your date range first';
     return;
   }
-  let okDates=0,partialDates=0,fullConflicts=0;
-  const conflictRows=[];
+
+  const dates=getActiveDates();
+  if(!dates.length){
+    wrap.style.display='none'; strip.style.display='none';
+    saveBtn.disabled=true; saveBtn.textContent='No dates in range';
+    return;
+  }
+
+  // Analyse conflicts
+  let okDates=0, conflictRows=[];
   dates.forEach(ds=>{
     const busy=BUSY_SLOTS[ds]||[];
-    if(!busy.length){okDates++;return;}
-    const conflicting=S.bizSelSlots.filter(idx=>busy.includes(SLOT_LIST[idx]));
-    if(!conflicting.length){okDates++;return;}
-    if(conflicting.length===slotCount){fullConflicts++;conflictRows.push({ds,available:0,total:slotCount});}
-    else{partialDates++;conflictRows.push({ds,available:slotCount-conflicting.length,total:slotCount});}
+    const conflictIdxs=S.bizSelSlots.filter(idx=>busy.includes(SLOT_LIST[idx]));
+    if(!conflictIdxs.length){ okDates++; return; }
+    const nextFree=findNextFreeSlot(conflictIdxs[0], ds);
+    conflictRows.push({ds, conflicting:conflictIdxs, available:slotCount-conflictIdxs.length, total:slotCount, nextFree});
   });
+
+  // Summary counts
+  const totalConflictSlots=conflictRows.reduce((a,r)=>a+r.conflicting.length,0);
+  const mode=S.bizConflictMode||'move';
+
+  // What user will actually get
+  let confirmedSlots;
+  if(mode==='move'){
+    // move: all slots booked (conflicted ones shifted), same total
+    confirmedSlots=dates.length*slotCount;
+  } else {
+    // remove: conflicted slots dropped
+    confirmedSlots=dates.length*slotCount - totalConflictSlots;
+  }
+
   document.getElementById('bsSumDates').textContent=dates.length;
-  document.getElementById('bsSumSlots').textContent=slotCount;
-  document.getElementById('bsSumConflicts').textContent=partialDates+fullConflicts;
+  document.getElementById('bsSumSlots').textContent=mode==='remove'&&conflictRows.length
+    ? `${slotCount}→${slotCount - Math.round(totalConflictSlots/conflictRows.length)}`
+    : slotCount;
+  document.getElementById('bsSumConflicts').textContent=conflictRows.length;
   strip.style.display='grid';
+
   if(!conflictRows.length){
     wrap.style.display='none';
     saveBtn.disabled=false;
     saveBtn.textContent=`Book ${slotCount} slot${slotCount>1?'s':''} × ${dates.length} date${dates.length>1?'s':''}`;
     return;
   }
-  const shown=conflictRows.slice(0,4);const more=conflictRows.length-4;
+
+  const shown=conflictRows.slice(0,3); const more=conflictRows.length-3;
   wrap.innerHTML=`
     <div class="conflict-preview">
-      <div class="cp-title"><i class="fas fa-exclamation-triangle"></i> Slot Conflicts Found</div>
+      <div class="cp-title"><i class="fas fa-exclamation-triangle"></i> ${conflictRows.length} date${conflictRows.length>1?'s':''} have conflicts</div>
       ${shown.map(r=>`
         <div class="cp-row">
           <span class="cp-date">${fmtDateNice(r.ds)}</span>
-          ${r.available===0?`<span class="cp-stat conflict">All slots taken</span>`:`<span class="cp-stat partial">${r.available}/${r.total} available</span>`}
+          ${r.available===0
+            ? `<span class="cp-stat conflict">All ${r.total} slots taken</span>`
+            : `<span class="cp-stat partial">${r.conflicting.length} of ${r.total} conflict</span>`}
         </div>`).join('')}
-      ${more>0?`<div style="font-size:11px;color:var(--muted);margin-top:6px">+${more} more dates with conflicts</div>`:''}
-      <div style="font-size:12px;color:var(--ink2);margin-top:10px;margin-bottom:6px;font-weight:600">How to handle conflicts?</div>
+      ${more>0?`<div style="font-size:11px;color:var(--muted);margin-top:4px">+${more} more</div>`:''}
+      <div style="font-size:12px;font-weight:700;color:var(--ink2);margin:12px 0 8px">Handle conflicts:</div>
       <div class="cp-resolve">
-        <div class="cp-res-btn skip" onclick="setBizConflictMode('skip')" id="crmSkip">
-          <i class="fas fa-forward" style="display:block;margin-bottom:3px"></i>Skip conflict dates
+        <div class="cp-res-btn move${mode==='move'?' on':''}" onclick="setBizConflictMode('move')" id="crmMove">
+          <i class="fas fa-arrow-right" style="display:block;font-size:14px;margin-bottom:5px"></i>
+          <strong>Move to next available</strong><br>
+          <span style="font-weight:400">Same total slots, shifted to next free time</span>
         </div>
-        <div class="cp-res-btn partial-ok on" onclick="setBizConflictMode('partial')" id="crmPartial">
-          <i class="fas fa-puzzle-piece" style="display:block;margin-bottom:3px"></i>Book available slots
+        <div class="cp-res-btn remove${mode==='remove'?' on':''}" onclick="setBizConflictMode('remove')" id="crmRemove">
+          <i class="fas fa-trash-alt" style="display:block;font-size:14px;margin-bottom:5px"></i>
+          <strong>Remove conflict slots</strong><br>
+          <span style="font-weight:400">Fewer slots, pay only for what's confirmed</span>
         </div>
+      </div>
+      <div style="margin-top:10px;padding:8px 10px;border-radius:9px;font-size:11px;background:var(--bg);color:var(--muted)">
+        ${mode==='move'
+          ? `<i class="fas fa-info-circle" style="color:var(--blue)"></i> Conflict slots will shift to the next available 20-sec slot in the same hour`
+          : `<i class="fas fa-info-circle" style="color:var(--red)"></i> ${totalConflictSlots} slot${totalConflictSlots>1?'s':''} removed — confirmed total: <strong style="color:var(--ink)">${confirmedSlots}</strong>`}
       </div>
     </div>`;
   wrap.style.display='block';
   saveBtn.disabled=false;
-  saveBtn.textContent=`Confirm — pay for confirmed only`;
+  saveBtn.textContent=mode==='move'
+    ? `Book ${dates.length*slotCount} slots (conflicts shifted)`
+    : `Book ${confirmedSlots} confirmed slots`;
 }
+
+function findNextFreeSlot(conflictIdx, ds){
+  const busy=BUSY_SLOTS[ds]||[];
+  for(let i=conflictIdx+1;i<SLOT_LIST.length;i++){
+    if(!busy.includes(SLOT_LIST[i])&&!S.bizSelSlots.includes(i)) return i;
+  }
+  return null;
+}
+
 function setBizConflictMode(mode){
   S.bizConflictMode=mode;
-  const skipBtn=document.getElementById('crmSkip');
-  const partBtn=document.getElementById('crmPartial');
-  if(skipBtn&&partBtn){
-    skipBtn.style.background=mode==='skip'?'var(--bg)':'var(--white)';
-    skipBtn.style.fontWeight=mode==='skip'?'700':'600';
-    partBtn.style.background=mode==='partial'?'#FFF7ED':'var(--white)';
-    partBtn.style.fontWeight=mode==='partial'?'700':'600';
-  }
-  toast(mode==='skip'?'Will skip conflict dates':'Will book available slots on conflict dates');
+  updateBizConflict();
 }
+
 function saveBizSlot(){
   if(!S.bizDP||!S.bizSelSlots.length) return;
   const dates=getActiveDates();
   if(!dates.length) return;
-  const mode=S.bizConflictMode||'partial';
+  const mode=S.bizConflictMode||'move';
   let booked=0;
+  if(!S.slots[S.bizDP.id]) S.slots[S.bizDP.id]=[];
+
   dates.forEach(ds=>{
     const busy=BUSY_SLOTS[ds]||[];
-    const slots=S.bizSelSlots
-      .filter(idx=>!busy.includes(SLOT_LIST[idx]))
-      .map(idx=>({time:SLOT_LIST[idx],date:ds}));
-    if(mode==='skip'&&busy.length&&S.bizSelSlots.some(idx=>busy.includes(SLOT_LIST[idx]))) return;
-    if(slots.length){
-      if(!S.slots[S.bizDP.id]) S.slots[S.bizDP.id]=[];
-      slots.forEach(sl=>{
-        if(!S.slots[S.bizDP.id].find(x=>x.time===sl.time&&x.date===sl.date))
-          S.slots[S.bizDP.id].push(sl);
-      });
-      booked+=slots.length;
-    }
+    S.bizSelSlots.forEach(idx=>{
+      const slot=SLOT_LIST[idx];
+      if(!busy.includes(slot)){
+        if(!S.slots[S.bizDP.id].find(x=>x.time===slot&&x.date===ds)){
+          S.slots[S.bizDP.id].push({time:slot,date:ds}); booked++;
+        }
+      } else {
+        if(mode==='move'){
+          // find next available slot
+          const nextIdx=findNextFreeSlot(idx,ds);
+          if(nextIdx!==null){
+            const nextSlot=SLOT_LIST[nextIdx];
+            if(!S.slots[S.bizDP.id].find(x=>x.time===nextSlot&&x.date===ds)){
+              S.slots[S.bizDP.id].push({time:nextSlot,date:ds}); booked++;
+            }
+          }
+          // if no next slot found, slot is lost (edge case)
+        }
+        // mode==='remove': skip, don't book
+      }
+    });
   });
+
   S.checked.add(S.bizDP.id);
   closeBizSlotModal();
-  renderLocTabs();renderDPList();
-  toast(`${booked} slot${booked>1?'s':''} scheduled`);
+  renderLocTabs(); renderDPList();
+  toast(`${booked} slot${booked!==1?'s':''} scheduled`);
 }
 
 boot();
