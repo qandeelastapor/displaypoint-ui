@@ -280,6 +280,18 @@ body{font-family:'Inter',sans-serif;background:#1a1f2e;min-height:100vh;display:
 .rv-chips{display:flex;flex-wrap:wrap;gap:5px}
 .rv-chip{background:var(--blue-lt);color:var(--blue);border-radius:6px;padding:3px 8px;font-size:10.5px;font-weight:500}
 
+/* ── AD PREVIEW CARD ── */
+.rv-ad-preview{display:flex;align-items:center;gap:13px;background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:13px;margin-bottom:14px;overflow:hidden}
+.rv-ad-thumb{width:62px;height:62px;border-radius:10px;background:var(--bg);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--muted);overflow:hidden;position:relative}
+.rv-ad-thumb.video-thumb{background:var(--ink)}
+.rv-ad-thumb.video-thumb::after{content:'';position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.rv-ad-thumb img{width:100%;height:100%;object-fit:cover;border-radius:10px}
+.rv-ad-info{flex:1;min-width:0}
+.rv-ad-sub{font-size:11px;color:var(--muted);margin-top:3px}
+/* token pill in dp row */
+.rv-token-pill{display:inline-flex;align-items:center;gap:4px;background:#EEF3FF;color:var(--blue);border-radius:6px;padding:3px 8px;font-size:10.5px;font-weight:600;margin-top:5px}
+.rv-token-pill i{font-size:9px}
+
 /* ── S4 PAYMENT ── */
 .pay-pkg-card{background:var(--bg);border-radius:16px;padding:18px;margin-bottom:14px;border:1px solid var(--border)}
 .pay-pkg-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
@@ -493,14 +505,15 @@ body{font-family:'Inter',sans-serif;background:#1a1f2e;min-height:100vh;display:
       <!-- VIDEO OPTIONS — only when Video selected -->
       <div class="video-opts" id="videoOpts">
 
-        <!-- Video upload zone -->
-        <div class="vid-upload-zone" id="vidUploadZone" onclick="handleVideoUpload()">
-          <div class="vid-upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-          <div class="vid-upload-title">Upload Your Video</div>
-          <div class="vid-upload-sub">MP4, MOV, AVI · Max 500MB</div>
-          <div class="vid-upload-btn">Choose File</div>
+        <!-- Compact video upload -->
+        <div class="vid-upload-zone" id="vidUploadZone" onclick="handleVideoUpload()" style="display:flex;align-items:center;gap:12px;padding:12px 14px;text-align:left;border-radius:12px">
+          <div style="width:36px;height:36px;border-radius:10px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0"><i class="fas fa-cloud-upload-alt"></i></div>
+          <div style="flex:1;min-width:0">
+            <div class="vid-upload-title" style="margin-bottom:1px;font-size:13px">Upload Video</div>
+            <div class="vid-upload-sub" style="margin-bottom:0;font-size:11px">MP4, MOV · Max 500MB</div>
+          </div>
+          <div class="vid-upload-btn" style="flex-shrink:0;font-size:11px;padding:6px 14px">Browse</div>
         </div>
-        <!-- After upload (hidden by default) -->
         <div class="vid-preview" id="vidPreview" style="display:none">
           <div class="vid-preview-icon"><i class="fas fa-film"></i></div>
           <div class="vid-preview-info">
@@ -560,17 +573,24 @@ body{font-family:'Inter',sans-serif;background:#1a1f2e;min-height:100vh;display:
     <!-- S3: REVIEW -->
     <div class="scr" id="s3">
       <div class="lbl">Campaign Summary</div>
-      <div class="review-media">
-        <div class="rv-icon" id="rvIcon"><i class="fas fa-image"></i></div>
-        <div>
+
+      <!-- Ad preview card -->
+      <div class="rv-ad-preview" id="rvAdPreview">
+        <div class="rv-ad-thumb" id="rvAdThumb"></div>
+        <div class="rv-ad-info">
           <div class="rv-lbl">Ad Format</div>
           <div class="rv-val" id="rvName">Image AD</div>
+          <div class="rv-ad-sub" id="rvAdSub"></div>
         </div>
       </div>
-      <div class="stats-row">
-        <div class="stat-card"><div class="stat-lbl">Display Points</div><div class="stat-val" id="rvDPs">0</div></div>
-        <div class="stat-card"><div class="stat-lbl">Total Slots</div><div class="stat-val" id="rvSlots">0</div></div>
+
+      <!-- 3-stat row -->
+      <div class="stats-row" style="grid-template-columns:1fr 1fr 1fr">
+        <div class="stat-card"><div class="stat-lbl">Displays</div><div class="stat-val" id="rvDPs">0</div></div>
+        <div class="stat-card"><div class="stat-lbl">Slots</div><div class="stat-val" id="rvSlots">0</div></div>
+        <div class="stat-card" style="background:var(--blue)"><div class="stat-lbl">Total Tokens Required</div><div class="stat-val" id="rvTokens">0</div></div>
       </div>
+
       <div class="lbl">Booked Locations</div>
       <div class="rv-card" id="rvRows"></div>
     </div>
@@ -580,37 +600,39 @@ body{font-family:'Inter',sans-serif;background:#1a1f2e;min-height:100vh;display:
       <div class="lbl">Payment</div>
       <div class="pay-pkg-card">
         <div class="pay-pkg-head">
-          <i class="fas fa-tv pay-pkg-icon"></i>
-          <span class="pay-pkg-name">Slot Booking</span>
+          <i class="fas fa-coins pay-pkg-icon"></i>
+          <span class="pay-pkg-name">Token Summary</span>
         </div>
-        <div class="pay-pkg-row"><span class="pay-pkg-row-lbl">Display Points:</span><span class="pay-pkg-row-val" id="payDPs">0</span></div>
-        <div class="pay-pkg-row"><span class="pay-pkg-row-lbl">Total Slots:</span><span class="pay-pkg-row-val" id="paySlots">0</span></div>
-        <div class="pay-pkg-row"><span class="pay-pkg-row-lbl">Rate per Slot:</span><span class="pay-pkg-row-val">€2.50</span></div>
+        <div class="pay-pkg-row"><span class="pay-pkg-row-lbl">Display Points</span><span class="pay-pkg-row-val" id="payDPs">0</span></div>
+        <div class="pay-pkg-row"><span class="pay-pkg-row-lbl">Total Slots</span><span class="pay-pkg-row-val" id="paySlots">0</span></div>
+        <div class="pay-pkg-row" style="margin-top:6px;padding-top:10px;border-top:1px solid var(--border)">
+          <span class="pay-pkg-row-lbl" style="font-weight:700;color:var(--ink)">Total Tokens Required</span>
+          <span class="pay-pkg-row-val" style="color:var(--blue);font-size:18px" id="payTokens">0</span>
+        </div>
       </div>
       <div class="pay-info">
         <i class="fas fa-info-circle"></i>
-        <p>Tap "Proceed to Payment" to open the secure payment form.<br>Test Card: 4242 4242 4242 4242</p>
+        <p>Tokens are deducted from your balance. Each display point has its own token rate per slot.</p>
       </div>
       <div class="pay-status">
         <div class="pay-status-icon"><i class="fas fa-check"></i></div>
-        <div class="pay-status-lbl">Ready to pay</div>
+        <div class="pay-status-lbl">Ready to confirm</div>
       </div>
       <div class="pay-summary">
-        <h3>Payment Summary</h3>
+        <h3>Booking Summary</h3>
         <div class="pay-s-row"><span class="pay-s-lbl">Display Points</span><span class="pay-s-val" id="paySumDPs">0</span></div>
         <div class="pay-s-row"><span class="pay-s-lbl">Slots booked</span><span class="pay-s-val" id="paySumSlots">0</span></div>
-        <div class="pay-s-row"><span class="pay-s-lbl">Rate</span><span class="pay-s-val">€2.50 / slot</span></div>
         <div class="pay-divider"></div>
         <div class="pay-total-row">
-          <span class="pay-total-lbl">Total</span>
-          <span class="pay-total-val" id="payTotal">€0.00</span>
+          <span class="pay-total-lbl">Total Tokens</span>
+          <span class="pay-total-val" id="payTotal" style="color:var(--blue)">0</span>
         </div>
       </div>
       <button class="btn-pay" onclick="goStep(5)">
-        <i class="fas fa-credit-card"></i>
-        Proceed to Payment — <span id="payBtnAmt">€0.00</span>
+        <i class="fas fa-coins"></i>
+        Confirm &amp; Deduct Tokens — <span id="payBtnAmt">0</span>
       </button>
-      <div class="pay-secure"><i class="fas fa-shield-alt"></i> Secured by Stripe. Your payment information is encrypted.</div>
+      <div class="pay-secure"><i class="fas fa-shield-alt"></i> Secured by Stripe. Your token balance is verified before deduction.</div>
     </div>
 
     <!-- S5: SUCCESS -->
@@ -769,22 +791,22 @@ const ALL_CITIES=[
   {id:'mlt',name:'Multan',   region:'Punjab, PK'},
 ];
 const ALL_DPS=[
-  {id:'lhr-mm',city:'lhr',cityName:'Lahore',   name:'Main Mall Display', type:'Mall Screen',    screens:2},
-  {id:'lhr-gb',city:'lhr',cityName:'Lahore',   name:'Gulberg Digital',   type:'Outdoor LED',    screens:1},
-  {id:'lhr-lb',city:'lhr',cityName:'Lahore',   name:'Liberty Chowk',     type:'Junction Board', screens:3},
-  {id:'skt-ch',city:'skt',cityName:'Sialkot',  name:'Chamber Digital',   type:'Indoor Screen',  screens:1},
-  {id:'skt-ar',city:'skt',cityName:'Sialkot',  name:'Airport Road LED',  type:'Highway LED',    screens:2},
-  {id:'isl-bl',city:'isl',cityName:'Islamabad',name:'Blue Area Screen',  type:'Commercial',     screens:4},
-  {id:'isl-f7',city:'isl',cityName:'Islamabad',name:'F-7 Markaz',        type:'Outdoor LED',    screens:2},
-  {id:'khi-cl',city:'khi',cityName:'Karachi',  name:'Clifton Sea View',  type:'Outdoor LED',    screens:3},
-  {id:'khi-sa',city:'khi',cityName:'Karachi',  name:'Saddar Junction',   type:'Junction Board', screens:2},
-  {id:'khi-dk',city:'khi',cityName:'Karachi',  name:'DHA Phase 6 LED',   type:'Outdoor LED',    screens:2},
-  {id:'psh-qb',city:'psh',cityName:'Peshawar', name:'Qissa Khwani Bazar',type:'Junction Board', screens:2},
-  {id:'psh-hp',city:'psh',cityName:'Peshawar', name:'Hayatabad Plaza',   type:'Mall Screen',    screens:1},
-  {id:'psh-ur',city:'psh',cityName:'Peshawar', name:'University Road LED',type:'Highway LED',   screens:3},
-  {id:'mlt-ch',city:'mlt',cityName:'Multan',   name:'Chungi No.9 Screen',type:'Outdoor LED',    screens:2},
-  {id:'mlt-hb',city:'mlt',cityName:'Multan',   name:'Hussain Agahi LED', type:'Junction Board', screens:1},
-  {id:'mlt-bz',city:'mlt',cityName:'Multan',   name:'Bahawalpur Road',   type:'Highway LED',    screens:2},
+  {id:'lhr-mm',city:'lhr',cityName:'Lahore',   name:'Main Mall Display', type:'Mall Screen',    screens:2, tokensPerSlot:5},
+  {id:'lhr-gb',city:'lhr',cityName:'Lahore',   name:'Gulberg Digital',   type:'Outdoor LED',    screens:1, tokensPerSlot:3},
+  {id:'lhr-lb',city:'lhr',cityName:'Lahore',   name:'Liberty Chowk',     type:'Junction Board', screens:3, tokensPerSlot:7},
+  {id:'skt-ch',city:'skt',cityName:'Sialkot',  name:'Chamber Digital',   type:'Indoor Screen',  screens:1, tokensPerSlot:2},
+  {id:'skt-ar',city:'skt',cityName:'Sialkot',  name:'Airport Road LED',  type:'Highway LED',    screens:2, tokensPerSlot:4},
+  {id:'isl-bl',city:'isl',cityName:'Islamabad',name:'Blue Area Screen',  type:'Commercial',     screens:4, tokensPerSlot:8},
+  {id:'isl-f7',city:'isl',cityName:'Islamabad',name:'F-7 Markaz',        type:'Outdoor LED',    screens:2, tokensPerSlot:4},
+  {id:'khi-cl',city:'khi',cityName:'Karachi',  name:'Clifton Sea View',  type:'Outdoor LED',    screens:3, tokensPerSlot:6},
+  {id:'khi-sa',city:'khi',cityName:'Karachi',  name:'Saddar Junction',   type:'Junction Board', screens:2, tokensPerSlot:4},
+  {id:'khi-dk',city:'khi',cityName:'Karachi',  name:'DHA Phase 6 LED',   type:'Outdoor LED',    screens:2, tokensPerSlot:5},
+  {id:'psh-qb',city:'psh',cityName:'Peshawar', name:'Qissa Khwani Bazar',type:'Junction Board', screens:2, tokensPerSlot:3},
+  {id:'psh-hp',city:'psh',cityName:'Peshawar', name:'Hayatabad Plaza',   type:'Mall Screen',    screens:1, tokensPerSlot:2},
+  {id:'psh-ur',city:'psh',cityName:'Peshawar', name:'University Road LED',type:'Highway LED',   screens:3, tokensPerSlot:5},
+  {id:'mlt-ch',city:'mlt',cityName:'Multan',   name:'Chungi No.9 Screen',type:'Outdoor LED',    screens:2, tokensPerSlot:3},
+  {id:'mlt-hb',city:'mlt',cityName:'Multan',   name:'Hussain Agahi LED', type:'Junction Board', screens:1, tokensPerSlot:2},
+  {id:'mlt-bz',city:'mlt',cityName:'Multan',   name:'Bahawalpur Road',   type:'Highway LED',    screens:2, tokensPerSlot:4},
 ];
 const BUSY_SLOTS={
   '2026-03-18':['11:43:00-11:43:20','11:44:20-11:44:40','11:45:40-11:46:00'],
@@ -1247,39 +1269,76 @@ function saveSlot(){
 
 /* ═══════════════ S3 REVIEW ═══════════════ */
 function buildReview(){
-  document.getElementById('rvName').textContent=S.media.label;
-  document.getElementById('rvIcon').innerHTML=`<i class="fas ${S.media.icon}"></i>`;
   const booked=ALL_DPS.filter(d=>S.checked.has(d.id));
   const totalSlots=booked.reduce((a,d)=>a+(S.slots[d.id]||[]).length,0);
+  const totalTokens=booked.reduce((a,dp)=>{
+    const slotCount=(S.slots[dp.id]||[]).length;
+    return a+(slotCount*dp.tokensPerSlot);
+  },0);
+
+  // Ad preview thumb
+  const thumb=document.getElementById('rvAdThumb');
+  const sub=document.getElementById('rvAdSub');
+  document.getElementById('rvName').textContent=S.media.label;
+  if(S.media.label==='Video AD'){
+    thumb.className='rv-ad-thumb video-thumb';
+    thumb.innerHTML=`<i class="fas fa-play" style="color:#fff;font-size:20px"></i>`;
+    sub.textContent=S.vidDur?`${S.vidDur}s · ${S.loopOn?'Loop on':'Loop off'}`:'No video uploaded';
+  } else if(S.media.label==='Image AD'){
+    thumb.className='rv-ad-thumb';
+    thumb.innerHTML=`<i class="fas fa-image" style="color:var(--blue)"></i>`;
+    sub.textContent='Visual display ad';
+  } else if(S.media.label==='Text AD'){
+    thumb.className='rv-ad-thumb';
+    thumb.style.background='var(--ink)';
+    thumb.innerHTML=`<span style="color:#fff;font-size:11px;font-weight:700;padding:4px;text-align:center;line-height:1.2">Aa</span>`;
+    sub.textContent='Text-based message';
+  } else {
+    thumb.className='rv-ad-thumb';
+    thumb.innerHTML=`<i class="fas fa-th-large" style="color:var(--blue)"></i>`;
+    sub.textContent='Pre-designed template';
+  }
+
   document.getElementById('rvDPs').textContent=booked.length;
   document.getElementById('rvSlots').textContent=totalSlots;
+  document.getElementById('rvTokens').textContent=totalTokens;
+
   const rows=document.getElementById('rvRows');
   if(!booked.length){rows.innerHTML=`<div style="padding:14px;font-size:13px;color:var(--muted)">No display points selected.</div>`;return;}
-  rows.innerHTML=booked.map(dp=>`
+  rows.innerHTML=booked.map(dp=>{
+    const slotCount=(S.slots[dp.id]||[]).length;
+    const dpTokens=slotCount*dp.tokensPerSlot;
+    return `
     <div class="rv-row">
       <div class="rv-dp-icon"><i class="fas fa-tv"></i></div>
       <div style="flex:1;min-width:0">
         <div class="rv-dp-name">${dp.name}</div>
-        <div class="rv-dp-sub">${dp.cityName}</div>
-        <div class="rv-chips">${(S.slots[dp.id]||[]).length
+        <div class="rv-dp-sub">${dp.cityName} · ${dp.tokensPerSlot} token/slot</div>
+        <div class="rv-chips">${slotCount
           ? (S.slots[dp.id]||[]).map(s=>`<div class="rv-chip">${s.time}</div>`).join('')
           : `<div style="font-size:11px;color:var(--muted);font-style:italic">No slots booked</div>`
         }</div>
+        <div class="rv-token-pill"><i class="fas fa-coins"></i> ${dpTokens} token${dpTokens!==1?'s':''} (${slotCount} slot${slotCount!==1?'s':''})</div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 /* ═══════════════ S4 PAYMENT ═══════════════ */
 function buildPayment(){
   const booked=ALL_DPS.filter(d=>S.checked.has(d.id));
   const totalSlots=booked.reduce((a,d)=>a+(S.slots[d.id]||[]).length,0);
-  const total=(totalSlots*RATE).toFixed(2);
+  const totalTokens=booked.reduce((a,dp)=>{
+    const slotCount=(S.slots[dp.id]||[]).length;
+    return a+(slotCount*dp.tokensPerSlot);
+  },0);
   document.getElementById('payDPs').textContent=booked.length;
   document.getElementById('paySlots').textContent=totalSlots;
+  document.getElementById('payTokens').textContent=totalTokens;
   document.getElementById('paySumDPs').textContent=booked.length;
   document.getElementById('paySumSlots').textContent=totalSlots;
-  document.getElementById('payTotal').textContent=`€${total}`;
-  document.getElementById('payBtnAmt').textContent=`€${total}`;
+  document.getElementById('payTotal').textContent=totalTokens;
+  document.getElementById('payBtnAmt').textContent=`${totalTokens} token${totalTokens!==1?'s':''}`;
 }
 
 /* ═══════════════ TOAST ═══════════════ */
