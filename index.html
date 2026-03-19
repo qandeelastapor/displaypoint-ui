@@ -707,7 +707,6 @@ body{font-family:'Inter',sans-serif;background:#1a1f2e;min-height:100vh;display:
           <div class="rt on" data-recur="daily"   onclick="setRecur('daily')">Daily</div>
           <div class="rt"    data-recur="weekly"  onclick="setRecur('weekly')">Weekly</div>
           <div class="rt"    data-recur="monthly" onclick="setRecur('monthly')">Monthly</div>
-          <div class="rt"    data-recur="3months" onclick="setRecur('3months')">3 Mo</div>
         </div>
 
         <div class="hour-drop" onclick="bizCycleHour()">
@@ -1307,7 +1306,7 @@ function resetAll(){
 }
 
 /* ═══════════════ BUSINESS SLOT MODAL ═══════════════ */
-const RECUR_LABELS={daily:'Daily',weekly:'Weekly',monthly:'Monthly','3months':'3 Months'};
+const RECUR_LABELS={daily:'Daily',weekly:'Weekly',monthly:'Monthly'};
 const MONTHS_SHORT=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const MONTHS_FULL=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DAYS_SHORT=['Su','Mo','Tu','We','Th','Fr','Sa'];
@@ -1366,7 +1365,7 @@ function setRecur(r){
   document.getElementById('bizStartCalWrap').style.display='none';
   document.getElementById('bizRangeFields').innerHTML='';
   // Update start field label
-  const lbl = r==='monthly'?'Start month':r==='3months'?'Start date (fixed 90 days)':'Start date';
+  const lbl = r==='monthly'?'Start month':'Start date';
   document.querySelector('#bizStartField .sdf-lbl').textContent = lbl.toUpperCase();
   document.getElementById('bizStartVal').textContent = r==='monthly'?'Tap to choose month':'Tap to choose date';
   renderBizDateArea();
@@ -1429,10 +1428,6 @@ function genRecurDates(type){
       dates.push(`${y}-${String(m+1).padStart(2,'0')}-01`);
       m++; if(m>11){m=0;y++;}
     }
-  } else if(type==='3months'){
-    if(!S.bizStartDate) return dates;
-    const base=new Date(S.bizStartDate+'T00:00:00');
-    for(let i=0;i<90;i++){const d=new Date(base);d.setDate(base.getDate()+i);dates.push(fmtDate(d));}
   }
   return dates;
 }
@@ -1595,10 +1590,6 @@ function pickBizMonth(which, mi){
 /* ── END DATE / RANGE FIELDS ── */
 function renderRangeFields(){
   const wrap=document.getElementById('bizRangeFields');
-  if(S.bizRecur==='3months'){
-    wrap.innerHTML=''; // no end date needed for 3months
-    return;
-  }
   if(S.bizRecur==='weekly'){
     // show weekday selector then end date
     const wdHTML=`
@@ -1756,7 +1747,6 @@ function isReady(){
   if(!S.bizSelSlots.length) return false;
   if(S.bizRecur==='daily'||S.bizRecur==='weekly') return !!S.bizStartDate&&!!S.bizEndDate;
   if(S.bizRecur==='monthly') return S.bizStartMonth!==null&&S.bizEndMonth!==null;
-  if(S.bizRecur==='3months') return !!S.bizStartDate;
   return false;
 }
 
