@@ -14,453 +14,335 @@
   --orange:#EA580C;--orange-lt:#FFF7ED;
   --ink:#111827;--ink2:#374151;--muted:#9CA3AF;
   --border:#E5E7EB;--bg:#F3F4F6;--white:#fff;
-  --sh:0 1px 4px rgba(0,0,0,.10);
-  --sh2:0 8px 32px rgba(0,0,0,.18);
+  --sh:0 1px 4px rgba(0,0,0,.10);--sh2:0 8px 32px rgba(0,0,0,.18);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:'Inter',sans-serif;background:#1a1f2e;min-height:100vh;display:flex;align-items:center;justify-content:center}
-
-/* ── PHONE ── */
 .phone{width:390px;height:844px;background:var(--bg);border-radius:48px;border:10px solid #0f1117;box-shadow:0 40px 100px rgba(0,0,0,.6);display:flex;flex-direction:column;overflow:hidden;position:relative}
-
-/* ── STATUS ── */
 .sb{background:var(--white);padding:12px 24px 6px;display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600;color:var(--ink);flex-shrink:0}
 .sb-r{display:flex;gap:5px;font-size:11px}
-
-/* ── HEADER ── */
 .hd{background:var(--white);border-bottom:1px solid var(--border);padding:8px 16px 12px;display:flex;align-items:center;gap:10px;flex-shrink:0}
 .hd-back{width:34px;height:34px;border-radius:9px;border:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink2);font-size:12px;flex-shrink:0}
 .hd-title{flex:1;text-align:center;font-size:15px;font-weight:700;color:var(--ink)}
-
-/* ── PROGRESS ── */
 .prog{background:var(--white);padding:8px 16px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
 .prog-track{height:3px;background:var(--border);border-radius:3px}
 .prog-fill{height:100%;background:var(--blue);border-radius:3px;transition:width .35s ease}
 .prog-lbls{display:flex;justify-content:space-between;margin-top:6px}
-.pl{font-size:10px;font-weight:500;color:var(--muted);transition:color .2s}
+.pl{font-size:10px;font-weight:500;color:var(--muted)}
 .pl.act{color:var(--blue);font-weight:600}
 .pl.done{color:var(--green);font-weight:600}
-
-/* ── SCROLL BODY ──
-   KEY FIX: overflow-y on .body, all overlays are position:fixed
-   within .phone via a wrapper trick — we use position:absolute
-   but on a dedicated overlay-root that sits on top and is NOT
-   inside .body, so scrolling .body never causes the modal to scroll */
 .body{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}
 .body::-webkit-scrollbar{display:none}
-
-/* ── SCREENS ── */
-.scr{display:none;padding:16px 16px 110px}
+.scr{display:none;padding:16px 16px 100px}
 .scr.on{display:block;animation:su .22s ease}
 @keyframes su{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.lbl{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+.lbl{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px}
 
-/* ── S1 MEDIA ── */
-.media-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.mc{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:18px 10px 14px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;position:relative}
-.mc:active{transform:scale(.97)}
-.mc.on{border-color:var(--blue);background:var(--blue-lt)}
-.mc-icon{width:42px;height:42px;border-radius:11px;margin:0 auto 9px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--blue);transition:background .15s,color .15s}
-.mc.on .mc-icon{background:var(--blue);color:#fff}
-.mc h4{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:2px}
-.mc p{font-size:11px;color:var(--muted)}
-.mc-chk{position:absolute;top:8px;right:8px;width:17px;height:17px;border-radius:5px;background:var(--blue);color:#fff;font-size:8px;display:none;align-items:center;justify-content:center}
-.mc.on .mc-chk{display:flex}
+/* ── USER TYPE ── */
+.user-type-wrap{background:var(--white);border-radius:14px;border:1.5px solid var(--border);padding:4px;display:flex;gap:3px;margin-bottom:14px}
+.ut-btn{flex:1;padding:8px 6px;border-radius:10px;text-align:center;cursor:pointer;transition:all .2s;font-size:12px;font-weight:600;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:6px}
+.ut-btn.on.individual{background:var(--blue);color:#fff}
+.ut-btn.on.business{background:var(--ink);color:#fff}
 
-/* VIDEO OPTS */
-.video-opts{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-top:14px;display:none}
+/* ── MEDIA FORMAT ROW ── */
+.media-row{display:flex;gap:3px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;margin-bottom:14px}
+.media-row::-webkit-scrollbar{display:none}
+.mchip{flex-shrink:0;display:flex;align-items:center;gap:7px;padding:9px 10px;border-radius:22px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;transition:all .15s;white-space:nowrap}
+.mchip:active{transform:scale(.95)}
+.mchip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.mchip-icon{width:22px;height:22px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;background:var(--bg);color:var(--blue);flex-shrink:0;transition:all .15s}
+.mchip.on .mchip-icon{background:rgba(255,255,255,.2);color:#fff}
+.mchip-lbl{font-size:10px;font-weight:600;color:var(--ink2)}
+.mchip.on .mchip-lbl{color:#fff}
+
+/* ── VIDEO OPTS ── */
+.video-opts{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px;display:none}
 .video-opts.show{display:block}
-.opt-row{display:flex;align-items:center;gap:10px;padding:10px 0}
+.opt-row{display:flex;align-items:center;gap:10px;padding:9px 0}
 .opt-row+.opt-row{border-top:1px solid var(--border)}
-.opt-icon{width:32px;height:32px;border-radius:9px;background:var(--blue-lt);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.opt-icon{width:30px;height:30px;border-radius:8px;background:var(--blue-lt);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
 .opt-body{flex:1;min-width:0}
 .opt-label{font-size:13px;font-weight:600;color:var(--ink)}
-.opt-sub{font-size:11px;color:var(--muted);margin-top:2px}
-.opt-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
-
-/* Duration display (read-only badge) */
-.dur-badge{background:var(--blue-lt);color:var(--blue);border-radius:8px;padding:5px 12px;font-size:13px;font-weight:700}
-
-/* TOGGLE */
-.toggle{width:42px;height:24px;border-radius:12px;background:var(--border);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.opt-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.dur-badge{background:var(--blue-lt);color:var(--blue);border-radius:8px;padding:4px 11px;font-size:12px;font-weight:700}
+.toggle{width:40px;height:22px;border-radius:11px;background:var(--border);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
 .toggle.on{background:var(--blue)}
-.toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .2s}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .2s}
 .toggle.on::after{left:21px}
+.vid-upload-zone{border:2px dashed #BFDBFE;border-radius:12px;display:flex;align-items:center;gap:12px;padding:11px 13px;cursor:pointer;background:var(--blue-lt)}
+.vid-preview{display:flex;align-items:center;gap:10px;background:var(--green-lt);border:1.5px solid #86EFAC;border-radius:11px;padding:10px 12px}
+.vid-preview-icon{width:32px;height:32px;border-radius:8px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.vid-preview-name{font-size:12px;font-weight:600;color:var(--ink)}
+.vid-preview-size{font-size:10px;color:var(--muted);margin-top:1px}
+.vid-preview-remove{width:24px;height:24px;border-radius:50%;background:var(--red-lt);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:9px;cursor:pointer;flex-shrink:0;margin-left:auto}
 
-/* VIDEO UPLOAD ZONE */
-.vid-upload-zone{border:2px dashed #BFDBFE;border-radius:14px;padding:24px 16px;text-align:center;cursor:pointer;background:var(--blue-lt);transition:all .15s;margin-bottom:4px}
-.vid-upload-zone:active{background:#DBEAFE}
-.vid-upload-icon{font-size:28px;color:var(--blue);margin-bottom:8px}
-.vid-upload-title{font-size:14px;font-weight:700;color:var(--blue);margin-bottom:4px}
-.vid-upload-sub{font-size:11px;color:#6B96F0;margin-bottom:12px}
-.vid-upload-btn{display:inline-block;background:var(--blue);color:#fff;font-size:12px;font-weight:600;padding:7px 18px;border-radius:8px}
-.vid-preview{display:flex;align-items:center;gap:10px;background:var(--green-lt);border:1.5px solid #86EFAC;border-radius:12px;padding:11px 13px;margin-bottom:4px}
-.vid-preview-icon{width:36px;height:36px;border-radius:9px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.vid-preview-info{flex:1;min-width:0}
-.vid-preview-name{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vid-preview-size{font-size:11px;color:var(--muted);margin-top:2px}
-.vid-preview-remove{width:26px;height:26px;border-radius:50%;background:var(--red-lt);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;flex-shrink:0}
-
-/* PLAIN INFO ICON — no tooltip, just decorative */
-.info-icon{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:10px;flex-shrink:0;cursor:default}
-
-/* DP INFO CAPSULE — colored pill on right side of card */
-.dp-info-capsule{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#EEF3FF;border:1.5px solid #C7D7FF;flex-shrink:0;cursor:default}
-.dp-info-capsule i{font-size:13px;color:var(--blue)}
-
-/* Loop info btn with tooltip (only on S1) */
-.tip-wrap{position:relative;display:inline-flex}
-.tip-wrap .tip{
-  position:absolute;bottom:calc(100% + 8px);right:0;width:220px;
-  background:var(--ink);color:#fff;font-size:11px;line-height:1.5;
-  padding:10px 12px;border-radius:10px;z-index:500;box-shadow:var(--sh2);
-  display:none;font-weight:400;text-align:left;pointer-events:none
-}
-.tip-wrap .tip::after{content:'';position:absolute;bottom:-5px;right:8px;width:10px;height:10px;background:var(--ink);clip-path:polygon(0 0,100% 0,50% 100%)}
-.tip-wrap:hover .tip{display:block}
-
-/* ── S2 LOCATIONS ── */
-.loc-header-row{display:flex;align-items:center;gap:6px;margin-bottom:12px}
-.loc-tabs-scroll{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1;padding-bottom:1px}
+/* ── LOCATION TABS ── */
+.loc-header-row{display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.loc-tabs-scroll{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1}
 .loc-tabs-scroll::-webkit-scrollbar{display:none}
-.loc-tab{flex-shrink:0;padding:6px 6px 6px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:var(--white);border:1.5px solid var(--border);color:var(--ink2);transition:all .15s;display:flex;align-items:center;gap:5px}
+.loc-tab{flex-shrink:0;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:var(--white);border:1.5px solid var(--border);color:var(--ink2);transition:all .15s;display:flex;align-items:center;gap:5px}
 .loc-tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 .loc-tab .bcnt{background:var(--blue);color:#fff;border-radius:4px;font-size:9px;padding:1px 5px}
 .loc-tab.on .bcnt{background:#fff;color:var(--ink)}
-/* Info capsule inside city tab — right side, contrasting orange */
-.loc-tab-info{width:22px;height:22px;border-radius:50%;background:#FFF3E6;border:1.5px solid #FBD0A0;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.loc-tab-info i{font-size:12px;color:#D97706}
-.loc-tab.on .loc-tab-info{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.35)}
-.loc-tab.on .loc-tab-info i{color:#fff}
 .sel-tab{background:var(--blue-lt)!important;border-color:var(--blue)!important;color:var(--blue)!important}
 .sel-tab.on{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important}
-.loc-add-btn{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;border:none;box-shadow:0 2px 8px rgba(35,85,224,.35)}
+.loc-add-btn{flex-shrink:0;width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;border:none}
 
-/* DP CHECKBOX */
-.dp-checkbox{width:20px;height:20px;border-radius:6px;border:2px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s}
-.dp-checkbox.on{background:var(--blue);border-color:var(--blue)}
-.dp-checkbox.on::after{content:'\f00c';font-family:'Font Awesome 6 Free';font-weight:900;color:#fff;font-size:10px}
-.dp-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:13px;margin-bottom:10px;position:relative;transition:border-color .15s}
+/* ── DP CARDS ── */
+.dp-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:12px;margin-bottom:9px;position:relative;transition:border-color .15s}
 .dp-card.booked{border-color:var(--blue)}
-.dp-card::before{content:'';position:absolute;left:0;top:12px;bottom:12px;width:4px;border-radius:0 4px 4px 0;background:var(--border);transition:background .2s}
+.dp-card::before{content:'';position:absolute;left:0;top:12px;bottom:12px;width:4px;border-radius:0 3px 3px 0;background:var(--border)}
 .dp-card.booked::before{background:var(--blue)}
-.dp-top{display:flex;align-items:flex-start;gap:9px;padding-left:10px}
-.dp-icon{width:34px;height:34px;border-radius:9px;background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;flex-shrink:0}
+.dp-top{display:flex;align-items:flex-start;gap:8px;padding-left:10px}
+.dp-checkbox{width:19px;height:19px;border-radius:5px;border:2px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s;margin-top:1px}
+.dp-checkbox.on{background:var(--blue);border-color:var(--blue)}
+.dp-checkbox.on::after{content:'\f00c';font-family:'Font Awesome 6 Free';font-weight:900;color:#fff;font-size:9px}
+.dp-icon{width:32px;height:32px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px;flex-shrink:0}
 .dp-card.booked .dp-icon{background:var(--blue-lt);color:var(--blue)}
-.dp-info{flex:1;min-width:0}
-.dp-name-row{display:flex;align-items:center;gap:5px}
 .dp-name{font-size:13px;font-weight:600;color:var(--ink)}
-.dp-meta{font-size:11px;color:var(--muted);margin-top:2px}
-.dp-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
-.dp-add-btn{width:28px;height:28px;border-radius:8px;background:var(--blue);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px}
-.dp-clear-btn{width:28px;height:28px;border-radius:8px;background:var(--red-lt);color:var(--red);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;display:none}
+.dp-meta{font-size:11px;color:var(--muted);margin-top:1px}
+.dp-actions{display:flex;align-items:center;gap:5px;flex-shrink:0;margin-left:auto}
+.dp-clear-btn{width:26px;height:26px;border-radius:7px;background:var(--red-lt);color:var(--red);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;display:none}
 .dp-card.booked .dp-clear-btn{display:flex}
-.dp-chips{display:flex;gap:6px;margin-top:9px;padding-left:10px;overflow-x:auto;scrollbar-width:none}
-.dp-chips::-webkit-scrollbar{display:none}
-.s-chip{flex-shrink:0;display:flex;align-items:center;gap:5px;background:var(--blue);color:#fff;border-radius:8px;padding:5px 8px;font-size:10.5px;font-weight:500}
-.s-chip .del{width:13px;height:13px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:7px;cursor:pointer}
-.dp-add-inline{display:flex;align-items:center;gap:5px;background:var(--blue-lt);color:var(--blue);border:1.5px dashed #BFDBFE;border-radius:8px;padding:5px 11px;font-size:11px;font-weight:600;cursor:pointer;flex-shrink:0}
+.dp-info-capsule{width:24px;height:24px;border-radius:50%;background:var(--blue-lt);border:1.5px solid #C7D7FF;display:flex;align-items:center;justify-content:center;cursor:default}
+.dp-info-capsule i{font-size:11px;color:var(--blue)}
+.dp-chips{display:flex;gap:5px;margin-top:8px;padding-left:10px;flex-wrap:wrap}
+.s-chip{display:flex;align-items:center;gap:4px;background:var(--blue);color:#fff;border-radius:7px;padding:4px 7px;font-size:10px;font-weight:500}
+.s-chip .del{width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:6px;cursor:pointer}
+.dp-add-inline{display:flex;align-items:center;gap:4px;background:var(--blue-lt);color:var(--blue);border:1.5px dashed #BFDBFE;border-radius:7px;padding:4px 10px;font-size:10px;font-weight:600;cursor:pointer}
 .dp-empty{font-size:11px;color:var(--muted);padding-left:10px;margin-top:7px;display:flex;align-items:center;gap:4px}
-
-/* SKELETON */
 .skel{background:linear-gradient(90deg,var(--border) 25%,#F3F4F6 50%,var(--border) 75%);background-size:200% 100%;animation:sk 1.2s ease infinite;border-radius:14px}
 @keyframes sk{from{background-position:200% 0}to{background-position:-200% 0}}
-.skel-card{height:76px;margin-bottom:10px}
+.skel-card{height:74px;margin-bottom:9px}
 
-/* ── OVERLAY ROOT ──
-   Sits OUTSIDE .body — directly in .phone — so it never
-   participates in body's scroll. z-index stacks on top. */
+/* ── REVIEW / PAYMENT ── */
+.rv-ad-preview{display:flex;align-items:center;gap:12px;background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:12px;margin-bottom:12px}
+.rv-ad-thumb{width:56px;height:56px;border-radius:10px;background:var(--bg);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--muted)}
+.rv-ad-thumb.video-thumb{background:var(--ink)}
+.rv-lbl{font-size:10px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.rv-val{font-size:14px;font-weight:700;color:var(--ink);margin-top:2px}
+.rv-ad-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.stats-row{display:grid;gap:9px;margin-bottom:12px}
+.stat-card{background:var(--ink);color:#fff;border-radius:13px;padding:12px 13px}
+.stat-lbl{font-size:10px;opacity:.6;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.stat-val{font-size:20px;font-weight:700;margin-top:2px}
+.rv-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px}
+.rv-row{padding:11px 12px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px}
+.rv-row:last-child{border-bottom:none}
+.rv-dp-icon{width:26px;height:26px;border-radius:7px;background:var(--blue-lt);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:1px}
+.rv-dp-name{font-size:13px;font-weight:600;color:var(--ink)}
+.rv-dp-sub{font-size:10px;color:var(--muted);margin-top:1px;margin-bottom:4px}
+.rv-chips{display:flex;flex-wrap:wrap;gap:4px}
+.rv-chip{background:var(--blue-lt);color:var(--blue);border-radius:5px;padding:2px 7px;font-size:10px;font-weight:500}
+.rv-token-pill{display:inline-flex;align-items:center;gap:3px;background:#EEF3FF;color:var(--blue);border-radius:5px;padding:2px 7px;font-size:10px;font-weight:600;margin-top:4px}
+.pay-pkg-card{background:var(--bg);border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid var(--border)}
+.pay-pkg-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0}
+.pay-pkg-row-lbl{font-size:13px;color:var(--muted)}
+.pay-pkg-row-val{font-size:13px;font-weight:700;color:var(--ink)}
+.pay-summary{background:var(--bg);border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid var(--border)}
+.pay-summary h3{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:12px}
+.pay-s-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0}
+.pay-s-lbl{font-size:13px;color:var(--muted)}
+.pay-s-val{font-size:13px;color:var(--ink);font-weight:500}
+.pay-divider{height:1px;background:var(--border);margin:8px 0}
+.pay-total-row{display:flex;align-items:center;justify-content:space-between}
+.pay-total-lbl{font-size:14px;font-weight:700;color:var(--ink)}
+.pay-total-val{font-size:17px;font-weight:800;color:var(--blue)}
+.btn-pay{width:100%;padding:16px;background:var(--blue);color:#fff;border:none;border-radius:13px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px}
+.btn-pay:active{background:var(--blue-dk)}
+.pay-secure{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);justify-content:center}
+.success-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:500px;text-align:center;padding:30px}
+.success-icon{width:68px;height:68px;border-radius:18px;background:var(--green);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;animation:pop .4s cubic-bezier(.3,1.5,.5,1)}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.success-title{font-size:21px;font-weight:700;color:var(--ink);margin-bottom:7px}
+.success-sub{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* ── FOOT / TOAST ── */
+.foot{position:absolute;bottom:0;left:0;right:0;padding:12px 16px 22px;background:linear-gradient(transparent,var(--bg) 28%);z-index:10}
+.btn-main{width:100%;padding:15px;background:var(--blue);color:#fff;border:none;border-radius:13px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+.btn-main:active{background:var(--blue-dk)}
+.btn-main:disabled{background:var(--border);color:var(--muted);cursor:not-allowed}
+.toast{position:absolute;bottom:96px;left:14px;right:14px;background:var(--ink);color:#fff;padding:11px 14px;border-radius:11px;font-size:12px;font-weight:500;display:flex;align-items:center;gap:7px;transform:translateY(16px);opacity:0;transition:all .28s;pointer-events:none;z-index:400}
+.toast.show{transform:translateY(0);opacity:1}
+.toast i{color:var(--green);font-size:13px}
+
+/* ── OVERLAY ROOT ── */
 .overlay-root{position:absolute;inset:0;pointer-events:none;z-index:100}
-.overlay-root > *{pointer-events:auto}
+.overlay-root>*{pointer-events:auto}
 
-/* ── SLOT MODAL ── */
-.slot-modal{
-  position:absolute;inset:0;background:var(--white);
-  display:flex;flex-direction:column;
-  transform:translateX(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);
-  will-change:transform;
-}
-.slot-modal.open{transform:translateX(0)}
-.sm-hd{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--white)}
+/* ── MODALS ── */
+.slide-modal{position:absolute;inset:0;background:var(--white);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);will-change:transform}
+.slide-modal.open{transform:translateX(0)}
+.slide-up-modal{position:absolute;inset:0;background:var(--white);display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);will-change:transform}
+.slide-up-modal.open{transform:translateY(0)}
+.sm-hd{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--white)}
 .sm-title{flex:1;text-align:center;font-size:15px;font-weight:700;color:var(--ink)}
-.sm-body{flex:1;overflow-y:auto;padding:16px;scrollbar-width:none}
+.sm-body{flex:1;overflow-y:auto;padding:14px 16px;scrollbar-width:none}
 .sm-body::-webkit-scrollbar{display:none}
 .sm-foot{padding:12px 16px 20px;border-top:1px solid var(--border);flex-shrink:0;background:var(--white)}
 
-/* CALENDAR */
-.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.cal-nav-btn{width:30px;height:30px;border-radius:50%;border:none;background:var(--bg);cursor:pointer;color:var(--ink2);font-size:13px;display:flex;align-items:center;justify-content:center}
-.cal-month{font-size:15px;font-weight:600;color:var(--ink)}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:14px}
-.cal-dn{text-align:center;font-size:11px;color:var(--muted);font-weight:500;padding:5px 0}
-.cal-d{text-align:center;font-size:13px;color:var(--ink);padding:9px 0;border-radius:50%;cursor:pointer;transition:all .12s}
+/* ── CALENDAR ── */
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cal-nav-btn{width:28px;height:28px;border-radius:50%;border:none;background:var(--bg);cursor:pointer;color:var(--ink2);font-size:12px;display:flex;align-items:center;justify-content:center}
+.cal-month-lbl{font-size:14px;font-weight:600;color:var(--ink)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:12px}
+.cal-dn{text-align:center;font-size:10px;color:var(--muted);font-weight:500;padding:4px 0}
+.cal-d{text-align:center;font-size:12px;color:var(--ink);padding:8px 0;border-radius:50%;cursor:pointer;transition:all .12s}
 .cal-d.other{color:var(--muted)}
 .cal-d.past{color:#D1D5DB;cursor:default;pointer-events:none}
-.cal-d.today{color:var(--blue);font-weight:700}
-.cal-d.sel{background:var(--blue);color:#fff;font-weight:700}
-.cal-d:not(.past):not(.sel):hover{background:var(--blue-lt);color:var(--blue)}
+.cal-d.today-d{color:var(--blue);font-weight:700}
+.cal-d.sel-start{background:var(--blue);color:#fff;font-weight:700}
+.cal-d.sel-end{background:var(--green);color:#fff;font-weight:700}
+.cal-d.in-range{background:var(--blue-lt);color:var(--blue);font-weight:500}
+.cal-d:not(.past):not(.sel-start):not(.sel-end):hover{background:var(--bg)}
 
-/* HOUR SELECTOR */
-.hour-drop{border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;background:var(--white);cursor:pointer;margin-bottom:14px;font-size:14px;font-weight:500;color:var(--ink)}
-.hour-drop i{color:var(--muted);font-size:12px}
+/* range hint */
+.range-hint{display:flex;align-items:center;gap:6px;margin-bottom:10px;padding:8px 11px;background:var(--blue-lt);border-radius:9px;font-size:11px;color:var(--blue);font-weight:500}
+.range-legend{display:flex;gap:10px;margin-bottom:10px}
+.rl-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.rl-dot{width:12px;height:12px;border-radius:50%}
 
-/* SLOT MODE — only Multi + Range */
-.slot-mode-tabs{display:flex;background:var(--bg);border-radius:10px;padding:3px;margin-bottom:12px;gap:2px}
-.smt{flex:1;text-align:center;padding:8px 0;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:var(--muted);transition:all .15s}
-.smt.on{background:var(--white);color:var(--blue);box-shadow:var(--sh)}
+/* ── HOUR MULTI SELECT ── */
+.hour-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-bottom:14px}
+.hr-cell{text-align:center;font-size:11px;font-weight:600;padding:9px 2px;border-radius:9px;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--muted);transition:all .12s;user-select:none}
+.hr-cell:active{transform:scale(.92)}
+.hr-cell.sel{background:var(--blue);border-color:var(--blue);color:#fff}
+.hr-cell:hover:not(.sel){background:var(--blue-lt);border-color:#BFDBFE;color:var(--blue)}
 
-/* RANGE HINT */
-.range-hint{display:flex;align-items:center;gap:7px;margin-bottom:11px;padding:9px 12px;background:var(--orange-lt);border-radius:10px;border:1px solid #FED7AA;font-size:11px;color:var(--orange);font-weight:500}
-
-/* SLOTS */
-.slots-hdr{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
-.slots-hdr-title{font-size:15px;font-weight:700;color:var(--ink)}
-.slots-hdr-sub{font-size:11px;color:var(--muted)}
-.slots-divider{height:1px;background:var(--border);margin-bottom:10px}
-.legend{display:flex;gap:12px;margin-bottom:10px}
-.leg{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
-.leg-dot{width:8px;height:8px;border-radius:3px}
-.sg-wrap{background:var(--white);border-radius:14px;border:1px solid var(--border);padding:10px;box-shadow:var(--sh)}
-.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.si{border:1px solid var(--border);border-radius:9px;padding:10px 4px;text-align:center;font-size:10.5px;font-weight:500;color:var(--ink);cursor:pointer;line-height:1.35;transition:all .12s;background:var(--white);user-select:none}
-.si:active:not(.busy){transform:scale(.95)}
+/* ── SLOT GRID ── */
+.sg-wrap{background:var(--white);border-radius:13px;border:1px solid var(--border);padding:9px;box-shadow:var(--sh);margin-bottom:14px}
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.si{border:1px solid var(--border);border-radius:8px;padding:9px 3px;text-align:center;font-size:10px;font-weight:500;color:var(--ink);cursor:pointer;line-height:1.35;transition:all .12s;background:var(--white);user-select:none}
+.si:active:not(.busy){transform:scale(.94)}
 .si.busy{background:var(--red-lt);border-color:#FECACA;color:var(--red);pointer-events:none}
 .si.sel{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
-.si.range-mid{background:var(--blue-lt);border-color:#93C5FD;color:var(--blue);font-weight:600}
-.si.range-end{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
-.si.range-start-only{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700;opacity:.75}
-
-.btn-save{width:100%;padding:15px;background:var(--blue);color:#fff;border:none;border-radius:13px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:background .15s}
+.btn-save{width:100%;padding:14px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:background .15s}
 .btn-save:disabled{background:var(--border);color:var(--muted);cursor:not-allowed}
 .btn-save:not(:disabled):active{background:var(--blue-dk)}
 
-/* ── LOC POPUP ── */
-.loc-popup{
-  position:absolute;inset:0;background:var(--white);
-  display:flex;flex-direction:column;
-  transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);
-  will-change:transform;
-}
-.loc-popup.open{transform:translateY(0)}
-.lp-hd{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
-.lp-title{flex:1;text-align:center;font-size:15px;font-weight:700;color:var(--ink)}
-.lp-search{margin:12px 16px 0;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:9px;flex-shrink:0}
-.lp-search input{border:none;outline:none;background:transparent;font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);flex:1}
-.lp-search input::placeholder{color:var(--muted)}
-.lp-list{flex:1;overflow-y:auto;padding:8px 16px 16px;scrollbar-width:none}
-.lp-list::-webkit-scrollbar{display:none}
-.lp-item{display:flex;align-items:center;gap:10px;padding:13px 0;border-bottom:1px solid var(--border);cursor:pointer}
-.lp-item:last-child{border-bottom:none}
-.lp-item:active{opacity:.7}
-.lp-item-check{width:22px;height:22px;border-radius:6px;background:var(--green-lt);border:1.5px solid #86EFAC;color:var(--green);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
-.lp-item-check.empty{background:var(--bg);border-color:var(--border);color:transparent}
-.lp-item-icon{width:36px;height:36px;border-radius:10px;background:var(--blue-lt);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.lp-item-name{font-size:14px;font-weight:600;color:var(--ink)}
-.lp-item-sub{font-size:11px;color:var(--muted);margin-top:2px}
-.lp-item-info{width:28px;height:28px;border-radius:50%;background:#FFF3E6;border:1.5px solid #FBD0A0;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto}
-.lp-item-info i{font-size:14px;color:#D97706}
-/* remove old lp-item-added — replaced by lp-item-check */
-.lp-item-added{display:none}
-
-/* ── S3 REVIEW ── */
-.review-media{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:13px;display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.rv-icon{width:38px;height:38px;border-radius:10px;background:var(--blue);color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center}
-.rv-lbl{font-size:10px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
-.rv-val{font-size:14px;font-weight:700;color:var(--ink);margin-top:2px}
-.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.stat-card{background:var(--ink);color:#fff;border-radius:14px;padding:13px 14px}
-.stat-lbl{font-size:10px;opacity:.6;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
-.stat-val{font-size:22px;font-weight:700;margin-top:3px}
-.rv-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px}
-.rv-row{padding:12px 13px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:9px}
-.rv-row:last-child{border-bottom:none}
-.rv-dp-icon{width:28px;height:28px;border-radius:7px;background:var(--blue-lt);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:1px}
-.rv-dp-name{font-size:13px;font-weight:600;color:var(--ink)}
-.rv-dp-sub{font-size:10px;color:var(--muted);margin-top:1px;margin-bottom:5px}
-.rv-chips{display:flex;flex-wrap:wrap;gap:5px}
-.rv-chip{background:var(--blue-lt);color:var(--blue);border-radius:6px;padding:3px 8px;font-size:10.5px;font-weight:500}
-
-/* ── AD PREVIEW CARD ── */
-.rv-ad-preview{display:flex;align-items:center;gap:13px;background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:13px;margin-bottom:14px;overflow:hidden}
-.rv-ad-thumb{width:62px;height:62px;border-radius:10px;background:var(--bg);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--muted);overflow:hidden;position:relative}
-.rv-ad-thumb.video-thumb{background:var(--ink)}
-.rv-ad-thumb.video-thumb::after{content:'';position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
-.rv-ad-thumb img{width:100%;height:100%;object-fit:cover;border-radius:10px}
-.rv-ad-info{flex:1;min-width:0}
-.rv-ad-sub{font-size:11px;color:var(--muted);margin-top:3px}
-/* token pill in dp row */
-.rv-token-pill{display:inline-flex;align-items:center;gap:4px;background:#EEF3FF;color:var(--blue);border-radius:6px;padding:3px 8px;font-size:10.5px;font-weight:600;margin-top:5px}
-.rv-token-pill i{font-size:9px}
-
-/* ── S4 PAYMENT ── */
-.pay-pkg-card{background:var(--bg);border-radius:16px;padding:18px;margin-bottom:14px;border:1px solid var(--border)}
-.pay-pkg-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.pay-pkg-icon{font-size:24px;color:var(--blue)}
-.pay-pkg-name{font-size:18px;font-weight:800;color:var(--ink)}
-.pay-pkg-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0}
-.pay-pkg-row-lbl{font-size:14px;color:var(--muted)}
-.pay-pkg-row-val{font-size:14px;font-weight:700;color:var(--ink)}
-.pay-info{display:flex;align-items:flex-start;gap:9px;background:var(--bg);border-radius:12px;padding:12px;margin-bottom:14px;border:1px solid var(--border)}
-.pay-info i{color:var(--muted);margin-top:1px;font-size:13px;flex-shrink:0}
-.pay-info p{font-size:12px;color:var(--muted);line-height:1.5}
-.pay-status{background:var(--bg);border-radius:16px;padding:22px;margin-bottom:14px;display:flex;flex-direction:column;align-items:center;gap:10px;border:1px solid var(--border)}
-.pay-status-icon{width:48px;height:48px;border-radius:50%;background:var(--green);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center}
-.pay-status-lbl{font-size:15px;font-weight:600;color:var(--ink)}
-.pay-summary{background:var(--bg);border-radius:16px;padding:18px;margin-bottom:14px;border:1px solid var(--border)}
-.pay-summary h3{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:14px}
-.pay-s-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0}
-.pay-s-lbl{font-size:14px;color:var(--muted)}
-.pay-s-val{font-size:14px;color:var(--ink);font-weight:500}
-.pay-divider{height:1px;background:var(--border);margin:10px 0}
-.pay-total-row{display:flex;align-items:center;justify-content:space-between}
-.pay-total-lbl{font-size:15px;font-weight:700;color:var(--ink)}
-.pay-total-val{font-size:18px;font-weight:800;color:var(--ink)}
-.pay-secure{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);margin-top:10px;justify-content:center}
-.btn-pay{width:100%;padding:17px;background:var(--blue);color:#fff;border:none;border-radius:14px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:background .15s;margin-bottom:10px}
-.btn-pay:active{background:var(--blue-dk)}
-
-/* ── S5 SUCCESS ── */
-.success-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:500px;text-align:center;padding:30px}
-.success-icon{width:72px;height:72px;border-radius:20px;background:var(--green);color:#fff;font-size:32px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;animation:pop .4s cubic-bezier(.3,1.5,.5,1)}
-@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
-.success-title{font-size:22px;font-weight:700;color:var(--ink);margin-bottom:8px}
-.success-sub{font-size:13px;color:var(--muted);line-height:1.6}
-
-/* BOTTOM NAV */
-.foot{position:absolute;bottom:0;left:0;right:0;padding:12px 16px 22px;background:linear-gradient(transparent,var(--bg) 28%);z-index:10}
-.btn-main{width:100%;padding:16px;background:var(--blue);color:#fff;border:none;border-radius:14px;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background .15s}
-.btn-main:active{background:var(--blue-dk)}
-.btn-main:disabled{background:var(--border);color:var(--muted);cursor:not-allowed}
-
-/* TOAST */
-.toast{position:absolute;bottom:96px;left:14px;right:14px;background:var(--ink);color:#fff;padding:12px 15px;border-radius:12px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px;transform:translateY(16px);opacity:0;transition:all .28s;pointer-events:none;z-index:400}
-.toast.show{transform:translateY(0);opacity:1}
-.toast i{color:var(--green);font-size:14px}
-
-/* ── USER TYPE TOGGLE ── */
-.user-type-wrap{background:var(--white);border-radius:16px;border:1.5px solid var(--border);padding:4px;display:flex;gap:3px;margin-bottom:16px}
-.ut-btn{flex:1;padding:10px 6px;border-radius:12px;text-align:center;cursor:pointer;transition:all .2s;font-size:13px;font-weight:600;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:4px}
-.ut-btn.on.individual{background:var(--blue);color:#fff}
-.ut-btn.on.business{background:var(--ink);color:#fff}
-.ut-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;background:var(--bg);color:var(--muted);transition:all .2s}
-.ut-btn.on .ut-icon{background:rgba(255,255,255,.2);color:#fff}
-.ut-badge{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-top:1px}
-
-/* ── BUSINESS SLOT MODAL ── */
-.biz-slot-modal{
-  position:absolute;inset:0;background:var(--white);
-  display:flex;flex-direction:column;
-  transform:translateX(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);
-  will-change:transform;z-index:200;
-}
-.biz-slot-modal.open{transform:translateX(0)}
-
-/* Recurrence tabs */
+/* ── RECURRENCE TABS ── */
 .recur-tabs{display:flex;background:var(--bg);border-radius:10px;padding:3px;gap:2px;margin-bottom:14px}
 .rt{flex:1;text-align:center;padding:7px 2px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;color:var(--muted);transition:all .15s;white-space:nowrap}
 .rt.on{background:var(--ink);color:#fff;box-shadow:var(--sh)}
 
-/* Multi-date grid */
-.md-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:14px}
-.md-d{text-align:center;font-size:12px;color:var(--ink);padding:8px 2px;border-radius:8px;cursor:pointer;transition:all .12s;border:1px solid transparent}
-.md-d.other{color:var(--muted)}
-.md-d.past{color:#D1D5DB;cursor:default;pointer-events:none}
-.md-d.today-biz{color:var(--blue);font-weight:700}
-.md-d.sel-biz{background:var(--ink);color:#fff;font-weight:700;border-color:var(--ink)}
-.md-d:not(.past):not(.sel-biz):hover{background:var(--blue-lt);color:var(--blue)}
-.md-d.has-conflict{position:relative}
-.md-d.has-conflict::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--orange)}
-
-/* Conflict preview card */
-.conflict-preview{background:var(--orange-lt);border:1.5px solid #FED7AA;border-radius:13px;padding:12px 13px;margin-bottom:14px}
-.cp-title{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--orange);margin-bottom:8px}
-.cp-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid #FED7AA;font-size:12px}
-.cp-row:last-child{border-bottom:none}
-.cp-date{color:var(--ink2);font-weight:500}
-.cp-stat{font-size:11px;font-weight:600}
-.cp-stat.ok{color:var(--green)}
-.cp-stat.partial{color:var(--orange)}
-.cp-stat.conflict{color:var(--red)}
-.cp-resolve{display:flex;gap:6px;margin-top:10px}
-.cp-res-btn{flex:1;padding:8px 6px;border-radius:9px;font-size:11px;font-weight:600;cursor:pointer;text-align:center;border:1.5px solid}
-.cp-res-btn.skip{background:var(--white);border-color:var(--border);color:var(--ink2)}
-.cp-res-btn.partial-ok{background:var(--orange-lt);border-color:var(--orange);color:var(--orange)}
-
-/* Summary strip */
-.biz-summary{background:var(--bg);border-radius:12px;padding:12px 13px;margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
-.bs-cell{text-align:center}
-.bs-val{font-size:17px;font-weight:800;color:var(--ink)}
-.bs-lbl{font-size:10px;color:var(--muted);margin-top:2px}
-.bs-cell.conflict .bs-val{color:var(--orange)}
-
-/* ── START DATE PICKER ── */
-.start-date-field{display:flex;align-items:center;gap:10px;background:var(--white);border:1.5px solid var(--border);border-radius:13px;padding:11px 14px;cursor:pointer;margin-bottom:6px;transition:border-color .15s}
-.start-date-field.set{border-color:var(--blue);background:var(--blue-lt)}
-.start-date-field.set .sdf-icon{background:var(--blue);color:#fff}
-.sdf-icon{width:32px;height:32px;border-radius:9px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--muted);flex-shrink:0;transition:all .15s}
-.sdf-body{flex:1;min-width:0}
-.sdf-lbl{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
-.sdf-val{font-size:14px;font-weight:700;color:var(--ink);margin-top:2px}
-.sdf-val.placeholder{color:var(--muted);font-weight:400;font-size:13px}
-.start-cal-wrap{background:var(--white);border:1.5px solid var(--blue);border-radius:14px;padding:12px 12px 8px;margin-bottom:14px}
-
-/* end date field — reuses start-date-field but with green accent */
-.end-date-field{display:flex;align-items:center;gap:10px;background:var(--white);border:1.5px solid var(--border);border-radius:13px;padding:11px 14px;cursor:pointer;margin-bottom:6px;transition:border-color .15s}
-.end-date-field.set{border-color:var(--green);background:var(--green-lt)}
-.end-date-field.set .edf-icon{background:var(--green);color:#fff}
-.edf-icon{width:32px;height:32px;border-radius:9px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--muted);flex-shrink:0;transition:all .15s}
-
-/* month picker */
-.month-picker-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:6px}
-.mp-cell{text-align:center;padding:9px 4px;border-radius:9px;font-size:12px;font-weight:500;color:var(--ink);cursor:pointer;border:1.5px solid var(--border);background:var(--white);transition:all .12s}
-.mp-cell.sel-start{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
-.mp-cell.sel-end{background:var(--green);border-color:var(--green);color:#fff;font-weight:700}
-.mp-cell.in-range{background:var(--blue-lt);border-color:#BFDBFE;color:var(--blue)}
-.mp-cell.past-month{color:#D1D5DB;pointer-events:none}
-.mp-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-
-/* weekday selector */
-.weekday-row{display:flex;gap:5px;margin-bottom:14px}
-.wd-btn{flex:1;text-align:center;padding:8px 0;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--muted);transition:all .12s}
+/* ── WEEKDAY SELECTOR ── */
+.weekday-row{display:flex;gap:4px;margin-bottom:12px}
+.wd-btn{flex:1;text-align:center;padding:8px 0;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--muted);transition:all .12s;user-select:none}
 .wd-btn.on{background:var(--blue);border-color:var(--blue);color:#fff}
 
-/* conflict buttons — new style */
-.cp-res-btn{flex:1;padding:10px 8px;border-radius:11px;font-size:11px;font-weight:600;cursor:pointer;text-align:center;border:1.5px solid;transition:all .15s;line-height:1.4}
-.cp-res-btn.move{background:var(--white);border-color:var(--border);color:var(--ink2)}
-.cp-res-btn.move.on{background:var(--blue-lt);border-color:var(--blue);color:var(--blue)}
-.cp-res-btn.remove{background:var(--white);border-color:var(--border);color:var(--ink2)}
-.cp-res-btn.remove.on{background:var(--red-lt);border-color:var(--red);color:var(--red)}
+/* ── DAY OF MONTH GRID ── */
+.dom-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px}
+.dom-cell{text-align:center;font-size:12px;font-weight:500;color:var(--ink);padding:8px 2px;border-radius:8px;cursor:pointer;border:1.5px solid var(--border);background:var(--white);transition:all .12s;user-select:none}
+.dom-cell:active{transform:scale(.92)}
+.dom-cell.sel{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
+.dom-cell:hover:not(.sel){background:var(--blue-lt);border-color:#BFDBFE;color:var(--blue)}
+
+/* ── MONTH RANGE PILLS ── */
+.month-range-wrap{background:var(--white);border:1.5px solid var(--border);border-radius:13px;padding:11px;margin-bottom:14px}
+.month-range-row{display:flex;align-items:center;gap:6px;margin-bottom:9px}
+.month-range-row:last-child{margin-bottom:0}
+.mr-lbl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;width:30px;flex-shrink:0}
+.month-pills{display:flex;gap:4px;flex-wrap:wrap;flex:1}
+.mpill{padding:5px 9px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--bg);color:var(--muted);transition:all .12s;user-select:none}
+.mpill:active{transform:scale(.92)}
+.mpill.sel-from{background:var(--blue);border-color:var(--blue);color:#fff}
+.mpill.sel-to{background:var(--green);border-color:var(--green);color:#fff}
+.mpill.in-range{background:var(--blue-lt);border-color:#BFDBFE;color:var(--blue)}
+.mpill.past{color:#D1D5DB;pointer-events:none}
+
+/* ── MONTHLY PREVIEW ── */
+.monthly-preview{background:var(--blue-lt);border:1.5px solid #BFDBFE;border-radius:12px;padding:11px 13px;margin-bottom:14px}
+.mp-preview-title{font-size:11px;font-weight:700;color:var(--blue);margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.mp-dates-wrap{display:flex;flex-wrap:wrap;gap:4px}
+.mp-date-pill{background:var(--white);border:1px solid #BFDBFE;border-radius:5px;padding:3px 8px;font-size:10px;font-weight:500;color:var(--blue)}
+.mp-date-pill.conflict{background:var(--red-lt);border-color:#FECACA;color:var(--red)}
+
+/* ── LOCATION POPUP ── */
+.lp-search{margin:11px 16px 0;background:var(--bg);border:1.5px solid var(--border);border-radius:11px;padding:10px 13px;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.lp-search input{border:none;outline:none;background:transparent;font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);flex:1}
+.lp-search input::placeholder{color:var(--muted)}
+.lp-list{flex:1;overflow-y:auto;padding:8px 16px 16px;scrollbar-width:none}
+.lp-list::-webkit-scrollbar{display:none}
+.lp-item{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.lp-item:last-child{border-bottom:none}
+.lp-item-check{width:20px;height:20px;border-radius:6px;background:var(--green-lt);border:1.5px solid #86EFAC;color:var(--green);display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0}
+.lp-item-check.empty{background:var(--bg);border-color:var(--border);color:transparent}
+.lp-item-icon{width:34px;height:34px;border-radius:9px;background:var(--blue-lt);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.lp-item-name{font-size:13px;font-weight:600;color:var(--ink)}
+.lp-item-sub{font-size:11px;color:var(--muted);margin-top:1px}
+
+/* ── CONFLICT SCREEN (S-conflict) ── */
+.conflict-screen{display:none;padding:14px 16px 100px}
+.conflict-screen.on{display:block;animation:su .22s ease}
+.conf-dp-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:11px}
+.conf-dp-hd{display:flex;align-items:center;gap:9px;padding:11px 13px;border-bottom:1px solid var(--border);background:var(--bg)}
+.conf-dp-icon{width:30px;height:30px;border-radius:8px;background:var(--blue-lt);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.conf-dp-name{font-size:13px;font-weight:700;color:var(--ink);flex:1}
+.conf-dp-badge{font-size:10px;font-weight:600;padding:3px 8px;border-radius:6px}
+.conf-dp-badge.has-conflict{background:var(--red-lt);color:var(--red)}
+.conf-dp-badge.all-ok{background:var(--green-lt);color:var(--green)}
+.conf-slots-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:11px 13px}
+.conf-slot{border:1.5px solid var(--border);border-radius:9px;padding:9px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--ink);line-height:1.4;position:relative}
+.conf-slot.ok{background:var(--green-lt);border-color:#86EFAC;color:var(--green)}
+.conf-slot.conflict{background:var(--red-lt);border-color:#FECACA;color:var(--red)}
+.conf-slot.resolved{background:var(--blue-lt);border-color:#93C5FD;color:var(--blue)}
+.conf-slot-time{font-size:9.5px;font-weight:600;display:block;margin-bottom:2px}
+.conf-slot-label{font-size:8.5px;opacity:.75;display:block}
+.resolve-btn{display:block;width:100%;margin-top:6px;padding:4px 0;background:var(--orange);color:#fff;border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;cursor:pointer}
+.remove-btn{display:block;width:100%;margin-top:4px;padding:3px 0;background:var(--red-lt);color:var(--red);border:1px solid #FECACA;border-radius:6px;font-family:'Inter',sans-serif;font-size:9px;font-weight:700;cursor:pointer}
+.conf-summary-bar{background:var(--white);border:1.5px solid var(--border);border-radius:13px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-around}
+.csb-cell{text-align:center}
+.csb-val{font-size:18px;font-weight:800}
+.csb-lbl{font-size:10px;color:var(--muted);margin-top:1px}
+.csb-cell.ok .csb-val{color:var(--green)}
+.csb-cell.bad .csb-val{color:var(--red)}
+.csb-cell.done .csb-val{color:var(--blue)}
+
+/* ── RESOLVE POPUP ── */
+.resolve-popup{position:absolute;inset:0;background:rgba(17,24,39,.55);display:flex;align-items:flex-end;justify-content:center;z-index:300;opacity:0;pointer-events:none;transition:opacity .25s}
+.resolve-popup.open{opacity:1;pointer-events:auto}
+.resolve-sheet{background:var(--white);border-radius:20px 20px 0 0;padding:0;width:100%;max-height:72%;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
+.resolve-popup.open .resolve-sheet{transform:translateY(0)}
+.resolve-sheet-hd{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.resolve-sheet-title{flex:1;font-size:14px;font-weight:700;color:var(--ink)}
+.resolve-sheet-close{width:28px;height:28px;border-radius:50%;border:none;background:var(--bg);cursor:pointer;color:var(--ink2);font-size:11px;display:flex;align-items:center;justify-content:center}
+.resolve-sheet-body{flex:1;overflow-y:auto;padding:12px 16px 16px;scrollbar-width:none}
+.resolve-sheet-body::-webkit-scrollbar{display:none}
+.resolve-info{display:flex;align-items:center;gap:8px;background:var(--orange-lt);border:1px solid #FED7AA;border-radius:9px;padding:9px 11px;margin-bottom:12px;font-size:11px;color:var(--orange);font-weight:500}
+.alt-slot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.alt-slot{border:1.5px solid var(--border);border-radius:9px;padding:9px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--ink);cursor:pointer;line-height:1.35;background:var(--white);transition:all .12s;user-select:none}
+.alt-slot:active{transform:scale(.94)}
+.alt-slot.sel{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+.alt-slot.busy{background:var(--red-lt);border-color:#FECACA;color:var(--red);pointer-events:none}
+.resolve-sheet-foot{padding:10px 16px 18px;border-top:1px solid var(--border);flex-shrink:0;display:flex;gap:8px}
+.btn-remove-all{flex:1;padding:12px;background:var(--red-lt);color:var(--red);border:1.5px solid #FECACA;border-radius:11px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer}
+.btn-confirm-resolve{flex:2;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:11px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer}
+.btn-confirm-resolve:disabled{background:var(--border);color:var(--muted);cursor:not-allowed}
 </style>
 </head>
 <body>
 <div class="phone">
 
-  <!-- STATUS -->
   <div class="sb">
     <span style="font-size:13px;font-weight:700">9:41</span>
     <div class="sb-r"><i class="fas fa-signal"></i><i class="fas fa-wifi"></i><i class="fas fa-battery-three-quarters"></i></div>
   </div>
-
-  <!-- HEADER -->
   <div class="hd">
     <div class="hd-back" id="backBtn"><i class="fas fa-arrow-left"></i></div>
     <div class="hd-title" id="hdTitle">New Campaign</div>
     <div style="width:34px"></div>
   </div>
-
-  <!-- PROGRESS -->
   <div class="prog">
     <div class="prog-track"><div class="prog-fill" id="progFill" style="width:20%"></div></div>
     <div class="prog-lbls">
       <span class="pl act" id="pl1">Format</span>
       <span class="pl" id="pl2">Locations</span>
-      <span class="pl" id="pl3">Review</span>
-      <span class="pl" id="pl4">Payment</span>
-      <span class="pl" id="pl5">Done</span>
+      <span class="pl" id="pl3">Conflicts</span>
+      <span class="pl" id="pl4">Review</span>
+      <span class="pl" id="pl5">Pay</span>
     </div>
   </div>
 
-  <!-- SCROLLABLE BODY -->
   <div class="body">
 
     <!-- S1: FORMAT -->
@@ -468,175 +350,131 @@ body{font-family:'Inter',sans-serif;background:#1a1f2e;min-height:100vh;display:
       <div class="lbl">Account Type</div>
       <div class="user-type-wrap">
         <div class="ut-btn individual on" id="utIndividual" onclick="setUserType('individual')">
-          <div class="ut-icon"><i class="fas fa-user"></i></div>
-          <span>Individual</span>
-          <span class="ut-badge">Personal</span>
+          <i class="fas fa-user" style="font-size:12px"></i> Individual
         </div>
         <div class="ut-btn business" id="utBusiness" onclick="setUserType('business')">
-          <div class="ut-icon"><i class="fas fa-building"></i></div>
-          <span>Business</span>
-          <span class="ut-badge">Recurring</span>
-        </div>
-      </div>
-      <div class="lbl">Choose Ad Format</div>
-      <div class="media-grid">
-        <div class="mc" onclick="pickMedia(this,'Text AD','fa-align-left')">
-          <div class="mc-icon"><i class="fas fa-align-left"></i></div>
-          <h4>Text</h4><p>Simple message</p>
-          <div class="mc-chk"><i class="fas fa-check"></i></div>
-        </div>
-        <div class="mc on" onclick="pickMedia(this,'Image AD','fa-image')">
-          <div class="mc-icon"><i class="fas fa-image"></i></div>
-          <h4>Image</h4><p>Visual impact</p>
-          <div class="mc-chk"><i class="fas fa-check"></i></div>
-        </div>
-        <div class="mc" onclick="pickMedia(this,'Video AD','fa-video')">
-          <div class="mc-icon"><i class="fas fa-video"></i></div>
-          <h4>Video</h4><p>Full motion</p>
-          <div class="mc-chk"><i class="fas fa-check"></i></div>
-        </div>
-        <div class="mc" onclick="pickMedia(this,'Template','fa-th-large')">
-          <div class="mc-icon"><i class="fas fa-th-large"></i></div>
-          <h4>Template</h4><p>Ready-made</p>
-          <div class="mc-chk"><i class="fas fa-check"></i></div>
+          <i class="fas fa-building" style="font-size:12px"></i> Business
         </div>
       </div>
 
-      <!-- VIDEO OPTIONS — only when Video selected -->
+      <div class="lbl">Ad Format</div>
+      <div class="media-row">
+        <div class="mchip" onclick="pickMedia(this,'Video AD','fa-video')">
+          <div class="mchip-icon"><i class="fas fa-video"></i></div>
+          <span class="mchip-lbl">Video</span>
+        </div>
+        <div class="mchip on" onclick="pickMedia(this,'Image AD','fa-image')">
+          <div class="mchip-icon"><i class="fas fa-image"></i></div>
+          <span class="mchip-lbl">Image</span>
+        </div>
+        <div class="mchip" onclick="pickMedia(this,'Text AD','fa-align-left')">
+          <div class="mchip-icon"><i class="fas fa-align-left"></i></div>
+          <span class="mchip-lbl">Text</span>
+        </div>
+        <div class="mchip" onclick="pickMedia(this,'Template','fa-th-large')">
+          <div class="mchip-icon"><i class="fas fa-th-large"></i></div>
+          <span class="mchip-lbl">Template</span>
+        </div>
+      </div>
+
       <div class="video-opts" id="videoOpts">
-
-        <!-- Compact video upload -->
-        <div class="vid-upload-zone" id="vidUploadZone" onclick="handleVideoUpload()" style="display:flex;align-items:center;gap:12px;padding:12px 14px;text-align:left;border-radius:12px">
-          <div style="width:36px;height:36px;border-radius:10px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0"><i class="fas fa-cloud-upload-alt"></i></div>
+        <div id="vidUploadZone" class="vid-upload-zone" onclick="handleVideoUpload()" style="margin-bottom:10px">
+          <div style="width:34px;height:34px;border-radius:9px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0"><i class="fas fa-cloud-upload-alt"></i></div>
           <div style="flex:1;min-width:0">
-            <div class="vid-upload-title" style="margin-bottom:1px;font-size:13px">Upload Video</div>
-            <div class="vid-upload-sub" style="margin-bottom:0;font-size:11px">MP4, MOV · Max 500MB</div>
+            <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:1px">Upload Video</div>
+            <div style="font-size:10px;color:#6B96F0">MP4, MOV · Max 500MB</div>
           </div>
-          <div class="vid-upload-btn" style="flex-shrink:0;font-size:11px;padding:6px 14px">Browse</div>
+          <div style="font-size:11px;font-weight:600;background:var(--blue);color:#fff;padding:5px 12px;border-radius:7px;flex-shrink:0">Browse</div>
         </div>
-        <div class="vid-preview" id="vidPreview" style="display:none">
+        <div class="vid-preview" id="vidPreview" style="display:none;margin-bottom:10px">
           <div class="vid-preview-icon"><i class="fas fa-film"></i></div>
-          <div class="vid-preview-info">
-            <div class="vid-preview-name" id="vidFileName">campaign_video.mp4</div>
+          <div style="flex:1;min-width:0">
+            <div class="vid-preview-name">campaign_video.mp4</div>
             <div class="vid-preview-size">24.6 MB · 30s</div>
           </div>
           <div class="vid-preview-remove" onclick="removeVideo()"><i class="fas fa-times"></i></div>
         </div>
-
-        <div class="lbl" style="margin-bottom:6px;margin-top:14px">Video Settings</div>
-
-        <!-- Duration (read-only) -->
         <div class="opt-row">
           <div class="opt-icon"><i class="fas fa-clock"></i></div>
-          <div class="opt-body">
-            <div class="opt-label">Video Duration</div>
-            <div class="opt-sub">From your uploaded file</div>
-          </div>
-          <div class="opt-right">
-            <div class="dur-badge" id="durBadge">—</div>
-          </div>
+          <div class="opt-body"><div class="opt-label">Duration</div><div class="opt-sub">From uploaded file</div></div>
+          <div class="dur-badge" id="durBadge">—</div>
         </div>
-
-        <!-- Continue Loop -->
         <div class="opt-row">
           <div class="opt-icon"><i class="fas fa-sync-alt"></i></div>
-          <div class="opt-body">
-            <div class="opt-label">Continue Loop</div>
-            <div class="opt-sub" id="loopSub">Video restarts at each slot independently</div>
-          </div>
-          <div class="opt-right">
-            <div class="tip-wrap">
-              <div class="info-icon"><i class="fas fa-info-circle" style="color:var(--muted);font-size:14px"></i></div>
-              <div class="tip">
-                <strong>ON:</strong> 30s video, 20s slot → slot 1 plays 0–20s, slot 2 plays 21–30s then restarts.<br><br>
-                <strong>OFF:</strong> Each slot plays your video from 0s, up to slot duration.
-              </div>
-            </div>
-            <div class="toggle" id="loopToggle" onclick="toggleLoop()"></div>
-          </div>
+          <div class="opt-body"><div class="opt-label">Continue Loop</div><div class="opt-sub" id="loopSub">Restarts each slot</div></div>
+          <div class="toggle" id="loopToggle" onclick="toggleLoop()"></div>
         </div>
       </div>
     </div>
 
     <!-- S2: LOCATIONS -->
     <div class="scr" id="s2">
-      <!-- Fixed header row: scrollable city tabs + fixed + button -->
       <div class="loc-header-row">
         <div class="loc-tabs-scroll" id="locTabsScroll"></div>
-        <button class="loc-add-btn" onclick="openLocPopup()" title="Add location">
-          <i class="fas fa-plus"></i>
-        </button>
+        <button class="loc-add-btn" onclick="openLocPopup()"><i class="fas fa-plus"></i></button>
       </div>
       <div id="dpList"></div>
     </div>
 
-    <!-- S3: REVIEW -->
+    <!-- S3: CONFLICT SCREEN -->
     <div class="scr" id="s3">
-      <div class="lbl">Campaign Summary</div>
+      <div class="lbl">Conflict Resolution</div>
+      <div class="conf-summary-bar" id="confSummaryBar">
+        <div class="csb-cell ok"><div class="csb-val" id="csbOk">0</div><div class="csb-lbl">OK Slots</div></div>
+        <div class="csb-cell bad"><div class="csb-val" id="csbBad">0</div><div class="csb-lbl">Conflicts</div></div>
+        <div class="csb-cell done"><div class="csb-val" id="csbDone">0</div><div class="csb-lbl">Resolved</div></div>
+      </div>
+      <div id="confDPList"></div>
+    </div>
 
-      <!-- Ad preview card -->
+    <!-- S4: REVIEW -->
+    <div class="scr" id="s4">
+      <div class="lbl">Campaign Summary</div>
       <div class="rv-ad-preview" id="rvAdPreview">
         <div class="rv-ad-thumb" id="rvAdThumb"></div>
-        <div class="rv-ad-info">
+        <div style="flex:1;min-width:0">
           <div class="rv-lbl">Ad Format</div>
           <div class="rv-val" id="rvName">Image AD</div>
           <div class="rv-ad-sub" id="rvAdSub"></div>
         </div>
       </div>
-
-      <!-- 3-stat row -->
       <div class="stats-row" style="grid-template-columns:1fr 1fr 1fr">
         <div class="stat-card"><div class="stat-lbl">Displays</div><div class="stat-val" id="rvDPs">0</div></div>
         <div class="stat-card"><div class="stat-lbl">Slots</div><div class="stat-val" id="rvSlots">0</div></div>
-        <div class="stat-card" style="background:var(--blue)"><div class="stat-lbl">Total Tokens Required</div><div class="stat-val" id="rvTokens">0</div></div>
+        <div class="stat-card" style="background:var(--blue)"><div class="stat-lbl">Tokens</div><div class="stat-val" id="rvTokens">0</div></div>
       </div>
-
       <div class="lbl">Booked Locations</div>
       <div class="rv-card" id="rvRows"></div>
     </div>
 
-    <!-- S4: PAYMENT -->
-    <div class="scr" id="s4">
+    <!-- S5: PAYMENT -->
+    <div class="scr" id="s5">
       <div class="lbl">Payment</div>
       <div class="pay-pkg-card">
-        <div class="pay-pkg-head">
-          <i class="fas fa-coins pay-pkg-icon"></i>
-          <span class="pay-pkg-name">Token Summary</span>
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:14px">
+          <i class="fas fa-coins" style="font-size:22px;color:var(--blue)"></i>
+          <span style="font-size:17px;font-weight:800;color:var(--ink)">Token Summary</span>
         </div>
         <div class="pay-pkg-row"><span class="pay-pkg-row-lbl">Display Points</span><span class="pay-pkg-row-val" id="payDPs">0</span></div>
         <div class="pay-pkg-row"><span class="pay-pkg-row-lbl">Total Slots</span><span class="pay-pkg-row-val" id="paySlots">0</span></div>
-        <div class="pay-pkg-row" style="margin-top:6px;padding-top:10px;border-top:1px solid var(--border)">
-          <span class="pay-pkg-row-lbl" style="font-weight:700;color:var(--ink)">Total Tokens Required</span>
-          <span class="pay-pkg-row-val" style="color:var(--blue);font-size:18px" id="payTokens">0</span>
+        <div class="pay-pkg-row" style="margin-top:6px;padding-top:9px;border-top:1px solid var(--border)">
+          <span style="font-size:14px;font-weight:700;color:var(--ink)">Total Tokens</span>
+          <span style="font-size:17px;font-weight:800;color:var(--blue)" id="payTokens">0</span>
         </div>
-      </div>
-      <div class="pay-info">
-        <i class="fas fa-info-circle"></i>
-        <p>Tokens are deducted from your balance. Each display point has its own token rate per slot.</p>
-      </div>
-      <div class="pay-status">
-        <div class="pay-status-icon"><i class="fas fa-check"></i></div>
-        <div class="pay-status-lbl">Ready to confirm</div>
       </div>
       <div class="pay-summary">
         <h3>Booking Summary</h3>
         <div class="pay-s-row"><span class="pay-s-lbl">Display Points</span><span class="pay-s-val" id="paySumDPs">0</span></div>
         <div class="pay-s-row"><span class="pay-s-lbl">Slots booked</span><span class="pay-s-val" id="paySumSlots">0</span></div>
         <div class="pay-divider"></div>
-        <div class="pay-total-row">
-          <span class="pay-total-lbl">Total Tokens</span>
-          <span class="pay-total-val" id="payTotal" style="color:var(--blue)">0</span>
-        </div>
+        <div class="pay-total-row"><span class="pay-total-lbl">Total Tokens</span><span class="pay-total-val" id="payTotal">0</span></div>
       </div>
-      <button class="btn-pay" onclick="goStep(5)">
-        <i class="fas fa-coins"></i>
-        Confirm &amp; Deduct Tokens — <span id="payBtnAmt">0</span>
-      </button>
-      <div class="pay-secure"><i class="fas fa-shield-alt"></i> Secured by Stripe. Your token balance is verified before deduction.</div>
+      <button class="btn-pay" onclick="goStep(6)"><i class="fas fa-coins"></i>Confirm &amp; Deduct — <span id="payBtnAmt">0</span> tokens</button>
+      <div class="pay-secure"><i class="fas fa-shield-alt"></i> Secured by Stripe</div>
     </div>
 
-    <!-- S5: SUCCESS -->
-    <div class="scr" id="s5">
+    <!-- S6: SUCCESS -->
+    <div class="scr" id="s6">
       <div class="success-wrap">
         <div class="success-icon"><i class="fas fa-check"></i></div>
         <div class="success-title">Campaign Live!</div>
@@ -646,119 +484,78 @@ body{font-family:'Inter',sans-serif;background:#1a1f2e;min-height:100vh;display:
 
   </div><!-- end .body -->
 
-  <!-- ══ OVERLAY ROOT — outside .body, inside .phone ══ -->
-  <!-- Modals here NEVER scroll with body content -->
+  <!-- OVERLAY ROOT -->
   <div class="overlay-root">
 
-    <!-- SLOT MODAL -->
-    <div class="slot-modal" id="slotModal">
+    <!-- INDIVIDUAL SLOT MODAL -->
+    <div class="slide-modal" id="slotModal">
       <div class="sm-hd">
         <div class="hd-back" onclick="closeSlotModal()"><i class="fas fa-arrow-left"></i></div>
-        <div class="sm-title" id="smTitle">Select Slot</div>
+        <div class="sm-title" id="smTitle">Book Slots</div>
         <div style="width:34px"></div>
       </div>
       <div class="sm-body">
-        <!-- Calendar -->
+        <!-- Single calendar: tap start then end -->
+        <div class="lbl" style="margin-bottom:6px">Date Range</div>
+        <div class="range-hint"><i class="fas fa-info-circle"></i>Tap start date, then end date</div>
+        <div class="range-legend">
+          <div class="rl-item"><div class="rl-dot" style="background:var(--blue)"></div>Start</div>
+          <div class="rl-item"><div class="rl-dot" style="background:var(--green)"></div>End</div>
+          <div class="rl-item"><div class="rl-dot" style="background:var(--blue-lt);border:1px solid #93C5FD"></div>Range</div>
+        </div>
         <div class="cal-nav">
-          <div class="cal-nav-btn" onclick="chMonth(-1)"><i class="fas fa-chevron-left"></i></div>
-          <div class="cal-month" id="calMonth"></div>
-          <div class="cal-nav-btn" onclick="chMonth(1)"><i class="fas fa-chevron-right"></i></div>
+          <div class="cal-nav-btn" onclick="chMonth('ind',-1)"><i class="fas fa-chevron-left"></i></div>
+          <div class="cal-month-lbl" id="indCalMonth"></div>
+          <div class="cal-nav-btn" onclick="chMonth('ind',1)"><i class="fas fa-chevron-right"></i></div>
         </div>
-        <div class="cal-grid" id="calGrid"></div>
+        <div class="cal-grid" id="indCalGrid"></div>
 
-        <!-- Hour -->
-        <div class="hour-drop" onclick="cycleHour()">
-          <span id="hourLabel">11 hrs</span>
-          <i class="fas fa-chevron-down"></i>
-        </div>
+        <div class="lbl" style="margin-bottom:8px">Hours <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">— select one or more</span></div>
+        <div class="hour-grid" id="indHourGrid"></div>
 
-        <!-- Slot mode: Multiple | Range only -->
-        <div class="slot-mode-tabs">
-          <div class="smt on" data-mode="multi" onclick="setSlotMode('multi')">Multiple</div>
-          <div class="smt" data-mode="range" onclick="setSlotMode('range')" id="rangeTab" style="display:none">Range</div>
-        </div>
-
-        <!-- Range hint -->
-        <div class="range-hint" id="rangeHint" style="display:none">
-          <i class="fas fa-film"></i>
-          Tap first slot → tap last slot — all in between auto-select
-        </div>
-
-        <!-- Slots -->
-        <div class="slots-hdr">
-          <div class="slots-hdr-title">Slots</div>
-          <div class="slots-hdr-sub" id="slotsHdrSub">Tap to select multiple</div>
-        </div>
-        <div class="slots-divider"></div>
-        <div class="legend">
-          <div class="leg"><div class="leg-dot" style="background:var(--blue)"></div>Available</div>
-          <div class="leg"><div class="leg-dot" style="background:var(--red-lt);border:1px solid #FECACA"></div>Busy</div>
-        </div>
-        <div class="sg-wrap"><div class="sg" id="slotsGrid"></div></div>
+        <div class="lbl" style="margin-bottom:8px">Slots <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">— tap to select</span></div>
+        <div class="sg-wrap"><div class="sg" id="indSlotsGrid"></div></div>
       </div>
       <div class="sm-foot">
-        <button class="btn-save" id="saveSlotBtn" disabled onclick="saveSlot()">Select slots first</button>
+        <button class="btn-save" id="indSaveBtn" disabled onclick="saveIndSlot()">Select date &amp; slots</button>
       </div>
     </div>
 
     <!-- BUSINESS SLOT MODAL -->
-    <div class="biz-slot-modal" id="bizSlotModal">
+    <div class="slide-modal" id="bizSlotModal">
       <div class="sm-hd">
         <div class="hd-back" onclick="closeBizSlotModal()"><i class="fas fa-arrow-left"></i></div>
         <div class="sm-title" id="bizSmTitle">Schedule Slots</div>
         <div style="width:34px"></div>
       </div>
-      <div class="sm-body" id="bizSmBody">
-
-        <div class="lbl" style="margin-bottom:8px">Start Date</div>
-        <div class="start-date-field" id="bizStartField" onclick="toggleBizStartCal()">
-          <div class="sdf-icon"><i class="fas fa-calendar-day"></i></div>
-          <div class="sdf-body">
-            <div class="sdf-lbl">Campaign starts</div>
-            <div class="sdf-val placeholder" id="bizStartVal">Tap to choose date</div>
-          </div>
-          <i class="fas fa-chevron-down" id="bizStartChevron" style="color:var(--muted);font-size:11px;transition:transform .2s"></i>
-        </div>
-        <div id="bizStartCalWrap" style="display:none"></div>
-
-        <!-- End date / extra range fields — rendered dynamically -->
-        <div id="bizRangeFields"></div>
-
+      <div class="sm-body">
         <div class="lbl" style="margin-bottom:8px">Recurrence</div>
         <div class="recur-tabs">
           <div class="rt on" data-recur="daily"   onclick="setRecur('daily')">Daily</div>
           <div class="rt"    data-recur="weekly"  onclick="setRecur('weekly')">Weekly</div>
           <div class="rt"    data-recur="monthly" onclick="setRecur('monthly')">Monthly</div>
         </div>
+        <!-- Dynamic schedule fields -->
+        <div id="bizScheduleFields"></div>
 
-        <div class="hour-drop" onclick="bizCycleHour()">
-          <span id="bizHourLabel">11 hrs</span>
-          <i class="fas fa-chevron-down"></i>
-        </div>
+        <div class="lbl" style="margin-bottom:8px">Hours <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">— select one or more</span></div>
+        <div class="hour-grid" id="bizHourGrid"></div>
 
-        <div class="lbl" style="margin-bottom:8px">Pick Slots <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">— tap to select multiple</span></div>
-        <div class="sg-wrap" style="margin-bottom:14px"><div class="sg" id="bizSlotsGrid"></div></div>
+        <div class="lbl" style="margin-bottom:8px">Slots <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">— tap to select</span></div>
+        <div class="sg-wrap"><div class="sg" id="bizSlotsGrid"></div></div>
 
         <div id="bizDateArea"></div>
-        <div id="bizConflictWrap" style="display:none"></div>
-
-        <div class="biz-summary" id="bizSummaryStrip" style="display:none">
-          <div class="bs-cell"><div class="bs-val" id="bsSumDates">0</div><div class="bs-lbl">Dates</div></div>
-          <div class="bs-cell"><div class="bs-val" id="bsSumSlots">0</div><div class="bs-lbl">Slots/Day</div></div>
-          <div class="bs-cell conflict"><div class="bs-val" id="bsSumConflicts">0</div><div class="bs-lbl">Conflicts</div></div>
-        </div>
-
       </div>
       <div class="sm-foot">
-        <button class="btn-save" id="bizSaveBtn" disabled onclick="saveBizSlot()">Select slots &amp; dates first</button>
+        <button class="btn-save" id="bizSaveBtn" disabled onclick="saveBizSlot()">Set schedule &amp; slots</button>
       </div>
     </div>
 
     <!-- LOCATION POPUP -->
-    <div class="loc-popup" id="locPopup">
-      <div class="lp-hd">
+    <div class="slide-up-modal" id="locPopup">
+      <div class="sm-hd">
         <div class="hd-back" onclick="closeLocPopup()"><i class="fas fa-times"></i></div>
-        <div class="lp-title">Add Location</div>
+        <div class="sm-title">Add Location</div>
         <div style="width:34px"></div>
       </div>
       <div class="lp-search">
@@ -768,17 +565,31 @@ body{font-family:'Inter',sans-serif;background:#1a1f2e;min-height:100vh;display:
       <div class="lp-list" id="locPopupList"></div>
     </div>
 
+    <!-- RESOLVE POPUP -->
+    <div class="resolve-popup" id="resolvePopup" onclick="closeResolvePopup(event)">
+      <div class="resolve-sheet">
+        <div class="resolve-sheet-hd">
+          <div class="resolve-sheet-title" id="resolveTitle">Resolve Conflict</div>
+          <button class="resolve-sheet-close" onclick="closeResolvePopup()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="resolve-sheet-body">
+          <div class="resolve-info"><i class="fas fa-exclamation-triangle"></i><span id="resolveInfo">This slot is taken. Pick an alternative below.</span></div>
+          <div class="alt-slot-grid" id="altSlotGrid"></div>
+        </div>
+        <div class="resolve-sheet-foot">
+          <button class="btn-remove-all" onclick="removeConflictSlot()"><i class="fas fa-trash-alt"></i> Remove Slot</button>
+          <button class="btn-confirm-resolve" id="confirmResolveBtn" disabled onclick="confirmResolve()">Confirm Alternative</button>
+        </div>
+      </div>
+    </div>
+
   </div><!-- end .overlay-root -->
 
-  <!-- FOOTER -->
   <div class="foot">
     <button class="btn-main" id="mainBtn">Continue</button>
   </div>
-
-  <!-- TOAST -->
   <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastTxt"></span></div>
-
-</div><!-- end .phone -->
+</div>
 
 <script>
 /* ═══════════════ MOCK DATA ═══════════════ */
@@ -791,22 +602,17 @@ const ALL_CITIES=[
   {id:'mlt',name:'Multan',   region:'Punjab, PK'},
 ];
 const ALL_DPS=[
-  {id:'lhr-mm',city:'lhr',cityName:'Lahore',   name:'Main Mall Display', type:'Mall Screen',    screens:2, tokensPerSlot:5},
-  {id:'lhr-gb',city:'lhr',cityName:'Lahore',   name:'Gulberg Digital',   type:'Outdoor LED',    screens:1, tokensPerSlot:3},
-  {id:'lhr-lb',city:'lhr',cityName:'Lahore',   name:'Liberty Chowk',     type:'Junction Board', screens:3, tokensPerSlot:7},
-  {id:'skt-ch',city:'skt',cityName:'Sialkot',  name:'Chamber Digital',   type:'Indoor Screen',  screens:1, tokensPerSlot:2},
-  {id:'skt-ar',city:'skt',cityName:'Sialkot',  name:'Airport Road LED',  type:'Highway LED',    screens:2, tokensPerSlot:4},
-  {id:'isl-bl',city:'isl',cityName:'Islamabad',name:'Blue Area Screen',  type:'Commercial',     screens:4, tokensPerSlot:8},
-  {id:'isl-f7',city:'isl',cityName:'Islamabad',name:'F-7 Markaz',        type:'Outdoor LED',    screens:2, tokensPerSlot:4},
-  {id:'khi-cl',city:'khi',cityName:'Karachi',  name:'Clifton Sea View',  type:'Outdoor LED',    screens:3, tokensPerSlot:6},
-  {id:'khi-sa',city:'khi',cityName:'Karachi',  name:'Saddar Junction',   type:'Junction Board', screens:2, tokensPerSlot:4},
-  {id:'khi-dk',city:'khi',cityName:'Karachi',  name:'DHA Phase 6 LED',   type:'Outdoor LED',    screens:2, tokensPerSlot:5},
-  {id:'psh-qb',city:'psh',cityName:'Peshawar', name:'Qissa Khwani Bazar',type:'Junction Board', screens:2, tokensPerSlot:3},
-  {id:'psh-hp',city:'psh',cityName:'Peshawar', name:'Hayatabad Plaza',   type:'Mall Screen',    screens:1, tokensPerSlot:2},
-  {id:'psh-ur',city:'psh',cityName:'Peshawar', name:'University Road LED',type:'Highway LED',   screens:3, tokensPerSlot:5},
-  {id:'mlt-ch',city:'mlt',cityName:'Multan',   name:'Chungi No.9 Screen',type:'Outdoor LED',    screens:2, tokensPerSlot:3},
-  {id:'mlt-hb',city:'mlt',cityName:'Multan',   name:'Hussain Agahi LED', type:'Junction Board', screens:1, tokensPerSlot:2},
-  {id:'mlt-bz',city:'mlt',cityName:'Multan',   name:'Bahawalpur Road',   type:'Highway LED',    screens:2, tokensPerSlot:4},
+  {id:'lhr-mm',city:'lhr',cityName:'Lahore',   name:'Main Mall Display', type:'Mall Screen',    tokensPerSlot:5},
+  {id:'lhr-gb',city:'lhr',cityName:'Lahore',   name:'Gulberg Digital',   type:'Outdoor LED',    tokensPerSlot:3},
+  {id:'lhr-lb',city:'lhr',cityName:'Lahore',   name:'Liberty Chowk',     type:'Junction Board', tokensPerSlot:7},
+  {id:'skt-ch',city:'skt',cityName:'Sialkot',  name:'Chamber Digital',   type:'Indoor Screen',  tokensPerSlot:2},
+  {id:'skt-ar',city:'skt',cityName:'Sialkot',  name:'Airport Road LED',  type:'Highway LED',    tokensPerSlot:4},
+  {id:'isl-bl',city:'isl',cityName:'Islamabad',name:'Blue Area Screen',  type:'Commercial',     tokensPerSlot:8},
+  {id:'isl-f7',city:'isl',cityName:'Islamabad',name:'F-7 Markaz',        type:'Outdoor LED',    tokensPerSlot:4},
+  {id:'khi-cl',city:'khi',cityName:'Karachi',  name:'Clifton Sea View',  type:'Outdoor LED',    tokensPerSlot:6},
+  {id:'khi-sa',city:'khi',cityName:'Karachi',  name:'Saddar Junction',   type:'Junction Board', tokensPerSlot:4},
+  {id:'psh-qb',city:'psh',cityName:'Peshawar', name:'Qissa Khwani Bazar',type:'Junction Board', tokensPerSlot:3},
+  {id:'mlt-ch',city:'mlt',cityName:'Multan',   name:'Chungi No.9 Screen',type:'Outdoor LED',    tokensPerSlot:3},
 ];
 const BUSY_SLOTS={
   '2026-03-18':['11:43:00-11:43:20','11:44:20-11:44:40','11:45:40-11:46:00'],
@@ -821,60 +627,66 @@ const SLOT_LIST=[
   '11:45:40-11:46:00','11:46:00-11:46:20','11:46:20-11:46:40',
   '11:46:40-11:47:00','11:47:00-11:47:20','11:47:20-11:47:40',
 ];
-const RATE=2.50;
+const MONTHS_FULL=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTHS_SHORT=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DAYS_SHORT=['Su','Mo','Tu','We','Th','Fr','Sa'];
+const BIZ_YEAR=2026;
+const CURRENT_MONTH_IDX=2; // March
 
 /* ═══════════════ STATE ═══════════════ */
 const S={
   step:1,
-  userType:'individual',   // 'individual' | 'business'
+  userType:'individual',
   media:{label:'Image AD',icon:'fa-image'},
-  isVideo:false, loopOn:false, vidDur:30,
+  isVideo:false,loopOn:false,vidDur:30,
   activeCities:['lhr','skt','isl'],
   cityFilter:'selected',
-  slots:{},         // dpId -> [{time,date}]
-  checked:new Set(), // dpIds selected for campaign
-  sheetDP:null,
-  sheetDate:'2026-03-18',
-  sheetHour:11,
-  slotMode:'multi',
-  selSlots:[],      // indices for multi
-  rangeA:null,      // first tap index for range
-  rangeB:null,      // second tap index for range
-  calMonth:new Date(2026,2,1),
-  // business booking state
+  // slots: dpId -> [{time,date}]
+  slots:{},
+  checked:new Set(),
+  // individual slot modal
+  indDP:null,
+  indStartDate:null,
+  indEndDate:null,
+  indCalMonth:new Date(2026,2,1),
+  indSelHours:[],
+  indSelSlots:[],
+  // business slot modal
   bizDP:null,
-  bizHour:11,
   bizRecur:'daily',
-  bizStartDate:null,          // user-chosen start date (YYYY-MM-DD)
-  bizStartCalMonth:new Date(2026,2,1),
-  bizStartPickerOpen:false,
-  bizSelSlots:[],        // slot indices selected
-  bizSelDates:[],        // custom picked dates (YYYY-MM-DD)
+  bizStartDate:null,
+  bizEndDate:null,
   bizCalMonth:new Date(2026,2,1),
+  bizEndCalMonth:new Date(2026,2,1),
+  bizWeekdays:[1],
+  bizMonthDays:[],
+  bizFromMonth:null,
+  bizToMonth:null,
+  bizSelHours:[],
+  bizSelSlots:[],
+  // conflict
+  conflictData:{}, // dpId -> [{time,date,status:'ok'|'conflict'|'resolved'|'removed', resolvedTime?}]
+  resolveContext:null, // {dpId, slotIdx}
+  resolveSelected:null,
 };
 
 /* ═══════════════ BOOT ═══════════════ */
 function boot(){
-  // Pre-populate every DP with first available slot for default date
-  const defaultDate='2026-03-18';
-  const busy=BUSY_SLOTS[defaultDate]||[];
-  const firstFree=SLOT_LIST.find(s=>!busy.includes(s));
-  if(firstFree){
-    ALL_DPS.forEach(dp=>{
-      S.slots[dp.id]=[{time:firstFree,date:defaultDate}];
-    });
-  }
-  renderLocTabs();
-  renderDPList();
+  const def='2026-03-18';
+  const busy=BUSY_SLOTS[def]||[];
+  const free=SLOT_LIST.find(s=>!busy.includes(s));
+  if(free) ALL_DPS.forEach(dp=>{S.slots[dp.id]=[{time:free,date:def}];});
+  renderLocTabs();renderDPList();
 }
 
 /* ═══════════════ STEPS ═══════════════ */
 const STEP_CFG={
-  1:{title:'New Campaign',     prog:'20%',btn:'Continue',        pls:[1,0,0,0,0]},
-  2:{title:'Select Locations', prog:'40%',btn:'Review Campaign', pls:[2,1,0,0,0]},
-  3:{title:'Review Campaign',  prog:'60%',btn:'Go to Payment',   pls:[2,2,1,0,0]},
-  4:{title:'Payment',          prog:'80%',btn:'',                pls:[2,2,2,1,0]},
-  5:{title:'Done!',            prog:'100%',btn:'New Campaign',   pls:[2,2,2,2,1]},
+  1:{title:'New Campaign',     prog:'16%', btn:'Continue',         pls:[1,0,0,0,0]},
+  2:{title:'Select Locations', prog:'32%', btn:'Check Conflicts',  pls:[2,1,0,0,0]},
+  3:{title:'Conflict Review',  prog:'50%', btn:'Confirm & Continue', pls:[2,2,1,0,0]},
+  4:{title:'Review Campaign',  prog:'70%', btn:'Go to Payment',    pls:[2,2,2,1,0]},
+  5:{title:'Payment',          prog:'85%', btn:'',                 pls:[2,2,2,2,1]},
+  6:{title:'Done!',            prog:'100%',btn:'New Campaign',     pls:[2,2,2,2,2]},
 };
 function goStep(n){
   document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
@@ -884,209 +696,133 @@ function goStep(n){
   document.getElementById('hdTitle').textContent=c.title;
   document.getElementById('mainBtn').textContent=c.btn;
   document.getElementById('progFill').style.width=c.prog;
-  document.getElementById('mainBtn').style.display=(n===4)?'none':'block';
+  document.getElementById('mainBtn').style.display=(n===5)?'none':'block';
   for(let i=1;i<=5;i++){
     const el=document.getElementById('pl'+i);
     const v=c.pls[i-1];
     el.className='pl'+(v===1?' act':v===2?' done':'');
   }
-  if(n===3) buildReview();
-  if(n===4) buildPayment();
+  if(n===3) buildConflictScreen();
+  if(n===4) buildReview();
+  if(n===5) buildPayment();
 }
 
 document.getElementById('mainBtn').onclick=()=>{
-  if(S.step===1){ goStep(2); renderDPListSkel(); setTimeout(()=>renderDPList(),600); }
+  if(S.step===1){goStep(2);renderDPListSkel();setTimeout(()=>renderDPList(),500);}
   else if(S.step===2){
-    const valid=[...S.checked].filter(id=>(S.slots[id]||[]).length>0);
     if(!S.checked.size){toast('Check at least one display point');return;}
-    if(!valid.length){toast('Add at least one slot to a selected display point');return;}
+    const valid=[...S.checked].filter(id=>(S.slots[id]||[]).length>0);
+    if(!valid.length){toast('Add slots to at least one display point');return;}
     goStep(3);
   }
-  else if(S.step===3){ goStep(4); }
-  else if(S.step===5){ resetAll(); goStep(1); }
+  else if(S.step===3){
+    // Check all conflicts resolved
+    const unresolved=getUnresolvedCount();
+    if(unresolved>0){toast(`${unresolved} conflict${unresolved>1?'s':''} still need resolving`);return;}
+    // Apply resolved state to S.slots
+    applyConflictResolutions();
+    goStep(4);
+  }
+  else if(S.step===4){goStep(5);}
+  else if(S.step===6){resetAll();goStep(1);}
 };
 document.getElementById('backBtn').onclick=()=>{
-  if(S.step===2) goStep(1);
-  else if(S.step===3) goStep(2);
-  else if(S.step===4) goStep(3);
+  if(S.step===2)goStep(1);
+  else if(S.step===3)goStep(2);
+  else if(S.step===4)goStep(3);
+  else if(S.step===5)goStep(4);
 };
 
-/* ═══════════════ S1: MEDIA ═══════════════ */
-function handleVideoUpload(){
-  const zone=document.getElementById('vidUploadZone');
-  const preview=document.getElementById('vidPreview');
-  zone.style.display='none';
-  preview.style.display='flex';
-  document.getElementById('durBadge').textContent='30s';
-  S.vidDur=30;
-}
-function removeVideo(){
-  document.getElementById('vidUploadZone').style.display='block';
-  document.getElementById('vidPreview').style.display='none';
-  document.getElementById('durBadge').textContent='—';
-  S.vidDur=0;
+/* ═══════════════ S1 FORMAT ═══════════════ */
+function setUserType(t){
+  S.userType=t;
+  document.getElementById('utIndividual').classList.toggle('on',t==='individual');
+  document.getElementById('utBusiness').classList.toggle('on',t==='business');
 }
 function pickMedia(el,label,icon){
-  document.querySelectorAll('.mc').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('.mchip').forEach(c=>c.classList.remove('on'));
   el.classList.add('on');
-  S.media={label,icon};
-  S.isVideo=(label==='Video AD');
+  S.media={label,icon};S.isVideo=(label==='Video AD');
   document.getElementById('videoOpts').classList.toggle('show',S.isVideo);
-  // Show range tab only if video+loop
-  updateRangeTabVis();
+}
+function handleVideoUpload(){
+  document.getElementById('vidUploadZone').style.display='none';
+  document.getElementById('vidPreview').style.display='flex';
+  document.getElementById('durBadge').textContent='30s';S.vidDur=30;
+}
+function removeVideo(){
+  document.getElementById('vidUploadZone').style.display='flex';
+  document.getElementById('vidPreview').style.display='none';
+  document.getElementById('durBadge').textContent='—';S.vidDur=0;
 }
 function toggleLoop(){
   S.loopOn=!S.loopOn;
   document.getElementById('loopToggle').classList.toggle('on',S.loopOn);
-  document.getElementById('loopSub').textContent=S.loopOn
-    ?'Video continues across slots seamlessly'
-    :'Video restarts at each slot independently';
-  updateRangeTabVis();
-}
-function updateRangeTabVis(){
-  const show=S.isVideo&&S.loopOn;
-  document.getElementById('rangeTab').style.display=show?'':'none';
-  // Hide the whole mode tab bar when there's only one option (no range)
-  document.querySelector('.slot-mode-tabs').style.display=show?'flex':'none';
-  if(!show && S.slotMode==='range') setSlotMode('multi');
+  document.getElementById('loopSub').textContent=S.loopOn?'Continues across slots':'Restarts each slot';
 }
 
-/* ═══════════════ USER TYPE ═══════════════ */
-function setUserType(type){
-  S.userType=type;
-  document.getElementById('utIndividual').classList.toggle('on',type==='individual');
-  document.getElementById('utBusiness').classList.toggle('on',type==='business');
-}
-
-/* ═══════════════ S2: LOCATION TABS ═══════════════ */
+/* ═══════════════ S2 LOCATION TABS ═══════════════ */
 function renderLocTabs(){
-  const scroll=document.getElementById('locTabsScroll');
-  scroll.innerHTML='';
-
-  // "Selected" fixed first tab
+  const scroll=document.getElementById('locTabsScroll');scroll.innerHTML='';
   const bookedCnt=S.checked.size;
   const st=document.createElement('div');
   st.className='loc-tab sel-tab'+(S.cityFilter==='selected'?' on':'');
   st.innerHTML='Selected'+(bookedCnt>0?` <span class="bcnt">${bookedCnt}</span>`:'');
   st.onclick=()=>{S.cityFilter='selected';renderLocTabs();renderDPList();};
   scroll.appendChild(st);
-
-  // City tabs
   S.activeCities.forEach(cid=>{
-    const city=ALL_CITIES.find(c=>c.id===cid);
-    if(!city) return;
+    const city=ALL_CITIES.find(c=>c.id===cid);if(!city)return;
     const cnt=ALL_DPS.filter(d=>d.city===cid&&S.checked.has(d.id)).length;
     const t=document.createElement('div');
-    t.className='loc-tab'+(S.cityFilter===cid?' on':'');
-    t.dataset.city=cid;
-    t.innerHTML=city.name
-      +(cnt>0?` <span class="bcnt">${cnt}</span>`:'')
-      +` <div class="loc-tab-info"><i class="fas fa-info-circle"></i></div>`;
+    t.className='loc-tab'+(S.cityFilter===cid?' on':'');t.dataset.city=cid;
+    t.innerHTML=city.name+(cnt>0?` <span class="bcnt">${cnt}</span>`:'');
     t.onclick=()=>{S.cityFilter=cid;renderLocTabs();renderDPList();};
     scroll.appendChild(t);
   });
-
-  // Scroll active tab into view — only scroll the tab strip, never the page
-  requestAnimationFrame(()=>{
-    const activeTab = S.cityFilter==='selected'
-      ? scroll.querySelector('.sel-tab')
-      : scroll.querySelector(`[data-city="${S.cityFilter}"]`);
-    if(activeTab){
-      const tabLeft   = activeTab.offsetLeft;
-      const tabWidth  = activeTab.offsetWidth;
-      const stripW    = scroll.offsetWidth;
-      const target    = tabLeft - (stripW/2) + (tabWidth/2);
-      scroll.scrollTo({left: Math.max(0, target), behavior:'smooth'});
-    }
-  });
 }
-
 function renderDPListSkel(){
   document.getElementById('dpList').innerHTML=[1,2,3].map(()=>`<div class="skel skel-card"></div>`).join('');
 }
-
 function renderDPList(){
   const list=document.getElementById('dpList');
   let dps;
   if(S.cityFilter==='selected'){
     dps=ALL_DPS.filter(d=>S.checked.has(d.id));
-    if(!dps.length){
-      list.innerHTML=`<div style="text-align:center;padding:36px 20px;color:var(--muted);font-size:13px">
-        <i class="fas fa-map-marker-alt" style="display:block;font-size:28px;margin-bottom:10px;opacity:.25"></i>
-        No display points selected yet.<br>Tick a checkbox to include in campaign.
-      </div>`;
-      return;
-    }
+    if(!dps.length){list.innerHTML=`<div style="text-align:center;padding:34px 20px;color:var(--muted);font-size:13px"><i class="fas fa-map-marker-alt" style="display:block;font-size:26px;margin-bottom:10px;opacity:.25"></i>No display points selected yet.</div>`;return;}
   } else {
     dps=ALL_DPS.filter(d=>d.city===S.cityFilter);
   }
-
   list.innerHTML=dps.map(dp=>{
-    const chips=S.slots[dp.id]||[];
-    const booked=chips.length>0;
-    const isChecked=S.checked.has(dp.id);
-    return `
-    <div class="dp-card ${isChecked?'booked':''}" id="dpcard-${dp.id}">
+    const chips=S.slots[dp.id]||[];const isChecked=S.checked.has(dp.id);
+    return `<div class="dp-card${isChecked?' booked':''}" id="dpcard-${dp.id}">
       <div class="dp-top">
-        <div class="dp-checkbox ${isChecked?'on':''}" onclick="toggleCheck('${dp.id}',event)"></div>
+        <div class="dp-checkbox${isChecked?' on':''}" onclick="toggleCheck('${dp.id}',event)"></div>
         <div class="dp-icon"><i class="fas fa-tv"></i></div>
-        <div class="dp-info">
+        <div style="flex:1;min-width:0">
           <div class="dp-name">${dp.name}</div>
           <div class="dp-meta">${dp.type} · ${dp.cityName}</div>
         </div>
         <div class="dp-actions">
-          <button class="dp-clear-btn" ${isChecked?'':'style="display:none"'} onclick="clearDP('${dp.id}',event)"><i class="fas fa-trash-alt"></i></button>
+          <button class="dp-clear-btn" onclick="clearDP('${dp.id}',event)"><i class="fas fa-trash-alt"></i></button>
           <div class="dp-info-capsule"><i class="fas fa-info-circle"></i></div>
         </div>
       </div>
-      ${booked?`
-        <div class="dp-chips">
-          ${chips.map((ch,i)=>`
-            <div class="s-chip">
-              <span>${ch.time}</span>
-              <div class="del" onclick="removeChip('${dp.id}',${i},event)"><i class="fas fa-times"></i></div>
-            </div>`).join('')}
-          <div class="dp-add-inline" onclick="openSlotModal('${dp.id}')">
-            <i class="fas fa-plus" style="font-size:10px"></i> Add
-          </div>
-        </div>
-      `:`
-        <div class="dp-empty">
-          <i class="fas fa-clock" style="font-size:10px"></i>
-          No slots —
-          <span style="color:var(--blue);cursor:pointer;font-weight:600;margin-left:3px" onclick="openSlotModal('${dp.id}')">tap to book</span>
-        </div>`}
+      ${chips.length
+        ?`<div class="dp-chips">
+          ${chips.map((ch,i)=>`<div class="s-chip"><span>${ch.time}</span><div class="del" onclick="removeChip('${dp.id}',${i},event)"><i class="fas fa-times"></i></div></div>`).join('')}
+          <div class="dp-add-inline" onclick="openSlotModal('${dp.id}')"><i class="fas fa-plus" style="font-size:9px"></i> Add</div>
+        </div>`
+        :`<div class="dp-empty"><i class="fas fa-clock" style="font-size:9px"></i>No slots — <span style="color:var(--blue);cursor:pointer;font-weight:600;margin-left:3px" onclick="openSlotModal('${dp.id}')">tap to book</span></div>`
+      }
     </div>`;
   }).join('');
 }
+function toggleCheck(dpId,e){e.stopPropagation();if(S.checked.has(dpId))S.checked.delete(dpId);else S.checked.add(dpId);renderLocTabs();renderDPList();}
+function clearDP(dpId,e){e.stopPropagation();delete S.slots[dpId];S.checked.delete(dpId);renderLocTabs();renderDPList();toast('Display point cleared');}
+function removeChip(dpId,idx,e){e.stopPropagation();S.slots[dpId].splice(idx,1);if(!S.slots[dpId].length)delete S.slots[dpId];renderLocTabs();renderDPList();}
 
-function toggleCheck(dpId,e){
-  e.stopPropagation();
-  if(S.checked.has(dpId)) S.checked.delete(dpId);
-  else S.checked.add(dpId);
-  renderLocTabs();renderDPList();
-}
-
-function clearDP(dpId,e){
-  e.stopPropagation();
-  delete S.slots[dpId];
-  S.checked.delete(dpId);
-  renderLocTabs();renderDPList();
-  toast('Display point cleared');
-}
-function removeChip(dpId,idx,e){
-  e.stopPropagation();
-  S.slots[dpId].splice(idx,1);
-  if(!S.slots[dpId].length) delete S.slots[dpId];
-  renderLocTabs();renderDPList();
-}
-
-/* ═══════════════ LOCATION POPUP ═══════════════ */
-function openLocPopup(){
-  document.getElementById('locSearchInput').value='';
-  filterLocPopup();
-  document.getElementById('locPopup').classList.add('open');
-}
+/* ═══════════════ LOC POPUP ═══════════════ */
+function openLocPopup(){document.getElementById('locSearchInput').value='';filterLocPopup();document.getElementById('locPopup').classList.add('open');}
 function closeLocPopup(){document.getElementById('locPopup').classList.remove('open');}
 function filterLocPopup(){
   const q=document.getElementById('locSearchInput').value.toLowerCase();
@@ -1094,868 +830,533 @@ function filterLocPopup(){
   document.getElementById('locPopupList').innerHTML=filtered.slice(0,6).map(c=>{
     const added=S.activeCities.includes(c.id);
     return `<div class="lp-item" onclick="addCity('${c.id}')">
-      <div class="lp-item-check ${added?'':'empty'}">${added?'<i class="fas fa-check"></i>':''}</div>
+      <div class="lp-item-check${added?'':' empty'}">${added?'<i class="fas fa-check"></i>':''}</div>
       <div class="lp-item-icon"><i class="fas fa-city"></i></div>
-      <div style="flex:1;min-width:0">
-        <div class="lp-item-name">${c.name}</div>
-        <div class="lp-item-sub">${c.region}</div>
-      </div>
-      <div class="lp-item-info" onclick="event.stopPropagation()"><i class="fas fa-info-circle"></i></div>
+      <div style="flex:1;min-width:0"><div class="lp-item-name">${c.name}</div><div class="lp-item-sub">${c.region}</div></div>
     </div>`;
   }).join('');
 }
 function addCity(cid){
-  if(!S.activeCities.includes(cid)){
-    S.activeCities.push(cid);
-  }
-  S.cityFilter=cid;
-  closeLocPopup();
-  renderLocTabs();renderDPList();
+  if(!S.activeCities.includes(cid))S.activeCities.push(cid);
+  S.cityFilter=cid;closeLocPopup();renderLocTabs();renderDPList();
   toast(ALL_CITIES.find(c=>c.id===cid).name+' added');
 }
 
-/* ═══════════════ SLOT MODAL ═══════════════ */
-function openSlotModal(dpId){
-  if(S.userType==='business'){ openBizSlotModal(dpId); return; }
-  const dp=ALL_DPS.find(d=>d.id===dpId);
-  S.sheetDP=dp;
-  S.selSlots=[];S.rangeA=null;S.rangeB=null;
-  document.getElementById('smTitle').textContent=dp.name;
-  // Show range tab only if video+loop
-  document.getElementById('rangeTab').style.display=(S.isVideo&&S.loopOn)?'':'none';
-  document.querySelector('.slot-mode-tabs').style.display=(S.isVideo&&S.loopOn)?'flex':'none';
-  setSlotMode('multi');
-  renderCal();
-  renderSlots();
-  document.getElementById('slotModal').classList.add('open');
-}
-function closeSlotModal(){
-  document.getElementById('slotModal').classList.remove('open');
+/* ═══════════════ HELPERS ═══════════════ */
+function fmtDate(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function fmtDateNice(ds){const d=new Date(ds+'T00:00:00');return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+
+/* ── HOUR GRID ── */
+function renderHourGrid(containerId, selArr){
+  const g=document.getElementById(containerId);g.innerHTML='';
+  for(let h=0;h<24;h++){
+    const isSel=selArr.includes(h);
+    const div=document.createElement('div');
+    div.className='hr-cell'+(isSel?' sel':'');
+    div.textContent=h<10?'0'+h+':00':h+':00';
+    div.onclick=()=>{
+      const pos=selArr.indexOf(h);
+      if(pos>-1)selArr.splice(pos,1);else selArr.push(h);
+      renderHourGrid(containerId,selArr);
+      if(containerId==='indHourGrid')updateIndSaveBtn();
+      else updateBizSaveBtn();
+    };
+    g.appendChild(div);
+  }
 }
 
-/* CALENDAR */
-function renderCal(){
-  const m=S.calMonth;
-  const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  document.getElementById('calMonth').textContent=`${MONTHS[m.getMonth()]} ${m.getFullYear()}`;
-  const grid=document.getElementById('calGrid');
-  const DNS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  grid.innerHTML=DNS.map(d=>`<div class="cal-dn">${d}</div>`).join('');
+/* ── SINGLE-CALENDAR RANGE PICKER ── */
+function renderRangeCal(prefix, calMonth, startDate, endDate, onPick){
+  const m=calMonth;
+  const el=document.getElementById(prefix+'CalMonth');
+  if(el)el.textContent=`${MONTHS_FULL[m.getMonth()]} ${m.getFullYear()}`;
+  const grid=document.getElementById(prefix+'CalGrid');grid.innerHTML='';
+  grid.innerHTML+=DAYS_SHORT.map(d=>`<div class="cal-dn">${d}</div>`).join('');
   const first=new Date(m.getFullYear(),m.getMonth(),1).getDay();
   const total=new Date(m.getFullYear(),m.getMonth()+1,0).getDate();
   const prevTotal=new Date(m.getFullYear(),m.getMonth(),0).getDate();
-  for(let i=first-1;i>=0;i--) grid.innerHTML+=`<div class="cal-d other">${prevTotal-i}</div>`;
-  const today=new Date();today.setHours(0,0,0,0);
+  const today=new Date(2026,2,19);today.setHours(0,0,0,0);
+  for(let i=first-1;i>=0;i--){const d=document.createElement('div');d.className='cal-d other';d.textContent=prevTotal-i;grid.appendChild(d);}
   for(let d=1;d<=total;d++){
     const dt=new Date(m.getFullYear(),m.getMonth(),d);
-    const ds=fmtDate(dt);
-    const isPast=dt<today;
-    const isSel=S.sheetDate===ds;
-    const isToday=dt.getTime()===today.getTime();
+    const ds=fmtDate(dt);const isPast=dt<today;
     let cls='cal-d';
-    if(isPast) cls+=' past';
-    else if(isSel) cls+=' sel';
-    else if(isToday) cls+=' today';
-    grid.innerHTML+=`<div class="${cls}" onclick="${isPast?'':'selDate(\''+ds+'\')'}">${d}</div>`;
+    if(isPast)cls+=' past';
+    else if(startDate&&ds===startDate)cls+=' sel-start';
+    else if(endDate&&ds===endDate)cls+=' sel-end';
+    else if(startDate&&endDate&&ds>startDate&&ds<endDate)cls+=' in-range';
+    else if(dt.getTime()===today.getTime())cls+=' today-d';
+    const cell=document.createElement('div');cell.className=cls;cell.textContent=d;
+    if(!isPast)cell.onclick=()=>onPick(ds);
+    grid.appendChild(cell);
   }
-  const used=first+total;
-  const rem=used%7===0?0:7-(used%7);
-  for(let i=1;i<=rem;i++) grid.innerHTML+=`<div class="cal-d other">${i}</div>`;
-  document.getElementById('hourLabel').textContent=`${S.sheetHour} hrs`;
-}
-function chMonth(dir){
-  S.calMonth=new Date(S.calMonth.getFullYear(),S.calMonth.getMonth()+dir,1);
-  renderCal();
-}
-function selDate(ds){
-  S.sheetDate=ds;S.selSlots=[];S.rangeA=null;S.rangeB=null;
-  renderCal();renderSlots();
-}
-function cycleHour(){
-  S.sheetHour=(S.sheetHour%23)+1;
-  document.getElementById('hourLabel').textContent=`${S.sheetHour} hrs`;
-  renderSlots();
-}
-function fmtDate(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
-
-/* SLOT MODE */
-function setSlotMode(mode){
-  S.slotMode=mode;
-  S.selSlots=[];S.rangeA=null;S.rangeB=null;
-  document.querySelectorAll('.smt').forEach(t=>t.classList.toggle('on',t.dataset.mode===mode));
-  document.getElementById('rangeHint').style.display=mode==='range'?'flex':'none';
-  document.getElementById('slotsHdrSub').textContent=mode==='multi'
-    ?'Tap to select multiple'
-    :'Tap first slot, then last slot';
-  updateSaveBtn();
-  renderSlots();
+  const used=first+total;const rem=used%7===0?0:7-(used%7);
+  for(let i=1;i<=rem;i++){const d=document.createElement('div');d.className='cal-d other';d.textContent=i;grid.appendChild(d);}
 }
 
-/* RENDER SLOTS */
-function renderSlots(){
-  const grid=document.getElementById('slotsGrid');
-  const busy=BUSY_SLOTS[S.sheetDate]||[];
-  // Compute range fill indices
-  let rangeLo=-1,rangeHi=-1;
-  if(S.slotMode==='range'&&S.rangeA!==null&&S.rangeB!==null){
-    rangeLo=Math.min(S.rangeA,S.rangeB);
-    rangeHi=Math.max(S.rangeA,S.rangeB);
-  }
-  grid.innerHTML='';
+/* ═══════════════ INDIVIDUAL SLOT MODAL ═══════════════ */
+function openSlotModal(dpId){
+  if(S.userType==='business'){openBizSlotModal(dpId);return;}
+  const dp=ALL_DPS.find(d=>d.id===dpId);
+  S.indDP=dp;S.indStartDate=null;S.indEndDate=null;S.indSelHours=[];S.indSelSlots=[];
+  document.getElementById('smTitle').textContent=dp.name;
+  renderRangeCal('ind',S.indCalMonth,null,null,pickIndDate);
+  renderHourGrid('indHourGrid',S.indSelHours);
+  renderIndSlots();
+  document.getElementById('slotModal').classList.add('open');
+}
+function closeSlotModal(){document.getElementById('slotModal').classList.remove('open');}
+function chMonth(prefix,dir){
+  if(prefix==='ind'){S.indCalMonth=new Date(S.indCalMonth.getFullYear(),S.indCalMonth.getMonth()+dir,1);renderRangeCal('ind',S.indCalMonth,S.indStartDate,S.indEndDate,pickIndDate);}
+  else{S.bizCalMonth=new Date(S.bizCalMonth.getFullYear(),S.bizCalMonth.getMonth()+dir,1);renderRangeCal('biz',S.bizCalMonth,S.bizStartDate,S.bizEndDate,pickBizDate);}
+}
+function pickIndDate(ds){
+  if(!S.indStartDate){S.indStartDate=ds;S.indEndDate=null;}
+  else if(!S.indEndDate&&ds>S.indStartDate){S.indEndDate=ds;}
+  else{S.indStartDate=ds;S.indEndDate=null;}
+  renderRangeCal('ind',S.indCalMonth,S.indStartDate,S.indEndDate,pickIndDate);
+  updateIndSaveBtn();
+}
+function renderIndSlots(){
+  const grid=document.getElementById('indSlotsGrid');grid.innerHTML='';
+  // use first selected date or today for busy check
+  const checkDate=S.indStartDate||'2026-03-18';
+  const busy=BUSY_SLOTS[checkDate]||[];
   SLOT_LIST.forEach((slot,idx)=>{
-    const isBusy=busy.includes(slot);
-    let cls='si';
-    if(isBusy) cls+=' busy';
-    else if(S.slotMode==='multi'&&S.selSlots.includes(idx)) cls+=' sel';
-    else if(S.slotMode==='range'){
-      if(S.rangeA!==null&&S.rangeB===null&&S.rangeA===idx) cls+=' range-start-only';
-      else if(rangeLo>=0){
-        if(idx===rangeLo||idx===rangeHi) cls+=' range-end';
-        else if(idx>rangeLo&&idx<rangeHi) cls+=' range-mid';
-      }
-    }
-    const div=document.createElement('div');
-    div.className=cls;
-    div.innerHTML=slot.replace('-','<br>');
-    if(!isBusy) div.onclick=()=>handleSlotClick(idx);
+    const isBusy=busy.includes(slot);const isSel=S.indSelSlots.includes(idx);
+    let cls='si';if(isBusy)cls+=' busy';else if(isSel)cls+=' sel';
+    const div=document.createElement('div');div.className=cls;div.innerHTML=slot.replace('-','<br>');
+    if(!isBusy)div.onclick=()=>{
+      const p=S.indSelSlots.indexOf(idx);if(p>-1)S.indSelSlots.splice(p,1);else S.indSelSlots.push(idx);
+      renderIndSlots();updateIndSaveBtn();
+    };
     grid.appendChild(div);
   });
-  updateSaveBtn();
+  updateIndSaveBtn();
 }
-
-function handleSlotClick(idx){
-  if(S.slotMode==='multi'){
-    const pos=S.selSlots.indexOf(idx);
-    if(pos>-1) S.selSlots.splice(pos,1);
-    else S.selSlots.push(idx);
-  } else if(S.slotMode==='range'){
-    if(S.rangeA===null){ S.rangeA=idx;S.rangeB=null; }
-    else if(S.rangeB===null){ S.rangeB=idx; }
-    else { S.rangeA=idx;S.rangeB=null; }
-  }
-  renderSlots();
+function updateIndSaveBtn(){
+  const btn=document.getElementById('indSaveBtn');
+  const hasDate=!!S.indStartDate;
+  const hasSlots=S.indSelSlots.length>0;
+  const hasHours=S.indSelHours.length>0;
+  if(hasDate&&hasSlots&&hasHours){btn.disabled=false;btn.textContent=`Save ${S.indSelSlots.length} slot${S.indSelSlots.length>1?'s':''}`;}
+  else if(!hasDate){btn.disabled=true;btn.textContent='Pick a start date';}
+  else if(!hasHours){btn.disabled=true;btn.textContent='Select at least one hour';}
+  else{btn.disabled=true;btn.textContent='Select slots';}
 }
-
-function updateSaveBtn(){
-  const btn=document.getElementById('saveSlotBtn');
-  let count=0;
-  if(S.slotMode==='multi') count=S.selSlots.length;
-  else if(S.slotMode==='range'&&S.rangeA!==null&&S.rangeB!==null)
-    count=Math.abs(S.rangeB-S.rangeA)+1;
-  if(count>0){btn.disabled=false;btn.textContent=`Save ${count} Slot${count>1?'s':''}`;}
-  else{btn.disabled=true;btn.textContent=count===0&&S.slotMode==='range'&&S.rangeA!==null?'Now tap end slot':'Select slots first';}
-}
-
-function saveSlot(){
-  if(!S.sheetDP) return;
-  let indices=[];
-  if(S.slotMode==='multi') indices=[...S.selSlots];
-  else if(S.slotMode==='range'&&S.rangeA!==null&&S.rangeB!==null){
-    const lo=Math.min(S.rangeA,S.rangeB),hi=Math.max(S.rangeA,S.rangeB);
-    for(let i=lo;i<=hi;i++) indices.push(i);
-  }
-  if(!indices.length) return;
-  if(!S.slots[S.sheetDP.id]) S.slots[S.sheetDP.id]=[];
-  indices.forEach(i=>{
-    const slot=SLOT_LIST[i];
-    if(!S.slots[S.sheetDP.id].find(x=>x.time===slot&&x.date===S.sheetDate))
-      S.slots[S.sheetDP.id].push({time:slot,date:S.sheetDate});
+function saveIndSlot(){
+  if(!S.indDP||!S.indStartDate||!S.indSelSlots.length)return;
+  // Generate all dates in range
+  const dates=[];
+  const start=new Date(S.indStartDate+'T00:00:00');
+  const end=S.indEndDate?new Date(S.indEndDate+'T00:00:00'):start;
+  for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1))dates.push(fmtDate(new Date(d)));
+  if(!S.slots[S.indDP.id])S.slots[S.indDP.id]=[];
+  let added=0;
+  dates.forEach(ds=>{
+    S.indSelSlots.forEach(idx=>{
+      const slot=SLOT_LIST[idx];
+      if(!S.slots[S.indDP.id].find(x=>x.time===slot&&x.date===ds)){S.slots[S.indDP.id].push({time:slot,date:ds});added++;}
+    });
   });
-  closeSlotModal();
-  S.checked.add(S.sheetDP.id);   // auto-check on slot save
-  renderLocTabs();renderDPList();
-  toast(`${indices.length} slot${indices.length>1?'s':''} saved`);
+  S.checked.add(S.indDP.id);
+  closeSlotModal();renderLocTabs();renderDPList();
+  toast(`${added} slot${added!==1?'s':''} saved`);
 }
 
-/* ═══════════════ S3 REVIEW ═══════════════ */
+/* ═══════════════ BUSINESS SLOT MODAL ═══════════════ */
+function openBizSlotModal(dpId){
+  const dp=ALL_DPS.find(d=>d.id===dpId);
+  S.bizDP=dp;S.bizRecur='daily';
+  S.bizStartDate=null;S.bizEndDate=null;
+  S.bizCalMonth=new Date(2026,2,1);S.bizEndCalMonth=new Date(2026,2,1);
+  S.bizWeekdays=[1];S.bizMonthDays=[];
+  S.bizFromMonth=null;S.bizToMonth=null;
+  S.bizSelHours=[];S.bizSelSlots=[];
+  document.getElementById('bizSmTitle').textContent=dp.name;
+  document.querySelectorAll('.rt').forEach(t=>t.classList.toggle('on',t.dataset.recur==='daily'));
+  renderBizScheduleFields();
+  renderHourGrid('bizHourGrid',S.bizSelHours);
+  renderBizSlots();
+  document.getElementById('bizSlotModal').classList.add('open');
+}
+function closeBizSlotModal(){document.getElementById('bizSlotModal').classList.remove('open');}
+
+function setRecur(r){
+  S.bizRecur=r;S.bizStartDate=null;S.bizEndDate=null;
+  S.bizMonthDays=[];S.bizFromMonth=null;S.bizToMonth=null;
+  document.querySelectorAll('.rt').forEach(t=>t.classList.toggle('on',t.dataset.recur===r));
+  renderBizScheduleFields();renderBizDateArea();updateBizSaveBtn();
+}
+
+function renderBizScheduleFields(){
+  const wrap=document.getElementById('bizScheduleFields');
+  if(S.bizRecur==='daily'||S.bizRecur==='weekly'){
+    let html=`<div class="lbl" style="margin-bottom:6px">Date Range</div>
+    <div class="range-hint"><i class="fas fa-info-circle"></i>Tap start date, then end date</div>
+    <div class="range-legend">
+      <div class="rl-item"><div class="rl-dot" style="background:var(--blue)"></div>Start</div>
+      <div class="rl-item"><div class="rl-dot" style="background:var(--green)"></div>End</div>
+      <div class="rl-item"><div class="rl-dot" style="background:var(--blue-lt);border:1px solid #93C5FD"></div>Range</div>
+    </div>
+    <div class="cal-nav">
+      <div class="cal-nav-btn" onclick="chMonth('biz',-1)"><i class="fas fa-chevron-left"></i></div>
+      <div class="cal-month-lbl" id="bizCalMonth"></div>
+      <div class="cal-nav-btn" onclick="chMonth('biz',1)"><i class="fas fa-chevron-right"></i></div>
+    </div>
+    <div class="cal-grid" id="bizCalGrid"></div>`;
+    if(S.bizRecur==='weekly'){
+      html+=`<div class="lbl" style="margin-bottom:6px">Days of Week <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">— select multiple</span></div>
+      <div class="weekday-row">
+        ${['Su','Mo','Tu','We','Th','Fr','Sa'].map((d,i)=>`<div class="wd-btn${S.bizWeekdays.includes(i)?' on':''}" onclick="toggleWeekday(${i})">${d}</div>`).join('')}
+      </div>`;
+    }
+    wrap.innerHTML=html;
+    renderRangeCal('biz',S.bizCalMonth,S.bizStartDate,S.bizEndDate,pickBizDate);
+  } else {
+    // monthly
+    let dayGridHTML='<div class="dom-grid">';
+    for(let d=1;d<=29;d++){
+      const isSel=S.bizMonthDays.includes(d);
+      dayGridHTML+=`<div class="dom-cell${isSel?' sel':''}" onclick="toggleMonthDay(${d})">${d}</div>`;
+    }
+    dayGridHTML+='</div><div style="font-size:11px;color:var(--muted);margin-bottom:12px;margin-top:-6px">Ad runs on selected days each month</div>';
+
+    const avail=[];for(let m=CURRENT_MONTH_IDX;m<=11;m++)avail.push(m);
+    let fromHTML='<div class="month-pills">'+avail.map(m=>{
+      let cls='mpill';
+      if(S.bizFromMonth===m)cls+=' sel-from';
+      else if(S.bizToMonth===m)cls+=' sel-to';
+      else if(S.bizFromMonth!==null&&S.bizToMonth!==null&&m>S.bizFromMonth&&m<S.bizToMonth)cls+=' in-range';
+      return `<div class="${cls}" onclick="pickFromMonth(${m})">${MONTHS_SHORT[m]}</div>`;
+    }).join('')+'</div>';
+    let toHTML='<div class="month-pills">'+avail.map(m=>{
+      const tooEarly=S.bizFromMonth!==null&&m<S.bizFromMonth;
+      let cls='mpill'+(tooEarly?' past':'');
+      if(S.bizToMonth===m)cls+=' sel-to';
+      else if(S.bizFromMonth===m)cls+=' sel-from';
+      else if(S.bizFromMonth!==null&&S.bizToMonth!==null&&m>S.bizFromMonth&&m<S.bizToMonth)cls+=' in-range';
+      return `<div class="${cls}" onclick="${tooEarly?'':('pickToMonth('+m+')')}">${MONTHS_SHORT[m]}</div>`;
+    }).join('')+'</div>';
+
+    const dates=genRecurDates('monthly');
+    const preview=dates.length?`<div class="monthly-preview">
+      <div class="mp-preview-title"><i class="fas fa-calendar-alt"></i> ${dates.length} date${dates.length!==1?'s':''} scheduled</div>
+      <div class="mp-dates-wrap">${dates.map(ds=>`<div class="mp-date-pill">${fmtDateNice(ds)}</div>`).join('')}</div>
+    </div>`:'';
+
+    wrap.innerHTML=`
+      <div class="lbl" style="margin-bottom:6px">Day${S.bizMonthDays.length!==1?'s':''} of Month <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">— select multiple</span></div>
+      ${dayGridHTML}
+      <div class="lbl" style="margin-bottom:6px">Month Range (${BIZ_YEAR})</div>
+      <div class="month-range-wrap">
+        <div class="month-range-row"><span class="mr-lbl">From</span>${fromHTML}</div>
+        <div style="height:1px;background:var(--border);margin-bottom:9px"></div>
+        <div class="month-range-row"><span class="mr-lbl">To</span>${toHTML}</div>
+      </div>
+      ${preview}`;
+  }
+}
+
+function pickBizDate(ds){
+  if(!S.bizStartDate){S.bizStartDate=ds;S.bizEndDate=null;}
+  else if(!S.bizEndDate&&ds>S.bizStartDate){S.bizEndDate=ds;}
+  else{S.bizStartDate=ds;S.bizEndDate=null;}
+  renderRangeCal('biz',S.bizCalMonth,S.bizStartDate,S.bizEndDate,pickBizDate);
+  renderBizDateArea();updateBizSaveBtn();
+}
+function toggleWeekday(i){
+  const pos=S.bizWeekdays.indexOf(i);
+  if(pos>-1&&S.bizWeekdays.length>1)S.bizWeekdays.splice(pos,1);
+  else if(pos===-1)S.bizWeekdays.push(i);
+  renderBizScheduleFields();renderBizDateArea();updateBizSaveBtn();
+}
+function toggleMonthDay(d){
+  const pos=S.bizMonthDays.indexOf(d);
+  if(pos>-1)S.bizMonthDays.splice(pos,1);else S.bizMonthDays.push(d);
+  renderBizScheduleFields();updateBizSaveBtn();
+}
+function pickFromMonth(m){
+  S.bizFromMonth=m;if(S.bizToMonth!==null&&S.bizToMonth<m)S.bizToMonth=null;
+  renderBizScheduleFields();updateBizSaveBtn();
+}
+function pickToMonth(m){
+  S.bizToMonth=m;renderBizScheduleFields();updateBizSaveBtn();
+}
+
+function genRecurDates(type){
+  const dates=[];
+  if(type==='daily'){
+    if(!S.bizStartDate||!S.bizEndDate)return dates;
+    const s=new Date(S.bizStartDate+'T00:00:00'),e=new Date(S.bizEndDate+'T00:00:00');
+    for(let d=new Date(s);d<=e;d.setDate(d.getDate()+1))dates.push(fmtDate(new Date(d)));
+  } else if(type==='weekly'){
+    if(!S.bizStartDate||!S.bizEndDate)return dates;
+    const s=new Date(S.bizStartDate+'T00:00:00'),e=new Date(S.bizEndDate+'T00:00:00');
+    for(let d=new Date(s);d<=e;d.setDate(d.getDate()+1)){
+      if(S.bizWeekdays.includes(d.getDay()))dates.push(fmtDate(new Date(d)));
+    }
+  } else if(type==='monthly'){
+    if(!S.bizMonthDays.length||S.bizFromMonth===null||S.bizToMonth===null)return dates;
+    for(let m=S.bizFromMonth;m<=S.bizToMonth;m++){
+      const maxDay=new Date(BIZ_YEAR,m+1,0).getDate();
+      S.bizMonthDays.forEach(day=>{
+        const d=Math.min(day,maxDay);
+        dates.push(`${BIZ_YEAR}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`);
+      });
+    }
+    dates.sort();
+  }
+  return dates;
+}
+
+function renderBizSlots(){
+  const grid=document.getElementById('bizSlotsGrid');grid.innerHTML='';
+  const busy=BUSY_SLOTS['2026-03-19']||[];
+  SLOT_LIST.forEach((slot,idx)=>{
+    const isBusy=busy.includes(slot);const isSel=S.bizSelSlots.includes(idx);
+    let cls='si';if(isBusy)cls+=' busy';else if(isSel)cls+=' sel';
+    const div=document.createElement('div');div.className=cls;div.innerHTML=slot.replace('-','<br>');
+    if(!isBusy)div.onclick=()=>{
+      const p=S.bizSelSlots.indexOf(idx);if(p>-1)S.bizSelSlots.splice(p,1);else S.bizSelSlots.push(idx);
+      renderBizSlots();updateBizSaveBtn();
+    };
+    grid.appendChild(div);
+  });
+}
+
+function renderBizDateArea(){
+  const area=document.getElementById('bizDateArea');area.innerHTML='';
+  if(S.bizRecur==='monthly')return;
+  const dates=genRecurDates(S.bizRecur);if(!dates.length)return;
+  area.innerHTML=`<div style="background:var(--bg);border-radius:11px;padding:11px 12px;margin-bottom:12px;border:1px solid var(--border)">
+    <div style="display:flex;align-items:center;gap:7px;margin-bottom:3px">
+      <i class="fas fa-calendar-check" style="color:var(--blue);font-size:12px"></i>
+      <span style="font-size:12px;font-weight:600;color:var(--ink)">${S.bizRecur==='weekly'?'Weekly':'Daily'} · ${dates.length} date${dates.length!==1?'s':''}</span>
+    </div>
+    <div style="font-size:11px;color:var(--muted)">${fmtDateNice(dates[0])} → ${fmtDateNice(dates[dates.length-1])}</div>
+  </div>`;
+}
+
+function updateBizSaveBtn(){
+  const btn=document.getElementById('bizSaveBtn');
+  const dates=genRecurDates(S.bizRecur);
+  const hasSlots=S.bizSelSlots.length>0;
+  const hasHours=S.bizSelHours.length>0;
+  let ready=false;
+  if(S.bizRecur==='monthly')ready=S.bizMonthDays.length>0&&S.bizFromMonth!==null&&S.bizToMonth!==null&&hasSlots&&hasHours;
+  else ready=!!S.bizStartDate&&!!S.bizEndDate&&hasSlots&&hasHours&&dates.length>0;
+  if(ready){const d=dates.length;const sc=S.bizSelSlots.length;btn.disabled=false;btn.textContent=`Book ${sc} slot${sc>1?'s':''} × ${d} date${d>1?'s':''}`;}
+  else{btn.disabled=true;if(!hasHours)btn.textContent='Select at least one hour';else if(!hasSlots)btn.textContent='Select at least one slot';else btn.textContent='Complete schedule fields';}
+}
+
+function saveBizSlot(){
+  if(!S.bizDP||!S.bizSelSlots.length)return;
+  const dates=genRecurDates(S.bizRecur);if(!dates.length)return;
+  if(!S.slots[S.bizDP.id])S.slots[S.bizDP.id]=[];
+  let added=0;
+  dates.forEach(ds=>{
+    S.bizSelSlots.forEach(idx=>{
+      const slot=SLOT_LIST[idx];
+      if(!S.slots[S.bizDP.id].find(x=>x.time===slot&&x.date===ds)){S.slots[S.bizDP.id].push({time:slot,date:ds});added++;}
+    });
+  });
+  S.checked.add(S.bizDP.id);
+  closeBizSlotModal();renderLocTabs();renderDPList();
+  toast(`${added} slot${added!==1?'s':''} scheduled`);
+}
+
+/* ═══════════════ S3: CONFLICT SCREEN ═══════════════ */
+function buildConflictScreen(){
+  // Build conflictData from S.slots + BUSY_SLOTS
+  S.conflictData={};
+  [...S.checked].forEach(dpId=>{
+    const slotArr=S.slots[dpId]||[];
+    S.conflictData[dpId]=slotArr.map(entry=>{
+      const busy=BUSY_SLOTS[entry.date]||[];
+      const isConflict=busy.includes(entry.time);
+      return{time:entry.time,date:entry.date,status:isConflict?'conflict':'ok',resolvedTime:null};
+    });
+  });
+  renderConflictScreen();
+}
+
+function renderConflictScreen(){
+  let totalOk=0,totalConflict=0,totalResolved=0;
+  Object.values(S.conflictData).forEach(arr=>arr.forEach(s=>{
+    if(s.status==='ok')totalOk++;
+    else if(s.status==='conflict')totalConflict++;
+    else if(s.status==='resolved'||s.status==='removed')totalResolved++;
+  }));
+  document.getElementById('csbOk').textContent=totalOk;
+  document.getElementById('csbBad').textContent=totalConflict;
+  document.getElementById('csbDone').textContent=totalResolved;
+
+  const list=document.getElementById('confDPList');
+  list.innerHTML='';
+  [...S.checked].forEach(dpId=>{
+    const dp=ALL_DPS.find(d=>d.id===dpId);
+    const slotArr=S.conflictData[dpId]||[];
+    const hasConflict=slotArr.some(s=>s.status==='conflict');
+    const card=document.createElement('div');
+    card.className='conf-dp-card';
+    let slotsHTML='<div class="conf-slots-grid">';
+    slotArr.forEach((s,i)=>{
+      let cls='conf-slot';
+      let label='',btnHTML='';
+      if(s.status==='ok'){cls+=' ok';label='OK';}
+      else if(s.status==='conflict'){cls+=' conflict';label='Conflict';
+        btnHTML=`<button class="resolve-btn" onclick="openResolvePopup('${dpId}',${i})">Resolve</button>
+                 <button class="remove-btn" onclick="removeSingleSlot('${dpId}',${i})">Remove</button>`;}
+      else if(s.status==='resolved'){cls+=' resolved';label='Resolved';}
+      else if(s.status==='removed'){cls+=' ok';label='Removed';} // shows greyed out but counted as done
+      slotsHTML+=`<div class="${cls}">
+        <span class="conf-slot-time">${s.resolvedTime||s.time}</span>
+        <span class="conf-slot-label">${fmtDateNice(s.date)}</span>
+        <span class="conf-slot-label">${label}</span>
+        ${btnHTML}
+      </div>`;
+    });
+    slotsHTML+='</div>';
+    card.innerHTML=`<div class="conf-dp-hd">
+      <div class="conf-dp-icon"><i class="fas fa-tv"></i></div>
+      <div class="conf-dp-name">${dp.name} <span style="font-size:10px;color:var(--muted);font-weight:400">· ${dp.cityName}</span></div>
+      <div class="conf-dp-badge ${hasConflict?'has-conflict':'all-ok'}">${hasConflict?'Has Conflicts':'All Good'}</div>
+    </div>${slotsHTML}`;
+    list.appendChild(card);
+  });
+
+  // Update main btn
+  const unresolved=getUnresolvedCount();
+  const btn=document.getElementById('mainBtn');
+  if(unresolved===0){btn.disabled=false;btn.textContent='Confirm & Continue';}
+  else{btn.disabled=false;btn.textContent=`Resolve ${unresolved} Conflict${unresolved>1?'s':''} First`;}
+}
+
+function getUnresolvedCount(){
+  let c=0;
+  Object.values(S.conflictData).forEach(arr=>arr.forEach(s=>{if(s.status==='conflict')c++;}));
+  return c;
+}
+
+function removeSingleSlot(dpId,slotIdx){
+  S.conflictData[dpId][slotIdx].status='removed';
+  renderConflictScreen();
+}
+
+/* ── RESOLVE POPUP ── */
+function openResolvePopup(dpId,slotIdx){
+  S.resolveContext={dpId,slotIdx};S.resolveSelected=null;
+  const entry=S.conflictData[dpId][slotIdx];
+  document.getElementById('resolveTitle').textContent='Resolve: '+entry.time;
+  document.getElementById('resolveInfo').textContent=`"${entry.time}" on ${fmtDateNice(entry.date)} is taken. Pick an alternative slot.`;
+  const busy=BUSY_SLOTS[entry.date]||[];
+  // already-used times for this dp on this date
+  const usedTimes=S.conflictData[dpId].filter((_,i)=>i!==slotIdx&&_.date===entry.date).map(x=>x.resolvedTime||x.time);
+  const grid=document.getElementById('altSlotGrid');grid.innerHTML='';
+  SLOT_LIST.forEach((slot,idx)=>{
+    const isBusy=busy.includes(slot)||usedTimes.includes(slot);
+    const div=document.createElement('div');
+    div.className='alt-slot'+(isBusy?' busy':'');
+    div.innerHTML=slot.replace('-','<br>');
+    if(!isBusy)div.onclick=()=>{
+      S.resolveSelected=slot;
+      document.querySelectorAll('.alt-slot').forEach(a=>a.classList.remove('sel'));
+      div.classList.add('sel');
+      document.getElementById('confirmResolveBtn').disabled=false;
+    };
+    grid.appendChild(div);
+  });
+  document.getElementById('confirmResolveBtn').disabled=true;
+  document.getElementById('resolvePopup').classList.add('open');
+}
+function closeResolvePopup(e){
+  if(e&&e.target!==document.getElementById('resolvePopup'))return;
+  document.getElementById('resolvePopup').classList.remove('open');
+  S.resolveContext=null;S.resolveSelected=null;
+}
+function removeConflictSlot(){
+  if(!S.resolveContext)return;
+  const{dpId,slotIdx}=S.resolveContext;
+  S.conflictData[dpId][slotIdx].status='removed';
+  document.getElementById('resolvePopup').classList.remove('open');
+  renderConflictScreen();toast('Slot removed');
+}
+function confirmResolve(){
+  if(!S.resolveContext||!S.resolveSelected)return;
+  const{dpId,slotIdx}=S.resolveContext;
+  S.conflictData[dpId][slotIdx].status='resolved';
+  S.conflictData[dpId][slotIdx].resolvedTime=S.resolveSelected;
+  document.getElementById('resolvePopup').classList.remove('open');
+  renderConflictScreen();toast('Slot resolved ✓');
+}
+
+function applyConflictResolutions(){
+  [...S.checked].forEach(dpId=>{
+    const arr=S.conflictData[dpId]||[];
+    const newSlots=[];
+    arr.forEach(s=>{
+      if(s.status==='ok')newSlots.push({time:s.time,date:s.date});
+      else if(s.status==='resolved')newSlots.push({time:s.resolvedTime,date:s.date});
+      // removed: skip
+    });
+    S.slots[dpId]=newSlots;
+  });
+}
+
+/* ═══════════════ S4 REVIEW ═══════════════ */
 function buildReview(){
   const booked=ALL_DPS.filter(d=>S.checked.has(d.id));
   const totalSlots=booked.reduce((a,d)=>a+(S.slots[d.id]||[]).length,0);
-  const totalTokens=booked.reduce((a,dp)=>{
-    const slotCount=(S.slots[dp.id]||[]).length;
-    return a+(slotCount*dp.tokensPerSlot);
-  },0);
-
-  // Ad preview thumb
-  const thumb=document.getElementById('rvAdThumb');
-  const sub=document.getElementById('rvAdSub');
+  const totalTokens=booked.reduce((a,dp)=>a+((S.slots[dp.id]||[]).length*dp.tokensPerSlot),0);
+  const thumb=document.getElementById('rvAdThumb');const sub=document.getElementById('rvAdSub');
   document.getElementById('rvName').textContent=S.media.label;
-  if(S.media.label==='Video AD'){
-    thumb.className='rv-ad-thumb video-thumb';
-    thumb.innerHTML=`<i class="fas fa-play" style="color:#fff;font-size:20px"></i>`;
-    sub.textContent=S.vidDur?`${S.vidDur}s · ${S.loopOn?'Loop on':'Loop off'}`:'No video uploaded';
-  } else if(S.media.label==='Image AD'){
-    thumb.className='rv-ad-thumb';
-    thumb.innerHTML=`<i class="fas fa-image" style="color:var(--blue)"></i>`;
-    sub.textContent='Visual display ad';
-  } else if(S.media.label==='Text AD'){
-    thumb.className='rv-ad-thumb';
-    thumb.style.background='var(--ink)';
-    thumb.innerHTML=`<span style="color:#fff;font-size:11px;font-weight:700;padding:4px;text-align:center;line-height:1.2">Aa</span>`;
-    sub.textContent='Text-based message';
-  } else {
-    thumb.className='rv-ad-thumb';
-    thumb.innerHTML=`<i class="fas fa-th-large" style="color:var(--blue)"></i>`;
-    sub.textContent='Pre-designed template';
-  }
-
+  if(S.media.label==='Video AD'){thumb.className='rv-ad-thumb video-thumb';thumb.innerHTML=`<i class="fas fa-play" style="color:#fff;font-size:18px"></i>`;sub.textContent=S.vidDur?`${S.vidDur}s · ${S.loopOn?'Loop on':'Loop off'}`:'No video';}
+  else if(S.media.label==='Image AD'){thumb.className='rv-ad-thumb';thumb.innerHTML=`<i class="fas fa-image" style="color:var(--blue)"></i>`;sub.textContent='Visual display ad';}
+  else if(S.media.label==='Text AD'){thumb.className='rv-ad-thumb';thumb.style.background='var(--ink)';thumb.innerHTML=`<span style="color:#fff;font-size:13px;font-weight:700">Aa</span>`;sub.textContent='Text-based message';}
+  else{thumb.className='rv-ad-thumb';thumb.innerHTML=`<i class="fas fa-th-large" style="color:var(--blue)"></i>`;sub.textContent='Pre-designed template';}
   document.getElementById('rvDPs').textContent=booked.length;
   document.getElementById('rvSlots').textContent=totalSlots;
   document.getElementById('rvTokens').textContent=totalTokens;
-
   const rows=document.getElementById('rvRows');
-  if(!booked.length){rows.innerHTML=`<div style="padding:14px;font-size:13px;color:var(--muted)">No display points selected.</div>`;return;}
+  if(!booked.length){rows.innerHTML=`<div style="padding:13px;font-size:12px;color:var(--muted)">No display points selected.</div>`;return;}
   rows.innerHTML=booked.map(dp=>{
-    const slotCount=(S.slots[dp.id]||[]).length;
-    const dpTokens=slotCount*dp.tokensPerSlot;
-    return `
-    <div class="rv-row">
-      <div class="rv-dp-icon"><i class="fas fa-tv"></i></div>
-      <div style="flex:1;min-width:0">
-        <div class="rv-dp-name">${dp.name}</div>
-        <div class="rv-dp-sub">${dp.cityName} · ${dp.tokensPerSlot} token/slot</div>
-        <div class="rv-chips">${slotCount
-          ? (S.slots[dp.id]||[]).map(s=>`<div class="rv-chip">${s.time}</div>`).join('')
-          : `<div style="font-size:11px;color:var(--muted);font-style:italic">No slots booked</div>`
-        }</div>
-        <div class="rv-token-pill"><i class="fas fa-coins"></i> ${dpTokens} token${dpTokens!==1?'s':''} (${slotCount} slot${slotCount!==1?'s':''})</div>
-      </div>
-    </div>`;
+    const sc=(S.slots[dp.id]||[]).length;const toks=sc*dp.tokensPerSlot;
+    return `<div class="rv-row"><div class="rv-dp-icon"><i class="fas fa-tv"></i></div><div style="flex:1;min-width:0">
+      <div class="rv-dp-name">${dp.name}</div><div class="rv-dp-sub">${dp.cityName} · ${dp.tokensPerSlot} token/slot</div>
+      <div class="rv-chips">${sc?(S.slots[dp.id]||[]).map(s=>`<div class="rv-chip">${s.time}</div>`).join(''):`<div style="font-size:10px;color:var(--muted);font-style:italic">No slots</div>`}</div>
+      <div class="rv-token-pill"><i class="fas fa-coins"></i> ${toks} tokens (${sc} slot${sc!==1?'s':''})</div>
+    </div></div>`;
   }).join('');
 }
 
-/* ═══════════════ S4 PAYMENT ═══════════════ */
+/* ═══════════════ S5 PAYMENT ═══════════════ */
 function buildPayment(){
   const booked=ALL_DPS.filter(d=>S.checked.has(d.id));
   const totalSlots=booked.reduce((a,d)=>a+(S.slots[d.id]||[]).length,0);
-  const totalTokens=booked.reduce((a,dp)=>{
-    const slotCount=(S.slots[dp.id]||[]).length;
-    return a+(slotCount*dp.tokensPerSlot);
-  },0);
+  const totalTokens=booked.reduce((a,dp)=>a+((S.slots[dp.id]||[]).length*dp.tokensPerSlot),0);
   document.getElementById('payDPs').textContent=booked.length;
   document.getElementById('paySlots').textContent=totalSlots;
   document.getElementById('payTokens').textContent=totalTokens;
   document.getElementById('paySumDPs').textContent=booked.length;
   document.getElementById('paySumSlots').textContent=totalSlots;
   document.getElementById('payTotal').textContent=totalTokens;
-  document.getElementById('payBtnAmt').textContent=`${totalTokens} token${totalTokens!==1?'s':''}`;
+  document.getElementById('payBtnAmt').textContent=totalTokens;
 }
 
-/* ═══════════════ TOAST ═══════════════ */
-function toast(msg){
-  const t=document.getElementById('toast');
-  document.getElementById('toastTxt').textContent=msg;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2500);
-}
-
-/* ═══════════════ RESET ═══════════════ */
+/* ═══════════════ TOAST / RESET ═══════════════ */
+function toast(msg){const t=document.getElementById('toast');document.getElementById('toastTxt').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
 function resetAll(){
-  S.step=1;S.slots={};S.checked=new Set();S.selSlots=[];S.rangeA=null;S.rangeB=null;
-  S.cityFilter='selected';S.isVideo=false;S.loopOn=false;
-  S.userType='individual';
+  S.step=1;S.slots={};S.checked=new Set();S.conflictData={};
+  S.cityFilter='selected';S.isVideo=false;S.loopOn=false;S.userType='individual';
   S.media={label:'Image AD',icon:'fa-image'};
-  document.querySelectorAll('.mc').forEach(c=>c.classList.remove('on'));
-  document.querySelectorAll('.mc')[1].classList.add('on');
+  document.querySelectorAll('.mchip').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('.mchip')[1].classList.add('on');
   document.getElementById('videoOpts').classList.remove('show');
   document.getElementById('loopToggle').classList.remove('on');
   document.getElementById('utIndividual').classList.add('on');
   document.getElementById('utBusiness').classList.remove('on');
   boot();
-}
-
-/* ═══════════════ BUSINESS SLOT MODAL ═══════════════ */
-const RECUR_LABELS={daily:'Daily',weekly:'Weekly',monthly:'Monthly'};
-const MONTHS_SHORT=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const MONTHS_FULL=['January','February','March','April','May','June','July','August','September','October','November','December'];
-const DAYS_SHORT=['Su','Mo','Tu','We','Th','Fr','Sa'];
-const DAYS_FULL=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-
-function openBizSlotModal(dpId){
-  const dp=ALL_DPS.find(d=>d.id===dpId);
-  S.bizDP=dp;
-  S.bizSelSlots=[];
-  S.bizRecur='daily';
-  S.bizHour=11;
-  S.bizConflictMode='move';
-  S.bizStartDate=null;
-  S.bizEndDate=null;
-  S.bizStartPickerOpen=false;
-  S.bizEndPickerOpen=false;
-  S.bizStartCalMonth=new Date(2026,2,1);
-  S.bizEndCalMonth=new Date(2026,2,1);
-  S.bizStartMonthYear=2026;
-  S.bizEndMonthYear=2026;
-  S.bizStartMonth=null; // 0-11
-  S.bizEndMonth=null;
-  S.bizWeekday=1; // Monday default
-  document.getElementById('bizSmTitle').textContent=dp.name;
-  document.querySelectorAll('.rt').forEach(t=>t.classList.toggle('on',t.dataset.recur==='daily'));
-  document.getElementById('bizHourLabel').textContent=`${S.bizHour} hrs`;
-  resetBizStartField();
-  document.getElementById('bizStartCalWrap').style.display='none';
-  document.getElementById('bizRangeFields').innerHTML='';
-  renderBizSlots();
-  renderBizDateArea();
-  updateBizConflict();
-  document.getElementById('bizSlotModal').classList.add('open');
-}
-
-function resetBizStartField(){
-  document.getElementById('bizStartField').classList.remove('set');
-  const v=document.getElementById('bizStartVal');
-  v.textContent='Tap to choose date';
-  v.className='sdf-val placeholder';
-  document.getElementById('bizStartChevron').style.transform='';
-  S.bizStartDate=null;
-  S.bizEndDate=null;
-  S.bizStartMonth=null;
-  S.bizEndMonth=null;
-}
-
-function closeBizSlotModal(){
-  document.getElementById('bizSlotModal').classList.remove('open');
-}
-
-function setRecur(r){
-  S.bizRecur=r;
-  document.querySelectorAll('.rt').forEach(t=>t.classList.toggle('on',t.dataset.recur===r));
-  resetBizStartField();
-  document.getElementById('bizStartCalWrap').style.display='none';
-  document.getElementById('bizRangeFields').innerHTML='';
-  // Update start field label
-  const lbl = r==='monthly'?'Start month':'Start date';
-  document.querySelector('#bizStartField .sdf-lbl').textContent = lbl.toUpperCase();
-  document.getElementById('bizStartVal').textContent = r==='monthly'?'Tap to choose month':'Tap to choose date';
-  renderBizDateArea();
-  updateBizConflict();
-}
-
-function bizCycleHour(){
-  S.bizHour=(S.bizHour%23)+1;
-  document.getElementById('bizHourLabel').textContent=`${S.bizHour} hrs`;
-  updateBizConflict();
-}
-
-function renderBizSlots(){
-  const grid=document.getElementById('bizSlotsGrid');
-  grid.innerHTML='';
-  SLOT_LIST.forEach((slot,idx)=>{
-    const isBusy=(BUSY_SLOTS['2026-03-19']||[]).includes(slot);
-    const isSel=S.bizSelSlots.includes(idx);
-    let cls='si';
-    if(isBusy) cls+=' busy';
-    else if(isSel) cls+=' sel';
-    const div=document.createElement('div');
-    div.className=cls;
-    div.innerHTML=slot.replace('-','<br>');
-    if(!isBusy) div.onclick=()=>{ toggleBizSlot(idx); };
-    grid.appendChild(div);
-  });
-  updateBizConflict();
-}
-
-function toggleBizSlot(idx){
-  const pos=S.bizSelSlots.indexOf(idx);
-  if(pos>-1) S.bizSelSlots.splice(pos,1);
-  else S.bizSelSlots.push(idx);
-  renderBizSlots();
-}
-
-/* ── DATE GENERATION ── */
-function genRecurDates(type){
-  const dates=[];
-  if(type==='daily'){
-    if(!S.bizStartDate||!S.bizEndDate) return dates;
-    const start=new Date(S.bizStartDate+'T00:00:00');
-    const end=new Date(S.bizEndDate+'T00:00:00');
-    for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1)) dates.push(fmtDate(new Date(d)));
-  } else if(type==='weekly'){
-    if(!S.bizStartDate||!S.bizEndDate) return dates;
-    const start=new Date(S.bizStartDate+'T00:00:00');
-    const end=new Date(S.bizEndDate+'T00:00:00');
-    // find first occurrence of chosen weekday >= start
-    let cur=new Date(start);
-    while(cur.getDay()!==S.bizWeekday&&cur<=end) cur.setDate(cur.getDate()+1);
-    while(cur<=end){ dates.push(fmtDate(new Date(cur))); cur.setDate(cur.getDate()+7); }
-  } else if(type==='monthly'){
-    if(S.bizStartMonth===null||S.bizEndMonth===null) return dates;
-    // start month/year to end month/year, pick day=1 of each month
-    let y=S.bizStartMonthYear, m=S.bizStartMonth;
-    const ey=S.bizEndMonthYear, em=S.bizEndMonth;
-    while(y<ey||(y===ey&&m<=em)){
-      dates.push(`${y}-${String(m+1).padStart(2,'0')}-01`);
-      m++; if(m>11){m=0;y++;}
-    }
-  }
-  return dates;
-}
-
-function getActiveDates(){ return genRecurDates(S.bizRecur); }
-
-/* ── DATE AREA RENDER ── */
-function renderBizDateArea(){
-  const area=document.getElementById('bizDateArea');
-  area.innerHTML=''; // date area now just shows schedule preview after picks
-  const dates=getActiveDates();
-  if(!dates.length) return;
-  area.innerHTML=`
-    <div style="background:var(--bg);border-radius:12px;padding:12px 13px;margin-bottom:14px;border:1px solid var(--border)">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-        <i class="fas fa-calendar-check" style="color:var(--blue);font-size:13px"></i>
-        <span style="font-size:13px;font-weight:600;color:var(--ink)">${RECUR_LABELS[S.bizRecur]} · ${dates.length} date${dates.length!==1?'s':''}</span>
-      </div>
-      <div style="font-size:12px;color:var(--muted)">${fmtDateNice(dates[0])} → ${fmtDateNice(dates[dates.length-1])}</div>
-    </div>`;
-}
-
-function fmtDateNice(ds){
-  const d=new Date(ds+'T00:00:00');
-  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-}
-
-/* ── START DATE PICKER ── */
-function toggleBizStartCal(){
-  S.bizStartPickerOpen=!S.bizStartPickerOpen;
-  if(S.bizEndPickerOpen){ S.bizEndPickerOpen=false; renderEndField(); }
-  const wrap=document.getElementById('bizStartCalWrap');
-  const chevron=document.getElementById('bizStartChevron');
-  if(S.bizStartPickerOpen){
-    wrap.style.display='block';
-    wrap.innerHTML = S.bizRecur==='monthly' ? renderMonthPickerHTML('start') : renderStartCalHTML();
-    chevron.style.transform='rotate(180deg)';
-  } else {
-    wrap.style.display='none';
-    chevron.style.transform='';
-  }
-}
-
-function renderStartCalHTML(){
-  const m=S.bizStartCalMonth;
-  const first=new Date(m.getFullYear(),m.getMonth(),1).getDay();
-  const total=new Date(m.getFullYear(),m.getMonth()+1,0).getDate();
-  const prevTotal=new Date(m.getFullYear(),m.getMonth(),0).getDate();
-  const today=new Date(2026,2,19);today.setHours(0,0,0,0);
-  let html=`<div class="start-cal-wrap">
-    <div class="cal-nav">
-      <div class="cal-nav-btn" onclick="startCalChMonth(-1)"><i class="fas fa-chevron-left"></i></div>
-      <div class="cal-month">${MONTHS_FULL[m.getMonth()]} ${m.getFullYear()}</div>
-      <div class="cal-nav-btn" onclick="startCalChMonth(1)"><i class="fas fa-chevron-right"></i></div>
-    </div>
-    <div class="cal-grid">${DAYS_SHORT.map(d=>`<div class="cal-dn">${d}</div>`).join('')}`;
-  for(let i=first-1;i>=0;i--) html+=`<div class="cal-d other">${prevTotal-i}</div>`;
-  for(let d=1;d<=total;d++){
-    const dt=new Date(m.getFullYear(),m.getMonth(),d);
-    const ds=fmtDate(dt);
-    const isPast=dt<today;
-    const isSel=S.bizStartDate===ds;
-    let cls='cal-d';
-    if(isPast) cls+=' past';
-    else if(isSel) cls+=' sel';
-    else if(dt.getTime()===today.getTime()) cls+=' today';
-    html+=`<div class="${cls}" onclick="${isPast?'':'pickBizStartDate(\''+ds+'\')'}">${d}</div>`;
-  }
-  const used=first+total; const rem=used%7===0?0:7-(used%7);
-  for(let i=1;i<=rem;i++) html+=`<div class="cal-d other">${i}</div>`;
-  html+=`</div></div>`;
-  return html;
-}
-
-function startCalChMonth(dir){
-  S.bizStartCalMonth=new Date(S.bizStartCalMonth.getFullYear(),S.bizStartCalMonth.getMonth()+dir,1);
-  document.getElementById('bizStartCalWrap').innerHTML=renderStartCalHTML();
-}
-
-function pickBizStartDate(ds){
-  S.bizStartDate=ds;
-  S.bizEndDate=null; // reset end when start changes
-  S.bizStartPickerOpen=false;
-  const field=document.getElementById('bizStartField');
-  const val=document.getElementById('bizStartVal');
-  field.classList.add('set');
-  val.textContent=fmtDateNice(ds);
-  val.className='sdf-val';
-  document.getElementById('bizStartChevron').style.transform='';
-  document.getElementById('bizStartCalWrap').style.display='none';
-  renderRangeFields();
-  renderBizDateArea();
-  updateBizConflict();
-}
-
-/* ── MONTH PICKER ── */
-function renderMonthPickerHTML(which){
-  const yr = which==='start' ? S.bizStartMonthYear : S.bizEndMonthYear;
-  const today=new Date(2026,2,1);
-  let html=`<div class="start-cal-wrap">
-    <div class="mp-nav">
-      <div class="cal-nav-btn" onclick="mpChYear('${which}',-1)"><i class="fas fa-chevron-left"></i></div>
-      <span style="font-size:14px;font-weight:600;color:var(--ink)">${yr}</span>
-      <div class="cal-nav-btn" onclick="mpChYear('${which}',1)"><i class="fas fa-chevron-right"></i></div>
-    </div>
-    <div class="month-picker-grid">`;
-  for(let mi=0;mi<12;mi++){
-    const isPast=yr<2026||(yr===2026&&mi<2);
-    const isSelStart=which==='start'?S.bizStartMonth===mi&&yr===S.bizStartMonthYear : false;
-    const isSelEnd=which==='end'?S.bizEndMonth===mi&&yr===S.bizEndMonthYear : false;
-    const inRange=(S.bizStartMonth!==null&&S.bizEndMonth!==null)&&(
-      (yr===S.bizStartMonthYear&&yr===S.bizEndMonthYear&&mi>S.bizStartMonth&&mi<S.bizEndMonth)||
-      (yr===S.bizStartMonthYear&&yr<S.bizEndMonthYear&&mi>S.bizStartMonth)||
-      (yr===S.bizEndMonthYear&&yr>S.bizStartMonthYear&&mi<S.bizEndMonth)||
-      (yr>S.bizStartMonthYear&&yr<S.bizEndMonthYear)
-    );
-    let cls='mp-cell';
-    if(isPast) cls+=' past-month';
-    else if(isSelStart) cls+=' sel-start';
-    else if(isSelEnd) cls+=' sel-end';
-    else if(inRange) cls+=' in-range';
-    html+=`<div class="${cls}" onclick="${isPast?'':'pickBizMonth(\''+which+'\','+mi+')'}">${MONTHS_SHORT[mi]}</div>`;
-  }
-  html+=`</div></div>`;
-  return html;
-}
-
-function mpChYear(which, dir){
-  if(which==='start') S.bizStartMonthYear+=dir;
-  else S.bizEndMonthYear+=dir;
-  document.getElementById(which==='start'?'bizStartCalWrap':'bizEndCalWrap').innerHTML=renderMonthPickerHTML(which);
-}
-
-function pickBizMonth(which, mi){
-  if(which==='start'){
-    S.bizStartMonth=mi;
-    S.bizEndMonth=null;
-    S.bizStartPickerOpen=false;
-    const val=document.getElementById('bizStartVal');
-    val.textContent=`${MONTHS_FULL[mi]} ${S.bizStartMonthYear}`;
-    val.className='sdf-val';
-    document.getElementById('bizStartField').classList.add('set');
-    document.getElementById('bizStartCalWrap').style.display='none';
-    document.getElementById('bizStartChevron').style.transform='';
-    renderRangeFields();
-  } else {
-    // validate end >= start
-    if(mi<S.bizStartMonth&&S.bizEndMonthYear===S.bizStartMonthYear){
-      toast('End month must be after start month'); return;
-    }
-    S.bizEndMonth=mi;
-    S.bizEndPickerOpen=false;
-    renderEndField();
-    document.getElementById('bizEndCalWrap').style.display='none';
-  }
-  renderBizDateArea();
-  updateBizConflict();
-}
-
-/* ── END DATE / RANGE FIELDS ── */
-function renderRangeFields(){
-  const wrap=document.getElementById('bizRangeFields');
-  if(S.bizRecur==='weekly'){
-    // show weekday selector then end date
-    const wdHTML=`
-      <div class="lbl" style="margin-bottom:8px">Day of Week</div>
-      <div class="weekday-row" id="wdRow">
-        ${DAYS_SHORT.map((d,i)=>`<div class="wd-btn${S.bizWeekday===i?' on':''}" onclick="pickWeekday(${i})">${d}</div>`).join('')}
-      </div>
-      ${endDateFieldHTML()}`;
-    wrap.innerHTML=wdHTML;
-  } else if(S.bizRecur==='monthly'){
-    wrap.innerHTML=endMonthFieldHTML();
-  } else {
-    wrap.innerHTML=endDateFieldHTML();
-  }
-}
-
-function endDateFieldHTML(){
-  const set=!!S.bizEndDate;
-  return `
-    <div class="lbl" style="margin-bottom:8px">End Date</div>
-    <div class="end-date-field${set?' set':''}" id="bizEndField" onclick="toggleBizEndCal()">
-      <div class="edf-icon"><i class="fas fa-calendar-check"></i></div>
-      <div class="sdf-body">
-        <div class="sdf-lbl">Campaign ends</div>
-        <div class="sdf-val${set?'':' placeholder'}" id="bizEndVal">${set?fmtDateNice(S.bizEndDate):'Tap to choose date'}</div>
-      </div>
-      <i class="fas fa-chevron-down" id="bizEndChevron" style="color:var(--muted);font-size:11px;transition:transform .2s"></i>
-    </div>
-    <div id="bizEndCalWrap" style="display:none"></div>`;
-}
-
-function endMonthFieldHTML(){
-  const set=S.bizEndMonth!==null;
-  return `
-    <div class="lbl" style="margin-bottom:8px">End Month</div>
-    <div class="end-date-field${set?' set':''}" id="bizEndField" onclick="toggleBizEndCal()">
-      <div class="edf-icon"><i class="fas fa-calendar-check"></i></div>
-      <div class="sdf-body">
-        <div class="sdf-lbl">Campaign ends</div>
-        <div class="sdf-val${set?'':' placeholder'}" id="bizEndVal">${set?`${MONTHS_FULL[S.bizEndMonth]} ${S.bizEndMonthYear}`:'Tap to choose month'}</div>
-      </div>
-      <i class="fas fa-chevron-down" id="bizEndChevron" style="color:var(--muted);font-size:11px;transition:transform .2s"></i>
-    </div>
-    <div id="bizEndCalWrap" style="display:none"></div>`;
-}
-
-function renderEndField(){
-  // re-render just the end field content without disturbing weekday row
-  const wrap=document.getElementById('bizRangeFields');
-  if(!wrap) return;
-  if(S.bizRecur==='monthly'){
-    // re-render whole thing
-    wrap.innerHTML=endMonthFieldHTML();
-  } else if(S.bizRecur==='weekly'){
-    // replace everything after weekday row
-    const wdRow=document.getElementById('wdRow');
-    if(wdRow){
-      // remove siblings after wdRow
-      let el=wdRow.nextSibling;
-      while(el){const n=el.nextSibling;el.parentNode.removeChild(el);el=n;}
-      // re-append end date
-      const tmp=document.createElement('div');
-      tmp.innerHTML=endDateFieldHTML();
-      while(tmp.firstChild) wrap.appendChild(tmp.firstChild);
-    }
-  } else {
-    wrap.innerHTML=endDateFieldHTML();
-  }
-}
-
-function toggleBizEndCal(){
-  S.bizEndPickerOpen=!S.bizEndPickerOpen;
-  if(S.bizStartPickerOpen){ S.bizStartPickerOpen=false; document.getElementById('bizStartCalWrap').style.display='none'; }
-  const wrap=document.getElementById('bizEndCalWrap');
-  const chevron=document.getElementById('bizEndChevron');
-  if(!wrap) return;
-  if(S.bizEndPickerOpen){
-    wrap.style.display='block';
-    wrap.innerHTML = S.bizRecur==='monthly' ? renderMonthPickerHTML('end') : renderEndCalHTML();
-    if(chevron) chevron.style.transform='rotate(180deg)';
-  } else {
-    wrap.style.display='none';
-    if(chevron) chevron.style.transform='';
-  }
-}
-
-function renderEndCalHTML(){
-  const startDt=S.bizStartDate?new Date(S.bizStartDate+'T00:00:00'):new Date(2026,2,19);
-  if(!S.bizEndCalMonth||S.bizEndCalMonth<startDt)
-    S.bizEndCalMonth=new Date(startDt.getFullYear(),startDt.getMonth(),1);
-  const m=S.bizEndCalMonth;
-  const first=new Date(m.getFullYear(),m.getMonth(),1).getDay();
-  const total=new Date(m.getFullYear(),m.getMonth()+1,0).getDate();
-  const prevTotal=new Date(m.getFullYear(),m.getMonth(),0).getDate();
-  let html=`<div class="start-cal-wrap" style="border-color:var(--green)">
-    <div class="cal-nav">
-      <div class="cal-nav-btn" onclick="endCalChMonth(-1)"><i class="fas fa-chevron-left"></i></div>
-      <div class="cal-month">${MONTHS_FULL[m.getMonth()]} ${m.getFullYear()}</div>
-      <div class="cal-nav-btn" onclick="endCalChMonth(1)"><i class="fas fa-chevron-right"></i></div>
-    </div>
-    <div class="cal-grid">${DAYS_SHORT.map(d=>`<div class="cal-dn">${d}</div>`).join('')}`;
-  for(let i=first-1;i>=0;i--) html+=`<div class="cal-d other">${prevTotal-i}</div>`;
-  for(let d=1;d<=total;d++){
-    const dt=new Date(m.getFullYear(),m.getMonth(),d);
-    const ds=fmtDate(dt);
-    const tooEarly=dt<=startDt;
-    const isSel=S.bizEndDate===ds;
-    let cls='cal-d';
-    if(tooEarly) cls+=' past';
-    else if(isSel) cls+=' sel';
-    html+=`<div class="${cls}" onclick="${tooEarly?'':'pickBizEndDate(\''+ds+'\')'}">${d}</div>`;
-  }
-  const used=first+total;const rem=used%7===0?0:7-(used%7);
-  for(let i=1;i<=rem;i++) html+=`<div class="cal-d other">${i}</div>`;
-  html+=`</div></div>`;
-  return html;
-}
-
-function endCalChMonth(dir){
-  S.bizEndCalMonth=new Date(S.bizEndCalMonth.getFullYear(),S.bizEndCalMonth.getMonth()+dir,1);
-  document.getElementById('bizEndCalWrap').innerHTML=renderEndCalHTML();
-}
-
-function pickBizEndDate(ds){
-  if(S.bizStartDate&&ds<=S.bizStartDate){toast('End date must be after start date');return;}
-  S.bizEndDate=ds;
-  S.bizEndPickerOpen=false;
-  const val=document.getElementById('bizEndVal');
-  if(val){val.textContent=fmtDateNice(ds);val.className='sdf-val';}
-  const field=document.getElementById('bizEndField');
-  if(field) field.classList.add('set');
-  const chevron=document.getElementById('bizEndChevron');
-  if(chevron) chevron.style.transform='';
-  const wrap=document.getElementById('bizEndCalWrap');
-  if(wrap) wrap.style.display='none';
-  renderBizDateArea();
-  updateBizConflict();
-}
-
-function pickWeekday(i){
-  S.bizWeekday=i;
-  document.querySelectorAll('.wd-btn').forEach((b,idx)=>b.classList.toggle('on',idx===i));
-  renderBizDateArea();
-  updateBizConflict();
-}
-
-/* ── CONFLICT ENGINE ── */
-function checkDateConflict(ds){
-  if(!S.bizSelSlots.length) return false;
-  const busy=BUSY_SLOTS[ds]||[];
-  return S.bizSelSlots.some(idx=>busy.includes(SLOT_LIST[idx]));
-}
-
-function isReady(){
-  if(!S.bizSelSlots.length) return false;
-  if(S.bizRecur==='daily'||S.bizRecur==='weekly') return !!S.bizStartDate&&!!S.bizEndDate;
-  if(S.bizRecur==='monthly') return S.bizStartMonth!==null&&S.bizEndMonth!==null;
-  return false;
-}
-
-function updateBizConflict(){
-  const wrap=document.getElementById('bizConflictWrap');
-  const strip=document.getElementById('bizSummaryStrip');
-  const saveBtn=document.getElementById('bizSaveBtn');
-  const slotCount=S.bizSelSlots.length;
-
-  if(!isReady()){
-    wrap.style.display='none'; strip.style.display='none';
-    saveBtn.disabled=true;
-    if(!slotCount) saveBtn.textContent='Select slots first';
-    else saveBtn.textContent='Set your date range first';
-    return;
-  }
-
-  const dates=getActiveDates();
-  if(!dates.length){
-    wrap.style.display='none'; strip.style.display='none';
-    saveBtn.disabled=true; saveBtn.textContent='No dates in range';
-    return;
-  }
-
-  // Analyse conflicts
-  let okDates=0, conflictRows=[];
-  dates.forEach(ds=>{
-    const busy=BUSY_SLOTS[ds]||[];
-    const conflictIdxs=S.bizSelSlots.filter(idx=>busy.includes(SLOT_LIST[idx]));
-    if(!conflictIdxs.length){ okDates++; return; }
-    const nextFree=findNextFreeSlot(conflictIdxs[0], ds);
-    conflictRows.push({ds, conflicting:conflictIdxs, available:slotCount-conflictIdxs.length, total:slotCount, nextFree});
-  });
-
-  // Summary counts
-  const totalConflictSlots=conflictRows.reduce((a,r)=>a+r.conflicting.length,0);
-  const mode=S.bizConflictMode||'move';
-
-  // What user will actually get
-  let confirmedSlots;
-  if(mode==='move'){
-    // move: all slots booked (conflicted ones shifted), same total
-    confirmedSlots=dates.length*slotCount;
-  } else {
-    // remove: conflicted slots dropped
-    confirmedSlots=dates.length*slotCount - totalConflictSlots;
-  }
-
-  document.getElementById('bsSumDates').textContent=dates.length;
-  document.getElementById('bsSumSlots').textContent=mode==='remove'&&conflictRows.length
-    ? `${slotCount}→${slotCount - Math.round(totalConflictSlots/conflictRows.length)}`
-    : slotCount;
-  document.getElementById('bsSumConflicts').textContent=conflictRows.length;
-  strip.style.display='grid';
-
-  if(!conflictRows.length){
-    wrap.style.display='none';
-    saveBtn.disabled=false;
-    saveBtn.textContent=`Book ${slotCount} slot${slotCount>1?'s':''} × ${dates.length} date${dates.length>1?'s':''}`;
-    return;
-  }
-
-  const shown=conflictRows.slice(0,3); const more=conflictRows.length-3;
-  wrap.innerHTML=`
-    <div class="conflict-preview">
-      <div class="cp-title"><i class="fas fa-exclamation-triangle"></i> ${conflictRows.length} date${conflictRows.length>1?'s':''} have conflicts</div>
-      ${shown.map(r=>`
-        <div class="cp-row">
-          <span class="cp-date">${fmtDateNice(r.ds)}</span>
-          ${r.available===0
-            ? `<span class="cp-stat conflict">All ${r.total} slots taken</span>`
-            : `<span class="cp-stat partial">${r.conflicting.length} of ${r.total} conflict</span>`}
-        </div>`).join('')}
-      ${more>0?`<div style="font-size:11px;color:var(--muted);margin-top:4px">+${more} more</div>`:''}
-      <div style="font-size:12px;font-weight:700;color:var(--ink2);margin:12px 0 8px">Handle conflicts:</div>
-      <div class="cp-resolve">
-        <div class="cp-res-btn move${mode==='move'?' on':''}" onclick="setBizConflictMode('move')" id="crmMove">
-          <i class="fas fa-arrow-right" style="display:block;font-size:14px;margin-bottom:5px"></i>
-          <strong>Move to next available</strong><br>
-          <span style="font-weight:400">Same total slots, shifted to next free time</span>
-        </div>
-        <div class="cp-res-btn remove${mode==='remove'?' on':''}" onclick="setBizConflictMode('remove')" id="crmRemove">
-          <i class="fas fa-trash-alt" style="display:block;font-size:14px;margin-bottom:5px"></i>
-          <strong>Remove conflict slots</strong><br>
-          <span style="font-weight:400">Fewer slots, pay only for what's confirmed</span>
-        </div>
-      </div>
-      <div style="margin-top:10px;padding:8px 10px;border-radius:9px;font-size:11px;background:var(--bg);color:var(--muted)">
-        ${mode==='move'
-          ? `<i class="fas fa-info-circle" style="color:var(--blue)"></i> Conflict slots will shift to the next available 20-sec slot in the same hour`
-          : `<i class="fas fa-info-circle" style="color:var(--red)"></i> ${totalConflictSlots} slot${totalConflictSlots>1?'s':''} removed — confirmed total: <strong style="color:var(--ink)">${confirmedSlots}</strong>`}
-      </div>
-    </div>`;
-  wrap.style.display='block';
-  saveBtn.disabled=false;
-  saveBtn.textContent=mode==='move'
-    ? `Book ${dates.length*slotCount} slots (conflicts shifted)`
-    : `Book ${confirmedSlots} confirmed slots`;
-}
-
-function findNextFreeSlot(conflictIdx, ds){
-  const busy=BUSY_SLOTS[ds]||[];
-  for(let i=conflictIdx+1;i<SLOT_LIST.length;i++){
-    if(!busy.includes(SLOT_LIST[i])&&!S.bizSelSlots.includes(i)) return i;
-  }
-  return null;
-}
-
-function setBizConflictMode(mode){
-  S.bizConflictMode=mode;
-  updateBizConflict();
-}
-
-function saveBizSlot(){
-  if(!S.bizDP||!S.bizSelSlots.length) return;
-  const dates=getActiveDates();
-  if(!dates.length) return;
-  const mode=S.bizConflictMode||'move';
-  let booked=0;
-  if(!S.slots[S.bizDP.id]) S.slots[S.bizDP.id]=[];
-
-  dates.forEach(ds=>{
-    const busy=BUSY_SLOTS[ds]||[];
-    S.bizSelSlots.forEach(idx=>{
-      const slot=SLOT_LIST[idx];
-      if(!busy.includes(slot)){
-        if(!S.slots[S.bizDP.id].find(x=>x.time===slot&&x.date===ds)){
-          S.slots[S.bizDP.id].push({time:slot,date:ds}); booked++;
-        }
-      } else {
-        if(mode==='move'){
-          // find next available slot
-          const nextIdx=findNextFreeSlot(idx,ds);
-          if(nextIdx!==null){
-            const nextSlot=SLOT_LIST[nextIdx];
-            if(!S.slots[S.bizDP.id].find(x=>x.time===nextSlot&&x.date===ds)){
-              S.slots[S.bizDP.id].push({time:nextSlot,date:ds}); booked++;
-            }
-          }
-          // if no next slot found, slot is lost (edge case)
-        }
-        // mode==='remove': skip, don't book
-      }
-    });
-  });
-
-  S.checked.add(S.bizDP.id);
-  closeBizSlotModal();
-  renderLocTabs(); renderDPList();
-  toast(`${booked} slot${booked!==1?'s':''} scheduled`);
 }
 
 boot();
