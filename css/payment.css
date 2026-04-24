@@ -1,0 +1,238 @@
+
+.pay-pkg-card {
+  background: var(--bg);
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+}
+.pay-pkg-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.pay-pkg-icon {
+  font-size: 24px;
+  color: var(--blue);
+}
+.pay-pkg-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--ink);
+}
+.pay-pkg-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+.pay-pkg-row-lbl {
+  font-size: 14px;
+  color: var(--muted);
+}
+.pay-pkg-row-val {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.pay-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+}
+.pay-info i {
+  color: var(--muted);
+  margin-top: 1px;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.pay-info p {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.pay-status {
+  background: var(--bg);
+  border-radius: 16px;
+  padding: 22px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--border);
+}
+.pay-status-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pay-status-lbl {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.pay-summary {
+  background: var(--bg);
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+}
+.pay-summary h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.pay-s-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+.pay-s-lbl {
+  font-size: 14px;
+  color: var(--muted);
+}
+.pay-s-val {
+  font-size: 14px;
+  color: var(--ink);
+  font-weight: 500;
+}
+.pay-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 10px 0;
+}
+.pay-total-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.pay-total-lbl {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.pay-total-val {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--ink);
+}
+.pay-secure {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 10px;
+  justify-content: center;
+}
+.btn-pay {
+  width: 100%;
+  padding: 17px;
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  transition: background 0.15s;
+  margin-bottom: 10px;
+}
+.btn-pay:active {
+  background: var(--blue-dk);
+}
+
+.success-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 500px;
+  text-align: center;
+  padding: 30px;
+}
+.success-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  background: var(--green);
+  color: #fff;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  animation: pop 0.4s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+@keyframes pop {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+.success-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.success-sub {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.foot {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 16px 22px;
+  background: linear-gradient(transparent, var(--bg) 28%);
+  z-index: 10;
+}
+.btn-main {
+  width: 100%;
+  padding: 16px;
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-main:active {
+  background: var(--blue-dk);
+}
+.btn-main:disabled {
+  background: var(--border);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+

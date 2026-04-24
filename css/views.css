@@ -1,0 +1,12 @@
+/* ═══════════════ VIEW CONTAINERS ═══════════════
+   Sibling full-height views inside the phone. Exactly one is visible. */
+.view {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+.view.on {
+  display: flex;
+}

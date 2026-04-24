@@ -1,0 +1,244 @@
+/* ═══════════════ AUTH SCREEN ═══════════════ */
+.auth-top {
+  padding: 14px 16px 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.auth-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 8px 24px 40px;
+  scrollbar-width: none;
+}
+.auth-body::-webkit-scrollbar {
+  display: none;
+}
+
+.auth-brand {
+  text-align: center;
+  padding: 10px 0 18px;
+}
+.auth-brand-mark {
+  width: 70px;
+  height: 70px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dk) 100%);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 26px;
+  letter-spacing: -1px;
+  box-shadow: 0 8px 24px rgba(35, 85, 224, 0.3);
+}
+.auth-terms {
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 10px;
+  line-height: 1.5;
+}
+.auth-terms a {
+  color: var(--blue);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-tabs {
+  display: flex;
+  gap: 28px;
+  justify-content: center;
+  margin: 18px 0 18px;
+  border-bottom: 1px solid var(--border);
+}
+.auth-tab {
+  padding: 10px 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  position: relative;
+  transition: color 0.15s;
+}
+.auth-tab.on {
+  color: var(--ink);
+}
+.auth-tab.on::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--blue);
+  border-radius: 2px;
+}
+
+.auth-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.auth-field i {
+  color: var(--muted);
+  font-size: 14px;
+  width: 18px;
+  text-align: center;
+}
+.auth-field input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  font-family: inherit;
+  background: transparent;
+  color: var(--ink);
+}
+.auth-field input::placeholder {
+  color: var(--muted);
+}
+.auth-field .eye {
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.auth-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 14px 0 16px;
+  font-size: 12px;
+}
+.auth-remember {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink2);
+  cursor: pointer;
+}
+.auth-remember input {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--blue);
+}
+.auth-forgot {
+  color: var(--blue);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dk) 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(35, 85, 224, 0.3);
+  transition: transform 0.15s;
+}
+.auth-btn:active {
+  transform: scale(0.99);
+}
+.auth-btn.secondary {
+  background: var(--bg);
+  color: var(--blue);
+  box-shadow: none;
+  border: 1.5px solid var(--blue-lt);
+  margin-top: 12px;
+}
+.auth-or {
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  margin: 16px 0 10px;
+  position: relative;
+}
+
+/* Register-specific */
+.auth-regtype {
+  display: flex;
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 14px;
+}
+.auth-regtype-btn {
+  flex: 1;
+  padding: 9px 8px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.auth-regtype-btn.on {
+  background: var(--blue);
+  color: #fff;
+}
+.auth-photo {
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  margin-bottom: 6px;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 12px;
+}
+.auth-photo i {
+  display: block;
+  font-size: 20px;
+  color: var(--blue);
+  margin-bottom: 4px;
+}
+.auth-photo-lbl {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink2);
+  margin-bottom: 6px;
+  text-align: left;
+}
+.auth-phone-row {
+  display: flex;
+  gap: 0;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.auth-phone-cc {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink2);
+  padding-right: 8px;
+  border-right: 1px solid var(--border);
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.auth-phone-cc i {
+  font-size: 10px;
+  color: var(--muted);
+}
+.auth-phone-row input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  font-family: inherit;
+  background: transparent;
+}

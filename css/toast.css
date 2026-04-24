@@ -1,0 +1,28 @@
+.toast {
+  position: absolute;
+  bottom: 96px;
+  left: 14px;
+  right: 14px;
+  background: var(--ink);
+  color: #fff;
+  padding: 12px 15px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transform: translateY(16px);
+  opacity: 0;
+  transition: all 0.28s;
+  pointer-events: none;
+  z-index: 400;
+}
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+.toast i {
+  color: var(--green);
+  font-size: 14px;
+}

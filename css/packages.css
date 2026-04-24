@@ -1,0 +1,163 @@
+/* ── PACKAGE CARDS ── */
+.package-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.package-info {
+  flex: 1;
+}
+.package-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+.package-tokens {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.package-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--blue);
+}
+.package-btn {
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-left: 12px;
+}
+.package-btn:active {
+  background: var(--blue-dk);
+}
+
+.custom-purchase {
+  background: var(--blue-lt);
+  border: 1.5px solid #bfdbfe;
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 12px;
+}
+.custom-purchase-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--blue);
+  margin-bottom: 12px;
+}
+.custom-input-group {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.custom-input-group input {
+  flex: 1;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.custom-rate {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.custom-total {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--blue);
+  margin-bottom: 12px;
+}
+.custom-purchase-btn {
+  width: 100%;
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.custom-purchase-btn:active {
+  background: var(--blue-dk);
+}
+
+/* ── BOTTOM SHEET ── */
+.bottom-sheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--white);
+  border-radius: 20px 20px 0 0;
+  padding: 16px;
+  max-height: 65%;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  z-index: 400;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+  visibility: hidden;
+}
+.bottom-sheet.open {
+  transform: translateY(0);
+  pointer-events: auto;
+  visibility: visible;
+}
+.bs-handle {
+  width: 40px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 0 auto 12px;
+  flex-shrink: 0;
+}
+.bs-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+.bs-content {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+  min-height: 0;
+}
+.bs-content::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── BOTTOM SHEET BACKDROP ── */
+.bs-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  z-index: 390;
+  display: none;
+  pointer-events: none;
+  transition: background 0.3s;
+}
+.bs-backdrop.show {
+  display: block;
+  background: rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+}
